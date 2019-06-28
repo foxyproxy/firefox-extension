@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
+		<link rel="stylesheet" href="styles/flagicon-2.4.0.css">
+    <link rel="stylesheet" href="styles/app.css">
+  </head>
+  <body style="margin: 0 .3rem">
+		<div class="row"><p><!-- spacer --></p></div>
+
+		<div id="spinnerRow" class="row">
+			<div class="small-12 small-centered columns">
+				<div class="row callout">
+					<i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
+				</div>
+			</div>
+		</div>
+
+		<div id="errorRow" class="row hide-unimportant">
+			<div class="small-12 small-centered columns">
+				<div class="row callout">
+					<p>There was an error</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="optionsRow" class="callout hide-unimportant">
+				<img src="/images/48x48.svg"><h2 style="display:inline;margin-left:.5rem;">FoxyProxy</h2>
+				<ul id="fp-browserActionPopup" class="vertical menu">
+					<li id="patternsListItem"><a id="patterns" class="fp-orange"><span id="patternsSelected"></span>Use Enabled Proxies By Patterns and Priority</a></li>
+					<span id="menuInsertPoint"></span>
+					<!--<li> <a id="enable">&nbsp;Turn On All Proxies</a></li>-->
+					<li><a id="disabled" style="color: red"><span id="disabledSelected"></span>Turn Off FoxyProxy (Use Firefox Settings)</a></li>
+					<li><hr id="horizRule"/></li>
+					<li><a id="log">Log</a></li>
+					<li><a id="where">What's My IP?</a></link>
+					<li><a id="options">Options</a></li>
+				</ul>
+		</div>
+
+	<span class="hide-unimportant" id="modeOptionTemplate"><li class="fp-browserActionPopup"><a id="%idx" style="color: %color"><span id="%idxSelected"></span>Use proxy %title for all URLs (ignore patterns)</a></li></span>
+	
+  <script src="scripts/jquery-2.2.4.js"></script>
+  <script src="scripts/foundation-6.4.2/foundation.js"></script>
+	<script src="scripts/const.js"></script>
+	<script src="scripts/storage.js"></script>
+	<script src="scripts/utils.js"></script>
+	<script src="scripts/popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
+		<link rel="stylesheet" href="styles/flagicon-2.4.0.css">
+    <link rel="stylesheet" href="styles/app.css">
+  </head>
+  <body>
+		<div class="row"><p><!-- spacer --></p></div>
+
+		<div id="spinnerRow" class="row">
+			<div class="small-12 small-centered columns">
+				<div class="row column callout">
+					<i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
+				</div>
+			</div>
+		</div>
+
+		<div id="noProxiesRow" class="hide-unimportant" style="margin: 1rem">
+			<div class="row callout">
+				<div class="small-12 columns">
+					<img style="vertical-align:inherit" src="/images/48x48.svg"><h2 style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2>
+				</div>
+			</div>
+			<div class="row callout">
+				<div class="small-12 columns">
+					<h3>Error</h3><p>No settings could be found. Please re-install FoxyProxy.</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="mainRow" class="row">
+			<div class="small-12 columns callout">
+				<div class="row">
+					<div class="small-2 columns">
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a href="/add-edit-proxy.html"><i class="fa fa-1point8x fa-plus-circle fp-orange"></i></a> Add
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a id="deleteAll"><i class="fa fa-1point8x fa-trash"></i></a> Delete&nbsp;All
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a id="export"><i class="fa fa-1point8x fa-download"></i></a> Export
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a id="import" href="/import.html"><i class="fa fa-1point8x fa-upload fp-orange"></i></a> Import
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a href="/log.html"><i class="fa fa-1point8x fa-file-text"></i></a> Log
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a href="https://getfoxyproxy.org/geoip/" target="_new"><i class="fa fa-1point8x fa-globe"></i></a> What's My IP?
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a id="nukeBrowsingData"><i class="fa fa-1point8x fa-eraser"></i></a> Del Browsing Data
+						</div>
+						<div class="small-12 columns fp-margin-bottom-small">
+							<a href="/about.html"><i class="fa fa-1point8x fa-question"></i></a> About
+						</div>
+					</div>	
+
+					<div class="small-10 columns">
+						<div id="accountsRow" class="row hide-unimportant">
+							<div class="small-12 columns">
+								<div id="accountsContainer" class="callout">
+						      <div class="row">
+										<div class="small-12 columns">
+											<img style="vertical-align:inherit" src="/images/48x48.svg"><h2 style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2>
+										</div>
+										<div class="small-8 columns">
+											<select id="mode" style="max-width:25rem">
+											</select>
+										</div>
+										<div class="small-4 columns">
+												Synchronize settings: <input name="syncOnOff" class="switch-input" id="syncOnOff" type="checkbox" checked>
+											  <label class="switch-paddle" for="syncOnOff" style="vertical-align:text-top">
+											    <span class="show-for-sr">On/Off</span>
+											    <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+											    <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+										  	</label>
+	 											&nbsp;<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local.">?</span>
+										</div>
+									</div>
+									<span id="accounts"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+
+	  <!-- For some reason, we cannot successfully insert into a <select> that has 'patterns' and 'disabled' hard-coded in the HTML. So instead we add them dynamically with the rest of the options. -->
+		<span class="hide-unimportant">
+			<option id="patterns" value="patterns" class="fp-orange" color="#f7941e">Use Enabled Proxies By Patterns and Priority</option>
+			<!-- can't get the rendered color at runtime for some reason---always getting greys instead
+					so put the color in another attribute -->
+			<option id="disabled" value="disabled" style="color: red" color="#ff0000">Turn Off FoxyProxy (Use Firefox Settings)</li>
+		</span>
+		<span id="modeOptionTemplate" class="hide-unimportant">
+			<!-- can't get the rendered color at runtime for some reason---always getting greys instead
+					so put the color in another attribute -->
+			<option value="%idx" style="color: %color" color="%color">Use proxy %title for all URLs (ignore patterns)</option>
+		</span>
+
+		<span id="proxyRowTemplate" class="hide-unimportant">
+			<div id="%data-id" class="row callout tiny %color" style="margin: 0 0 0.5rem 0">
+				<div data-addedit-proxy class="small-6 columns">
+					 <span class="fp-color-blob" style="background-color: %color-blob"></span> <span class="proxy-title %hide-if-no-title">%data-title</span> <span class="proxy-title %hide-if-no-server">%data-server</span>	
+				</div>
+				<div class="small-6 columns">
+					<div class="float-right">
+						<!-- next input box must have unique id to work properly -->
+					  <input name="onOff" class="tiny switch-input %hide-if-default-proxy %hide-if-unsupported" id="%data-id-onoff" type="checkbox" %onoffchecked>
+					  <label style="vertical-align:text-bottom" class="switch-paddle %hide-if-default-proxy %hide-if-unsupported" for="%data-id-onoff">
+					    <span class="switch-active" aria-hidden="true" style="color: white">On</span>
+					    <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+					  </label>
+						<a data-addedit-proxy style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="hide-for-large hide-for-medium" title="edit proxy settings"><i class="fa fa-1point8x fa-pencil"></i></a>
+						<a data-addedit-proxy style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium button tiny" title="edit proxy settings">Edit</a>
+						<a style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium %hide-if-default-proxy %hide-if-foxyproxy-basic button tiny patterns" title="add/edit patterns">Patterns</a>
+	 					<a style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="hide-for-large hide-for-medium %hide-if-default-proxy patterns" title="add/edit patterns"><i class="fa fa-1point8x fa-flask"></i></a>
+
+						<a title="delete" data-single-delete class="%hide-if-default-proxy"><i class="fa fa-1point8x fa-trash"></i></a>
+
+						<!-- fa-stack-1point8x looks nicer but the move up arrow doesn't get events then -->
+						<a class="%hide-if-top %hide-if-default-proxy" data-moveup data-next-proxy-id="%data-next-proxy-id" data-previous-proxy-id="%data-previous-proxy-id" title="move up"><i style="vertical-align: text-top;" class="fa fa-1point8x fa-sort-asc"></i></a>
+
+						<!-- spacer -->
+						<i style="vertical-align: top;visibility: hidden" class="%show-if-top %hide-if-default-proxy fa fa-1point8x fa-1point8x fa-sort-asc"></i>
+
+						<a class="%hide-if-bottom %hide-if-default-proxy" data-movedown data-next-proxy-id="%data-next-proxy-id" data-previous-proxy-id="%data-previous-proxy-id" title="move down"><i style="vertical-align: top;" class="fa fa-1point8x fa-sort-desc"></i></a>
+
+						<!-- spacer -->
+						<i style="vertical-align: top;visibility: hidden" class="%show-if-bottom %hide-if-default-proxy fa fa-1point8x fa-sort-desc"></i>
+					</div>
+				</div>
+			</div>
+		</span>
+
+	<script src="scripts/const.js"></script>
+  <script src="scripts/jquery-2.2.4.js"></script>
+	<script src="scripts/jquery-swapsies.js"></script>
+  <script src="scripts/foundation-6.4.2/foundation.js"></script>
+	<script src="scripts/storage.js"></script>
+	<script src="scripts/utils.js"></script>
+	<script src="scripts/proxies.js"></script>
+	<canvas id="flag-icon-canvas-32" width="32" height="32" class="hide"></canvas>
+	<canvas id="flag-icon-canvas-16" width="16" height="16" class="hide"></canvas>
+  </body>
+</html>

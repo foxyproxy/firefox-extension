@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
+		<link rel="stylesheet" href="styles/flagicon-2.4.0.css">
+    <link rel="stylesheet" href="styles/app.css">
+  </head>
+  <body style="margin: 1rem">
+
+		<div class="row">
+			<div class="small-12 columns">
+				<div class="row callout">
+						<img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">Pattern Tester</h2>
+			</div>
+
+			<div class="row callout small">
+				<div class="small-12 columns"><h4>Step 1</h4></div>
+				<div class="small-12 columns"><label>Enter URL to test <span style="color:red">(paths and query parameters are ignored)</style></label><input id="url" type="text" value="https://getfoxyproxy.org"></div>
+				<div class="small-12 columns"><h4>Step 2</h4><p>Enter pattern details.</p></div>
+					<div class="small-4 columns">	
+						<label>Pattern <span style="color:red">(no paths, no query parameters)</label>
+						<input id="pattern" name="pattern" type="text">
+					</div>
+					<div class="small-4 columns">
+						<label>Type</label>
+						<select id="type" name="type">
+							<option value="1">Wildcard</option>
+							<option value="2">Reg Exp</option>
+						</select>
+					</div>
+					<div class="small-4 columns">
+						<label>Protocols</label>
+						<select id="protocols" name="protocols">
+							<option value="1">all</option>
+							<option value="2">http</option>
+							<option value="4">https</option>
+						</select>
+					</div>
+					<div class="small-12 columns"><h4>Step 3</h4><p>Click 'Test' when ready</p>
+						<input id="test" type="button" class="button" value="Test"><input id="help" type="button" class="button" value="Help">
+					</div>
+					<div id="results" class="small-12 columns">
+						<p id="match" class="hide-unimportant callout small success">Pattern matches URL!</p>
+						<p id="noMatch" class="hide-unimportant callout small alert">Pattern does not match URL.</p>
+						<p id="noProtocolMatch" class="hide-unimportant callout small alert">Protocols do not match.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	  <script src="scripts/jquery-2.2.4.js"></script>
+	  <script src="scripts/foundation-6.4.2/foundation.js"></script>
+		<script src="scripts/const.js"></script>
+		<script src="scripts/pattern-tester.js"></script>
+		<script src="scripts/utils.js"></script>
+		<script src="scripts/validate-pattern.js"></script>
+  </body>
+</html>
