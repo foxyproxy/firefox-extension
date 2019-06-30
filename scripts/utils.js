@@ -35,7 +35,7 @@ class Utils {
   // We don't need cryptographically secure UUIDs, just something unique
   static getUniqueId() {
     return Math.random().toString(36).substring(7) + new Date().getTime();
-    
+
     //return new Date().getTime(); // This isn't sufficient because it will use duplicate numbers when we create the 3 blacklist patterns for local IPs
     //return getRandomInt(1, Number.MAX_SAFE_INTEGER);
 
@@ -86,7 +86,7 @@ class Utils {
   }
 
   static trimAllInputs(selector = ":input") {
-    let allInputs = $(selector); 
+    let allInputs = $(selector);
     allInputs.each(function() {
       $(this).val(($(this).val().trim()));
     });
@@ -128,7 +128,7 @@ class Utils {
   }*/
 
   static wildcardStringToRegExpString(pat) {
-    let start = 0, end = pat.length;
+    let start = 0, end = pat.length, matchOptionalSubdomains = false;
     if (pat[0] == ".") pat = '*' + pat;
     if (pat.indexOf("**") == 0) {
       // Strip asterisks from front and back
@@ -137,11 +137,21 @@ class Utils {
       // If there's only an asterisk left, match everything
       if (end - start == 1 && pat[start] == "*") return new RegExp("");
     }
-    else if (pat.indexOf("*.") == 0) start = 2; // skip and don't use leading ^
+    else if (pat.indexOf("*.") == 0) {
+      matchOptionalSubdomains = true;
+    }
 
-    // $& replaces with the string found, but with that string escaped
-    let regExpStr = pat.substring(start, end+1).replace(/[$.+()^{}\]\[|]/g, "\\$&").replace(/\*/g, ".*")
+    let regExpStr = pat.substring(start, end+1)
+      // $& replaces with the string found, but with that string escaped
+      .replace(/[$.+()^{}\]\[|]/g, "\\$&")
+      .replace(/\*/g, ".*")
       .replace(/\?/g, ".");
+
+    if (matchOptionalSubdomains) {
+        // Non-capturing group that matches:
+        // any group of non-whitespace characters following by an optional . repeated zero or more times
+        regExpStr = "(?:\\S+\\.)*" + regExpStr.substring(4);
+    }
 
     // Leading or ending double-asterisks mean exact starting and ending positions
     if (start == 0) regExpStr = "^" + regExpStr;
@@ -171,7 +181,7 @@ class Utils {
     // for loop is slightly faster than .forEach(), which calls a function and all the overhead with that
     // note: we've already thrown out inactive proxySettings and inactive patterns.
     // we're not iterating over them
-    for (let i=0; i<proxySettings.length; i++) {      
+    for (let i=0; i<proxySettings.length; i++) {
       let proxySetting = proxySettings[i];
       // Check black patterns first
       //console.log("Utils.findMatchingProxySetting(): checking black patterns");
@@ -273,12 +283,12 @@ class Utils {
     }
 
     // Check MIME type
-    if (!mimeTypeArr.includes(file.type)) { 
+    if (!mimeTypeArr.includes(file.type)) {
       alert("Unsupported file format");
       return;
     }
 
-    if (file.size > maxSizeBytes) { 
+    if (file.size > maxSizeBytes) {
       alert("Filesize is too large");
       return;
     }
@@ -323,5 +333,3 @@ class Utils {
     });
   }
 }
-
-
