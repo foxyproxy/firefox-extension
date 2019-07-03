@@ -264,8 +264,8 @@ function openDialog(pat) {
     </div>
     <div class="vex-custom-field-wrapper">
       <div class="vex-custom-input-wrapper">
-      <label>On/Off</label> <input name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
-      <label class="switch-paddle" for="active" style="vertical-align:text-top">
+      <label>On/Off</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
+      <label class="switch-paddle" for="active">
         <span class="show-for-sr">On/Off</span>
         <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
         <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
@@ -294,7 +294,6 @@ function openDialog(pat) {
         return true;
       }
       let pat = this.value.pattern && this.value.pattern.trim();
-      console.log(pat);
       if (!pat) {
         alert("Please enter a pattern");
         return false;
