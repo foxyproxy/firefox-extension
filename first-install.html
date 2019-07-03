@@ -1,38 +1,45 @@
 <!doctype html>
 <html>
-  <head>
+	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
-    <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
-    <link rel="stylesheet" href="styles/app.css">
-  </head>
-  <body style="margin: 1rem">
+		<link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
+		<link rel="stylesheet" href="styles/app.css">
+	</head>
+	<body style="margin: 1rem">
 
 		<div class="row">
 			<div class="small-12 columns">
 				<div class="row callout">
-						<img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2>
-			</div>
+					<img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2>
+				</div>
 
 			<div class="row callout">
 				<div class="small-12 columns">
 					<div class="hide-if-upgrade hide-unimportant">
 						<h4>Welcome!</h4>
-						<p>FoxyProxy has been the around for 15 years. So if you're upgrading from a legacy version, and your proxy settings are missing, please <a href="/import.html">import</a> them.</p>
+						<p>FoxyProxy has been the around for almost 15 years. So if you're upgrading from a legacy version, and your proxy settings are missing, please <a href="/import.html">import</a> them.</p>
 						<h4>What's New</h4>
 
-						<h6>Version 6.4</h6>
-            <ul>
-              <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
-              <li>Minor updates to About and First Install pages</li>
-              <li>Rebuild in preparation for Firefox <a href="https://blog.mozilla.org/addons/2019/04/08/recommended-extensions-program-coming-soon/">Recommended Status</a></li>
-              <li>Stay tuned for a major FoxyProxy rewrite in August 2019 with new features!</li>
-            </ul>
+						<h6>Version 6.5</h6>
 
-            <h4>Support Me</h4>
+						<ul>
+								<li>Replaced the inline editing bad UI on the patterns page with a modal dialog (<a href="https://github.hubspot.com/vex/docs/welcome/">vex</a> library from HubSpot)</li>
+								<li>Removed several jQuery plugins towards the day when jQuery will be completely removed. Upgraded jQuery from 2.2.4 to 3.4.1 per Mozilla regulations.</li>
+								<li>Removed cruft</li>
+						</ul>
+						<h6>Version 6.4</h6>
+						<ul>
+							<li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
+							<li>Minor updates to About and First Install pages</li>
+							<li>Rebuild in preparation for Firefox <a href="https://blog.mozilla.org/addons/2019/04/08/recommended-extensions-program-coming-soon/">Recommended Status</a></li>
+							<li>Stay tuned for a major FoxyProxy rewrite in August 2019 with new features!</li>
+						</ul>
+
+						<h4>Support Me</h4>
 						<p>Support me by <a target="_blank" href="https://www.paypal.me/ericjung2/9.99">donating</a> or <a target="_blank" href="https://getfoxyproxy.org/order/">buying VPN/proxy service.</a></p>
 
-            <strong>Thank you for using FoxyProxy!</strong></p><img src="/images/ericjung.png"><p>-- <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a></p>
+						<strong>Thank you for using FoxyProxy!</strong></p><img src="/images/ericjung.png"><p>-- <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a></p>
 
 					</div>
 					<span style="float: right">
@@ -42,11 +49,11 @@
 			</div>
 		</div>
 
-    <script src="scripts/jquery-3.4.1.js"></script>
-	  <script src="scripts/foundation-6.4.2/foundation.js"></script>
+		<script src="scripts/jquery-3.4.1.js"></script>
+		<script src="scripts/foundation-6.4.2/foundation.js"></script>
 		<script src="scripts/storage.js"></script>
 		<script src="scripts/utils.js"></script>
 		<script src="scripts/import.js"></script>
 		<script src="scripts/const.js"></script>
-  </body>
+	</body>
 </html>
