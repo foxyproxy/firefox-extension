@@ -1,5 +1,5 @@
 html, body {
-	//width: 600px; // Max before scrollbars is 800
+  //width: 600px; // Max before scrollbars is 800
 }
 
 // Copied from app.css at https://getfoxyproxy.org
@@ -4359,8 +4359,8 @@ h1 {
 /* transactions */
 .fp-transaction-refund-success, .fp-transaction-purchase-success {
   background-color: #e1faea !important;
-  /* important is here to override the tbody tr:nth-child(even) rule that sets color to gray. color value is taken from .callout.success color. if i change the value of 
-	$success-color in _settings.scss, then it changes the color for lots of other elements, not just transaction rows */ }
+  /* important is here to override the tbody tr:nth-child(even) rule that sets color to gray. color value is taken from .callout.success color. if i change the value of
+  $success-color in _settings.scss, then it changes the color for lots of other elements, not just transaction rows */ }
 
 .fp-transaction-refund-failed, .fp-transaction-purchase-failed {
   background-color: #fce6e2 !important; }
@@ -4375,9 +4375,9 @@ h1 {
     .router {
       width: 40rem; } }
 
-/* 
- * 	Core Owl Carousel CSS File
- *	v1.3.3
+/*
+ *   Core Owl Carousel CSS File
+ *  v1.3.3
  */
 /* clearfix */
 .owl-carousel .owl-wrapper:after {
@@ -4438,8 +4438,8 @@ h1 {
   -ms-transform: translate3d(0, 0, 0); }
 
 /*
-* 	Owl Carousel Owl Demo Theme 
-*	v1.3.3
+*   Owl Carousel Owl Demo Theme
+*  v1.3.3
 */
 .owl-theme .owl-controls {
   margin-top: 10px;

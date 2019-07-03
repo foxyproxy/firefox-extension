@@ -54,7 +54,7 @@ function renderProxies(settings) {
       nextProxySettingId = i < proxySettings.length-1 && proxySettings[i+1].id != LASTRESORT ? proxySettings[i+1].id : -1,
       option = Utils.getOption(proxySetting);
     if (option) modeOptions.push(option);
-  
+
     if (Utils.isUnsupportedType(proxySetting.type)) {
       t = t.replace('%color', 'unsupported-color');
     }
@@ -85,7 +85,7 @@ function renderProxies(settings) {
     if (!proxySetting.title || proxySetting.title == proxySetting.address)
       t = t.replace("%hide-if-no-title", "hide-unimportant")
     else t = t.replace("%data-title", Utils.getNiceTitle(proxySetting))
-  
+
     if (proxySetting.id == LASTRESORT)
       t = t.replace(/%hide-if-default-proxy/g, "hide-if-default-proxy");
 
@@ -176,16 +176,16 @@ function installListeners() {
     let id = getNearestId(evt), previousProxySettingId = $(evt.target).closest("a[data-previous-proxy-id]").attr("data-previous-proxy-id");
     console.log(`id: ${id}, previousProxySettingId: ${previousProxySettingId}`);
 
-    $("#" + id).swap({  
-        target: previousProxySettingId, // Mandatory. The ID of the element we want to swap with  
-        opacity: "0.5", // If set will give the swapping elements a translucent effect while in motion  
-        speed: 100, // The time taken in milliseconds for the animation to occur  
+    $("#" + id).swap({
+        target: previousProxySettingId, // Mandatory. The ID of the element we want to swap with
+        opacity: "0.5", // If set will give the swapping elements a translucent effect while in motion
+        speed: 100, // The time taken in milliseconds for the animation to occur
         callback: function() { // Optional. Callback function once the swap is complete
           noRefresh = true;
           swapProxySettingWithNeighbor(id, previousProxySettingId).then((settings) => {
             console.log("swapProxySettingWithNeighbor() succeeded");
             renderProxies(settings);
-          }).catch((e) => {console.error("swapProxySettingWithNeighbor failed: " + e)});   
+          }).catch((e) => {console.error("swapProxySettingWithNeighbor failed: " + e)});
         }
     });
     return false;
@@ -197,10 +197,10 @@ function installListeners() {
     let id = getNearestId(evt), nextProxySettingId = $(evt.target).closest("a[data-next-proxy-id]").attr("data-next-proxy-id");
     console.log(`id: ${id}, nextProxySettingId: ${nextProxySettingId}`);
 
-    $("#" + id).swap({  
-        target: nextProxySettingId, // Mandatory. The ID of the element we want to swap with  
-        opacity: "0.5", // If set will give the swapping elements a translucent effect while in motion  
-        speed: 100, // The time taken in milliseconds for the animation to occur  
+    $("#" + id).swap({
+        target: nextProxySettingId, // Mandatory. The ID of the element we want to swap with
+        opacity: "0.5", // If set will give the swapping elements a translucent effect while in motion
+        speed: 100, // The time taken in milliseconds for the animation to occur
         callback: function() { // Optional. Callback function once the swap is complete
           noRefresh = true;
           swapProxySettingWithNeighbor(id, nextProxySettingId).then((settings) => {

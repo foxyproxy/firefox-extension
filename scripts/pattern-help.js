@@ -1,2 +1,2 @@
 document.addEventListener("DOMContentLoaded", function() {
-	$(document).foundation();});
+  $(document).foundation();});

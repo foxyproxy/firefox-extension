@@ -26,22 +26,22 @@ timeformat=HH:nn:ss:zzz mmm dd, yyyy
 
 // TODO: i18n
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-	days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 document.addEventListener("DOMContentLoaded", function() {
-	browser.runtime.getBackgroundPage().then((page) => {
-		logg = page.getLogg();
+  browser.runtime.getBackgroundPage().then((page) => {
+    logg = page.getLogg();
     console.log("logg active is " + logg.active);
     if (logg.active) {
       $("#onOff").prop("checked", true);
-		  renderLog();
+      renderLog();
     }
     else {
       $("#onOff").prop("checked", false);
       $("#spinnerRow").hide();
       $("#logRow").show();
     }
-	});
+  });
 });
 
 $("#onOff").on("click", () => {
@@ -62,21 +62,21 @@ $("#onOff").on("click", () => {
 });
 
 $("#okBtn1,#okBtn2").on("click", () => {
-	location.href = "/proxies.html";
+  location.href = "/proxies.html";
 });
 
 $("#clearBtn1,#clearBtn2").on("click", () => {
-	logg.clear();
-	renderLog();
+  logg.clear();
+  renderLog();
 });
 
 $("#refreshBtn1,#refreshBtn2").on("click", () => {
-	renderLog();
+  renderLog();
 });
 
 function renderLog() {
   function _xmlEncode(str) {
-		if (!str) return "";
+    if (!str) return "";
     return str.replace(/\<|\>|\&|\'|\"/g,
       function($0) {
         switch($0) {
@@ -89,36 +89,36 @@ function renderLog() {
       }
     );
   };
-	let rows = [];
+  let rows = [];
   for (let i=0; i<logg.length; i++) {
-		let t = $("#rowTemplate").html().trim(),
-			item = logg.item(i),
-			title =  item.proxySetting ? _xmlEncode(item.proxySetting.title) : "No matches",
-			address =  item.proxySetting ? _xmlEncode(item.proxySetting.address) : "No matches",
-			color = item.matchedPattern ? "success" : "secondary",
+    let t = $("#rowTemplate").html().trim(),
+      item = logg.item(i),
+      title =  item.proxySetting ? _xmlEncode(item.proxySetting.title) : "No matches",
+      address =  item.proxySetting ? _xmlEncode(item.proxySetting.address) : "No matches",
+      color = item.matchedPattern ? "success" : "secondary",
       proxyColor = item.proxySetting.color;
-			
-		if (item.matchedPattern) {
-			pattern = item.matchedPattern == USE_PROXY_FOR_ALL_URLS ? "Use proxy for all URLs" :
-				_xmlEncode(item.matchedPattern.pattern);
-		}
-		else pattern = "No matches";
+
+    if (item.matchedPattern) {
+      pattern = item.matchedPattern == USE_PROXY_FOR_ALL_URLS ? "Use proxy for all URLs" :
+        _xmlEncode(item.matchedPattern.pattern);
+    }
+    else pattern = "No matches";
 
     rows.push(t.replace(/%color|url|title|address|pattern|time|%proxyColor/gi,
-      function($0) {	
+      function($0) {
         switch($0) {
-					case "%color": return color;
+          case "%color": return color;
           case "url": return _xmlEncode(item.url);
-					case "title": return title;
-					case "address": return address;
-					case "pattern": return pattern;
-					case "time": return format(item.timestamp);
+          case "title": return title;
+          case "address": return address;
+          case "pattern": return pattern;
+          case "time": return format(item.timestamp);
           case "%proxyColor": return proxyColor;
         }
       }
     ));
   }
-	$("#rows").html(''); // clear anything that's there
+  $("#rows").html(''); // clear anything that's there
   $("#rows").html(rows.join(''));
   $("#spinnerRow").hide();
   $("#logRow").show();

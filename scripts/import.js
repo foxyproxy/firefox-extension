@@ -166,7 +166,7 @@ function importXml(oldSettings) {
         newId = LASTRESORT; // This is a string
         newProxySetting.index = Number.MAX_SAFE_INTEGER;
         if (oldType != "manual" && oldType != "direct")
-          newProxySetting.type = PROXY_TYPE_NONE; 
+          newProxySetting.type = PROXY_TYPE_NONE;
       }
       else {
         newProxySetting.index = i;
@@ -196,7 +196,7 @@ function importXml(oldSettings) {
               "type": 1,
               "protocols": 1
             }
-          ]  
+          ]
 
         */
           newPattern.title = oldMatch.getAttribute("name");
@@ -239,8 +239,8 @@ function importXml(oldSettings) {
             else if (newPattern.pattern.indexOf("^https://") == 1) {
               newPattern.pattern = "^" + newPattern.pattern.substring(9);
               newPattern.protocols = PROTOCOL_HTTPS;
-            }  
-            else newPattern.protocols = PROTOCOL_ALL;          
+            }
+            else newPattern.protocols = PROTOCOL_ALL;
           }
           if (oldMatch.getAttribute("isBlackList") == "true") newProxySetting.blackPatterns.push(newPattern);
           else newProxySetting.whitePatterns.push(newPattern);

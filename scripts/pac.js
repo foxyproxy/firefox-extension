@@ -63,7 +63,7 @@ function buildReturnForProxySetting(url, ps, matchedPattern) {
     err = true;
   }
   if (err) {
-    logToUI({url: url, matchedPattern: matchedPattern, proxySetting: ps, timestamp: Date.now(), error: true});    
+    logToUI({url: url, matchedPattern: matchedPattern, proxySetting: ps, timestamp: Date.now(), error: true});
     return {type: DIRECT}; // TODO: change to null after https://bugzilla.mozilla.org/show_bug.cgi?id=1319634 is fixed
   }*/
 

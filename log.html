@@ -1,69 +1,69 @@
 <!doctype html>
 <html>
   <head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
     <link rel="stylesheet" href="styles/app.css">
   </head>
   <body style="margin: 2rem">
 
-		<div id="spinnerRow" class="row">
-			<div class="small-12 small-centered columns">
-				<div class="row column callout">
-					<i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-				</div>
-			</div>
-		</div>
+    <div id="spinnerRow" class="row">
+      <div class="small-12 small-centered columns">
+        <div class="row column callout">
+          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
+        </div>
+      </div>
+    </div>
 
-		<div id="logRow" class="row hide-unimportant" style="margin: 0.5rem">
-			<div class="row callout"><div class="small-12 columns"><img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2></div></div>
-			<div class="row callout">
-				<div class="small-12 columns">
-					<h3 style="display:inline">Log</h3>
-					<span style="float: right">
-						<input id="clearBtn1" type="button" class="button" value="Clear">
-						<input id="refreshBtn1" type="button" class="button" value="Refresh">
-						<input id="okBtn1" type="button" class="button" value="Ok">
-					</span><br>
-					<input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
-				  <label class="switch-paddle" for="onOff">
-				    <span class="show-for-sr">On/Off</span>
-				    <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-				    <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-			  	</label>
-				</div>
-				<div class="small-12 columns">
-						<div class="row callout"><strong>Failed URLs display here, too!</strong> A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.</div>
-				</div>
-				<div class="small-12 columns">
-					<div class="row">
-						<table id="logTable">
-							<thead><tr><th>URL</th><th>Proxy Title</th><th>Proxy Color</th><th>Proxy Address</th><th>Match Pattern</th><th>Timestamp</th></thead>
-							<tbody id="rows"></tbody>
-						</table>
-					</div>
-				</div>	
-				<div class="small-12 columns">
-					<span style="float: right">
-						<input id="clearBtn2" type="button" class="button" value="Clear">
-						<input id="refreshBtn2" type="button" class="button" value="Refresh">
-						<input id="okBtn2" type="button" class="button" value="Ok">
-					</span>
-				</div>
-			</div>
-		</div>
+    <div id="logRow" class="row hide-unimportant" style="margin: 0.5rem">
+      <div class="row callout"><div class="small-12 columns"><img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2></div></div>
+      <div class="row callout">
+        <div class="small-12 columns">
+          <h3 style="display:inline">Log</h3>
+          <span style="float: right">
+            <input id="clearBtn1" type="button" class="button" value="Clear">
+            <input id="refreshBtn1" type="button" class="button" value="Refresh">
+            <input id="okBtn1" type="button" class="button" value="Ok">
+          </span><br>
+          <input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
+          <label class="switch-paddle" for="onOff">
+            <span class="show-for-sr">On/Off</span>
+            <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+            <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+          </label>
+        </div>
+        <div class="small-12 columns">
+            <div class="row callout"><strong>Failed URLs display here, too!</strong> A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.</div>
+        </div>
+        <div class="small-12 columns">
+          <div class="row">
+            <table id="logTable">
+              <thead><tr><th>URL</th><th>Proxy Title</th><th>Proxy Color</th><th>Proxy Address</th><th>Match Pattern</th><th>Timestamp</th></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="small-12 columns">
+          <span style="float: right">
+            <input id="clearBtn2" type="button" class="button" value="Clear">
+            <input id="refreshBtn2" type="button" class="button" value="Refresh">
+            <input id="okBtn2" type="button" class="button" value="Ok">
+          </span>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="scripts/jquery-3.4.1.js"></script>
   <script src="scripts/foundation-6.4.2/foundation.js"></script>
-	<script src="scripts/const.js"></script>
-	<script src="scripts/utils.js"></script>
-	<script src="scripts/storage.js"></script>
-	<script src="scripts/log.js"></script>
+  <script src="scripts/const.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/log.js"></script>
 
-	<table style="display: none">
-		<tbody id="rowTemplate" >
-			<tr class="%color"><td><a href="url" target="_blank">url</a></td><td>title</td><td style="background-color: %proxyColor" class="fp-color-blob-log">&nbsp;</td><td>address</td><td>pattern</td><td>time</td></tr>
-		</tbody>
-	</table>
+  <table style="display: none">
+    <tbody id="rowTemplate" >
+      <tr class="%color"><td><a href="url" target="_blank">url</a></td><td>title</td><td style="background-color: %proxyColor" class="fp-color-blob-log">&nbsp;</td><td>address</td><td>pattern</td><td>time</td></tr>
+    </tbody>
+  </table>
 </html>

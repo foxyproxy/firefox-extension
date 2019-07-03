@@ -153,7 +153,7 @@ function getProxySettingById(id) {
 }
 
 function deleteAllSettings() {
-  
+
   return new Promise((resolve, reject) => {
     _getAllSettingsNative().then((settings) => {
       // Remove all except default/lastresort. User may have customized it so save it back.
@@ -169,7 +169,7 @@ function deleteAllSettings() {
           delete newSettings[LASTRESORT].id; // Don't need to write this to disk for this object
         }
       }
-      if (!lastResortFound) newSettings[LASTRESORT] = JSON.parse(JSON.stringify(DEFAULT_PROXY_SETTING), (key, value) => key == "id" ? undefined : value);  
+      if (!lastResortFound) newSettings[LASTRESORT] = JSON.parse(JSON.stringify(DEFAULT_PROXY_SETTING), (key, value) => key == "id" ? undefined : value);
 
       browser.runtime.sendMessage(MESSAGE_TYPE_DELETING_ALL_SETTINGS).then(() =>
         storage.clear()).then(() => writeAllSettings(newSettings, false).then(() =>
@@ -193,8 +193,8 @@ function deleteProxyById(id) {
           if (settings.mode == id) settings.mode = DISABLED;
           settings = storageObjectToAddonStruct(settings); // Forces a re-index of |index| attributes
           writeAllSettings(settings).then(() => resolve(settings))
-            .catch((e) => {console.error(`deleteProxyById() error: ${e}`);reject(e)});  
-        }).catch((e) => {console.error(`_getAllSettingsNative() error: ${e}`);reject(e)}); 
+            .catch((e) => {console.error(`deleteProxyById() error: ${e}`);reject(e)});
+        }).catch((e) => {console.error(`_getAllSettingsNative() error: ${e}`);reject(e)});
       }).catch((e) => {console.error(`storage.remove() error: ${e}`);reject(e)});
     }).catch((e) => {console.error(`_initializeStorage() error: ${e}`);reject(e)});
   }).catch((e) => {console.error(`new Promise() error: ${e}`);reject(e)});
@@ -222,7 +222,7 @@ function editProxySetting(id, index, proxySetting) {
 }
 
 function addProxySetting(proxySetting) {
-  proxySetting.index = -1; 
+  proxySetting.index = -1;
   let id = Utils.getUniqueId();
   return new Promise((resolve, reject) => {
     _getAllSettingsNative().then((settings) => { // calls _initializeStorage()
@@ -231,7 +231,7 @@ function addProxySetting(proxySetting) {
       //console.log("writing...");
       //console.log(JSON.stringify(settings, null, 2));
       writeAllSettings(settings).then(() => resolve(id))
-        .catch((e) => {console.error(`addProxySetting() error: ${e}`);reject(e)});  
+        .catch((e) => {console.error(`addProxySetting() error: ${e}`);reject(e)});
     }).catch((e) => {console.error(`_getAllSettingsNative() error: ${e}`);reject(e)});
   });
 }
@@ -288,7 +288,7 @@ function enableDisableAllProxySettings(active) {
         if (!active && settings[MODE] == settings[i].id) settings[MODE] = "disabled";
       }
       writeAllSettings(settings, false).then(() => resolve(storageObjectToAddonStruct(settings)))
-        .catch((e) => {console.error(`enableDisableAllProxySettings() failed: ${e}`);reject(e)});  
+        .catch((e) => {console.error(`enableDisableAllProxySettings() failed: ${e}`);reject(e)});
     }).catch((e) => {console.error(`_getAllSettingsNative() failed: ${e}`);reject(e)});
   });
 }

@@ -53,7 +53,7 @@ function provideCredentialsAsync(details) {
   // details.url is scheme + url without path and query info; e.g. https://www.google.com/
   // note ending slash. details.host is www.google.com
   if (!details.isProxy || !activeSettings) return;
-	//console.log("provideCredentialsAsync(): " + JSON.stringify(activeSettings));
+  //console.log("provideCredentialsAsync(): " + JSON.stringify(activeSettings));
   let ps;
   if (activeSettings.mode == PATTERNS || activeSettings.mode == RANDOM || activeSettings.mode == ROUND_ROBIN) {
     ps = Utils.findMatchingProxySetting(details.url, new URL(details.url).host, activeSettings.proxySettings); // return {proxySetting: proxySetting, patternObj: patternObj};
@@ -118,7 +118,7 @@ function filterAndValidatePatterns(patternObjArr) {
           pat.regExp = Utils.safeRegExp(pat.pattern); // TODO: need to notify user and not match this to zilch. Go to disabled mode.
         else {
           //console.error("filterAndValidatePatterns(): Skipping pattern due to error (1): " + JSON.stringify(pat));
-          continue;   
+          continue;
         }
         //console.log("filterAndValidatePatterns(): keeping pattern: " + JSON.stringify(pat.pattern));
         ret.push(pat);
@@ -217,7 +217,7 @@ function getColoredImage(color) {
 
   // Update color
   $("#path2907,#path2935,#path2939").css("fill", color);
-  
+
   // Get the image, prepend header
   let image64 = "data:image/svg+xml;base64," + btoa(new XMLSerializer().serializeToString(document.getElementById("fox")));
 
@@ -232,8 +232,8 @@ function getColoredImage(color) {
  * After https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 is fixed, onAuthRequired() not needed.
  */
 browser.webRequest.onAuthRequired.addListener(provideCredentialsAsync,
-	{urls: ["<all_urls>"]},
-	["blocking"]);
+  {urls: ["<all_urls>"]},
+  ["blocking"]);
 
 // Update the PAC script whenever stored settings change
 browser.storage.onChanged.addListener((oldAndNewSettings) => {
@@ -243,7 +243,7 @@ browser.storage.onChanged.addListener((oldAndNewSettings) => {
     return;
   }
 
-	// Re-read them because oldAndNewSettings just gives us the deltas, not complete settings
+  // Re-read them because oldAndNewSettings just gives us the deltas, not complete settings
   getAllSettings().then((settings) => {
       console.log("background.js: Re-read settings");
       sendSettingsToProxyScript(settings)})
@@ -262,7 +262,7 @@ browser.runtime.onInstalled.addListener((details) => {
       updateSettingsFrom50().then(() => console.log("finished updateSettingsFrom50()"));
     }
     else if (details.previousVersion.startsWith("3.") || // FP Basic was 3.x
-        details.previousVersion.startsWith("4.") || // FP Standard was 4.x. 
+        details.previousVersion.startsWith("4.") || // FP Standard was 4.x.
         details.previousVersion.startsWith("5.5") || // To distinguish from the 5.0 above
         details.previousVersion.startsWith("5.6")) { // I don't think there was a 5.6 but for a couple of users
       browser.tabs.create({url: "/first-install.html", active: true});
