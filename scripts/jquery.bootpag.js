@@ -1,5 +1,7 @@
 /**
- * Eric Jung: changed <a> to <div> to prevent all navigation when clicking
+ * Eric Jung: changed <a> to <div> to prevent all navigation when clicking.
+ * Also made two other changes for jquery 3.4.1 compatibility
+ *
  * @preserve
  * bootpag - jQuery plugin for dynamic pagination
  *
@@ -22,7 +24,7 @@
             settings = $.extend({
                 total: 0,
                 page: 1,
-                maxVisible: null,
+                maxVisible: 10, // Eric Jung: changed from null
                 leaps: true,
                 href: 'javascript:void(0);',
                 hrefVariable: '{{number}}',
@@ -45,9 +47,6 @@
         if(settings.total <= 0)
             return this;
 
-          if(!$.isNumeric(settings.maxVisible) && !settings.maxVisible){
-            settings.maxVisible = parseInt(settings.total, 10);
-        }
 
         $owner.data('settings', settings);
 
@@ -160,7 +159,9 @@
             me.append(p.join(''));
             $bootpag = me.find('ul.bootpag');
 
-            me.find('li').click(function paginationClick(){
+            // 2019-07-03 Eric Jung: changed from me.find('li').on('click', function paginationClick(){
+            // for jquery 3.4.1. compatibility
+            me.find('li').on('click', () => {
 
                 var me = $(this);
                 if(me.hasClass(settings.disabledClass) || me.hasClass(settings.activeClass)){

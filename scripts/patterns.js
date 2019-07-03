@@ -1,20 +1,19 @@
 $(document).foundation();
+vex.defaultOptions.className = 'vex-theme-default';
 let editingProxy,
 	whitePatternsPerPage = 10, blackPatternsPerPage = 10,
-
-	// I'd prefer to keep these templates in HTML but cloning them, substituting the text, and inserting
-	// into DOM. Placing them here avoids the clone or innerHTML to copy what's in the DOM, a performance benefit
-	// when rendering the page.
   patternRowTemplate = `
 <div data-idx="%data-idx" class="row pattern-row %data-active">
-	<div class="small-3 columns"><a id="%data-idx" data-type="text" data-title="Enter Name" name="name" data-full-name="%data-full-name">%data-name</a></div>
-	<div class="small-3 columns"><a data-type="text" data-title="Enter Pattern" data-full-pattern="%data-full-pattern" name="pattern">%data-pattern</a></div>
-	<div class="small-2 columns"><a data-type="select" data-title="Select Pattern Type" name="type">%data-type</a></div>
-	<div class="small-1 columns"><a data-type="select" data-title="Use pattern with which protocols?" name="protocols">%data-protocols</a></div>
-	<div class="small-1 columns"><a data-type="select" data-title="Turn pattern on/off" name="active" active="%data-onoff">%data-onoff</a></div>
-	<div class="small-2 columns"><a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a> <a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
+	<div class="small-3 columns">%data-name</div>
+	<div class="small-3 columns">%data-pattern</div>
+	<div class="small-2 columns">%data-type</div>
+	<div class="small-1 columns">%data-protocols</div>
+	<div class="small-1 columns">%data-onoff</div>
+	<div class="small-2 columns">
+	<a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a>
+	<a data-edit class="float-right"><i class="fa fa-1point8x fa-pencil"></i></a>
+	<a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
 </div>`;
-
 
 // Keep this first. In case of error in DOMContentLoaded listener code, we need this to execute first
 $(document).on("click", "#errorOkButton", () => {
@@ -82,10 +81,8 @@ function renderPatterns(focusLastPageWhite=false, focusLastPageBlack=false) {
 		else if (patternObj.protocols & PROTOCOL_HTTP) protocol = "http";
 		
 		let t = patternRowTemplate
-			.replace(/%data-pattern/g, patternObj.pattern)
-			.replace(/%data-full-pattern/g, patternObj.pattern)
-			.replace(/%data-name/g, patternObj.title)
-			.replace(/%data-full-name/g, patternObj.title?patternObj.title:"")
+			.replace(/%data-pattern/g, Utils.ellipsis(patternObj.pattern))
+			.replace(/%data-name/g, patternObj.title ? Utils.ellipsis(patternObj.title) : "&nbsp;")
 			.replace(/%data-type/g, patternObj.type == PATTERN_TYPE_WILDCARD ? "wildcard": "reg exp")
 			.replace(/%data-protocols/g, protocol)
 			.replace(/%data-idx/g, idx)
@@ -138,99 +135,13 @@ function init() {
 function installListeners() {
 	$(document).off(); // Remove any existing handlers
 
+	// Get the index and white or black array of the clicked item
 	function getIdxAndPatternsArray(that) {
 		let idx = parseInt(that.closest("div[data-idx]").attr("data-idx")),
 			patternsArray = that.closest("div[data-white-black-patterns").attr("data-white-black-patterns") == "white" ?
 				editingProxy.whitePatterns : editingProxy.blackPatterns;
 		return [idx, patternsArray];
 	}
-
-	$("a[name='pattern']").editable({
-		success: function(resp, newPattern) {
-			// resp is always null since we don't do server-side updates
-			let [idx, patternsArray] = getIdxAndPatternsArray($(this));
-			patternsArray[idx].pattern = newPattern.trim();
-		},
-		display: function(value) {
-			$(this).html(Utils.ellipsis(value))
-		},
-		emptytext: "click to add pattern",
-		autotext: "never"
-	});
-
-	$("a[name='name']").editable({
-		success: function(resp, newTitle) {
-			// resp is always null since we don't do server-side updates
-			let [idx, patternsArray] = getIdxAndPatternsArray($(this));
-			patternsArray[idx].title = newTitle.trim();
-		},
-		display: function(value) {
-			$(this).html(Utils.ellipsis(value))
-		},
-		emptytext: "click to add name",
-		autotext: "never"
-	});
-
-	$("a[name='type']").editable({
-		source: [
-			{value: PATTERN_TYPE_WILDCARD, text: "Wildcard"},
-			{value: PATTERN_TYPE_REGEXP, text: "Regular Expression"}
-		],
-		success: function(resp, newType) {
-			// resp is always null since we don't do server-side updates
-			let [idx, patternsArray] = getIdxAndPatternsArray($(this));
-			patternsArray[idx].type = parseInt(newType);
-		},
-		display: function(value, sourceData) {
-			if (value == null) return;
-			if (parseInt(value) == PATTERN_TYPE_WILDCARD) $(this).text("wildcard");
-			else $(this).text("reg exp");
-		}
-	});
-
-	$("a[name='protocols']").editable({
-		source: [
-			{value: PROTOCOL_ALL, text: "All"},
-			{value: PROTOCOL_HTTP, text: "HTTP Only"},
-			{value: PROTOCOL_HTTPS, text: "HTTPS Only"}
-		],
-		success: function(resp, newProtocols) {
-			// resp is always null since we don't do server-side updates
-			let [idx, patternsArray] = getIdxAndPatternsArray($(this));
-			patternsArray[idx].protocols = parseInt(newProtocols);
-		},
-		display: function(value, sourceData) {
-			if (value == null) return;
-			value = parseInt(value);
-			if (value == PROTOCOL_ALL) $(this).text("all");
-			else if (value == PROTOCOL_HTTP) $(this).text("http");
-			else $(this).text("https");
-		}
-	});
-
-	$("a[name='active']").editable({
-		source: [
-			{value: 1, text: "on"},
-			{value: 2, text: "off"}
-		],
-		success: function(resp, newActive) {
-			// resp is always null since we don't do server-side updates
-			let [idx, patternsArray] = getIdxAndPatternsArray($(this));
-			patternsArray[idx].active = newActive == parseInt(1);
-		},
-		display: function(value, sourceData) {
-			if (value == null) return;
-			value = parseInt(value);
-
-			// Update background color
-			let that = $(this), row = that.closest("div[data-idx]");
-			if (value == 1) row.addClass("success").removeClass("secondary");
-			else row.addClass("secondary").removeClass("success");
-
-			if (value == 1) that.text("on");
-			else that.text("off");
-		}
-	});
 
 	$(document).on("click", "a[data-imported]", (e) => {
 		let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
@@ -241,18 +152,18 @@ function installListeners() {
 
 	$(document).on("click", "#newWhite", () => {
 		editingProxy.whitePatterns.push(PATTERN_NEW);
-		renderPatterns(true, false);
 		document.getElementById(editingProxy.whitePatterns.length-1).scrollIntoView({ 
 		  behavior: "smooth"
 		});
+		openDialog(editingProxy.whitePatterns.length-1);
 	});
 
 	$(document).on("click", "#newBlack", () => {
 		editingProxy.blackPatterns.push(PATTERN_NEW);
-		renderPatterns(false, true);
 		document.getElementById(editingProxy.whitePatterns.length-1).scrollIntoView({ 
 		  behavior: "smooth"
 		});
+		openDialog(editingProxy.blackPatterns.length-1);
 	});
 
 	$(document).on("click", "#save", () => {
@@ -269,9 +180,15 @@ function installListeners() {
 		});
 		return false;
 	});
+	
+	$(document).on("click", "a[data-edit]", (e) => {
+		let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
+		let pat = patternsArray[idx];
+		openDialog(pat);
+		return false;
+	});
 
 	$(document).on("click", "#cancel", () => {
-		console.log("cancel");
 		location.href = "/proxies.html";
 	});
 
@@ -303,4 +220,84 @@ function savePatterns() {
 	$("#patternsRow").hide();
 	$("#spinnerRow").show();
 	return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
+}
+
+function openDialog(pat) {
+	vex.dialog.buttons.YES.className = "button";
+	vex.dialog.buttons.NO.className = "button alert";
+	vex.dialog.open({
+		message: 'Pattern Details',
+		input: `
+		<style>
+			.vex-custom-field-wrapper {
+				margin-bottom: 1rem;
+			}
+		</style>
+		<div class="vex-custom-field-wrapper">
+				<label for="name">Name
+				<div class="vex-custom-input-wrapper">
+						<input name="title" type="edit" style="width: 100%" value="${pat.title ? pat.title : ""}"/>
+				</div></label>
+		</div>
+		<div class="vex-custom-field-wrapper">
+				<label for="pattern">Pattern
+				<input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/></label>
+		</div>
+
+		<div class="vex-custom-field-wrapper">
+				<div class="vex-custom-input-wrapper">
+					<label>Type</label><p><label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
+						${pat.type == PATTERN_TYPE_WILDCARD ? `checked` : `` }/></label>
+					<label style="display: inline">Regular Expression <input name="type" type="radio" value="${PATTERN_TYPE_REGEXP}"
+						${pat.type == PATTERN_TYPE_REGEXP ? `checked` : `` }/></label></p>
+				</div>
+		</div>
+		<div class="vex-custom-field-wrapper">
+				<div class="vex-custom-input-wrapper">
+					<label>Protocols</label>
+					<select name="protocols">							
+						<option value="${PROTOCOL_ALL}">both</option>
+						<option value="${PROTOCOL_HTTP}">http</option>
+						<option value="${PROTOCOL_HTTPS}">https</option>
+					</ul>
+				</select>
+		</div>				
+		<div class="vex-custom-field-wrapper">
+			<div class="vex-custom-input-wrapper">
+			<label>On/Off</label> <input name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
+			<label class="switch-paddle" for="active" style="vertical-align:text-top">
+				<span class="show-for-sr">On/Off</span>
+				<span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+				<span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+			</label>
+			</div>
+		</div>
+		`,
+		callback: function(data) {
+			if (data) {
+				// Not cancelled
+				// data has .title, .pattern, .type, .protocols, and .onOff (values on or off)
+				pat.title = data.title && data.title.trim();
+				pat.pattern = data.pattern && data.pattern.trim();
+				pat.type = parseInt(data.type);
+				pat.protocols = parseInt(data.protocols);
+				pat.active = data.active == "on";
+				renderPatterns();
+			}
+		},
+		beforeClose: function() {
+			// |this| is vex instance
+			if (!this.value) {
+				// Cancel button was clicked
+				return true;
+			}
+			let pat = this.value.pattern && this.value.pattern.trim();
+			console.log(pat);
+			if (!pat) {
+				alert("Please enter a pattern");
+				return false;
+			}
+			else return true;
+		}
+	})
 }

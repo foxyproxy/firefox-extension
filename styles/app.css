@@ -4713,12 +4713,6 @@ tr.success {
   /*border-radius: 0.5rem;*/
 }
 
-.pattern-row div {
-  cursor: pointer;
-}
-
-
-
 .success {
   background-color: #e1faea;
 }

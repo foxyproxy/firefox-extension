@@ -114,7 +114,7 @@ function resetForm() {
 	$("#onOffBlackAll").prop("checked", true);
 	$("#proxyDNS").prop("checked", true);
 	$("#pacURL").val("");
-	$("#newProxyTitle").focus();
+	$("#newProxyTitle").trigger("focus");
 	showHideStuff();
 	$("#spinnerRow").hide();
 	$("#addEditRow").show();
