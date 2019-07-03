@@ -75,8 +75,11 @@
     width: 450px;
     font-size: 1.1em;
     line-height: 1.5em; }
+
+		/* 2019-07-03 Eric Jung: commented out so that app.css styles take precendence
     .vex.vex-theme-default .vex-content h1, .vex.vex-theme-default .vex-content h2, .vex.vex-theme-default .vex-content h3, .vex.vex-theme-default .vex-content h4, .vex.vex-theme-default .vex-content h5, .vex.vex-theme-default .vex-content h6, .vex.vex-theme-default .vex-content p, .vex.vex-theme-default .vex-content ul, .vex.vex-theme-default .vex-content li {
-      color: inherit; }
+      color: inherit; }*/
+
   .vex.vex-theme-default .vex-close {
     border-radius: 5px;
     position: absolute;

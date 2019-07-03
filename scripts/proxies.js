@@ -1,4 +1,5 @@
 $(document).foundation();
+vex.defaultOptions.className = 'vex-theme-default';
 Utils.localizeHtmlPage();
 let noRefresh = false;
 
@@ -225,26 +226,46 @@ function installListeners() {
   });
 
   $(document).on("click", "#nukeBrowsingData", () => {
-    if (confirm("Do not delete: stored passwords, browsing and form history, download history, webSQL, and server-bound certificates.\r\n\r\nDelete: cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data.")) {
-      browser.browsingData.remove(
-          {}, {
-          //"appcache": true,
-          "cache": true,
-          "cookies": true,
-          "downloads": false,
-          //"fileSystems": true,
-          "formData": false,
-          "history": false,
-          "indexedDB": true,
-          "localStorage": true,
-          "pluginData": true,
-          //"passwords": true,
-          //"webSQL": true,
-          //"serverBoundCertificates": true,
-          "serviceWorkers": true
-        }).then(() => {alert("Done!")});
-    }
+		vex.dialog.buttons.YES.className = "button";
+	  vex.dialog.confirm({
+	    message: `${chrome.i18n.getMessage("delete_browser_data")}`,
+	    input: `
+			<h4>${chrome.i18n.getMessage("delete_browser_data_to_not_delete_heading")}</h4>
+			<p>${chrome.i18n.getMessage("delete_browser_data_to_not_delete_description")}</p>
+			<h4>${chrome.i18n.getMessage("delete_browser_data_to_delete_heading")}</h4>
+			<p>${chrome.i18n.getMessage("delete_browser_data_to_delete_description")}</p>`,
+			callback: function(data) {
+				if (data) {
+	        // Not cancelled
+					browser.browsingData.remove(
+		          {}, {
+		          //"appcache": true,
+		          "cache": true,
+		          "cookies": true,
+		          "downloads": false,
+		          //"fileSystems": true,
+		          "formData": false,
+		          "history": false,
+		          "indexedDB": true,
+		          "localStorage": true,
+		          "pluginData": true,
+		          //"passwords": true,
+		          //"webSQL": true,
+		          //"serverBoundCertificates": true,
+		          "serviceWorkers": true
+		        }).then(() => {alert(chrome.i18n.getMessage("delete_browser_data_done"))});
+				}
+			}
+		});
   });
+
+	$(document).on("click", "#synchronizeHelp", () => {
+		vex.dialog.buttons.YES.className = "button";
+	  vex.dialog.alert({
+	    message: `${chrome.i18n.getMessage("synchronize_settings")}`,
+	    input: `${chrome.i18n.getMessage("synchronize_settings_help")}`
+		});
+	});
 
   function getNearestId(evt) {
     return $(evt.target).closest("div[id]").attr("id");

@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
     <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/vex.css"/>
+    <link rel="stylesheet" href="styles/vex-theme-default.css"/>
   </head>
   <body>
     <div class="row"><p><!-- spacer --></p></div>
@@ -79,7 +81,7 @@
                           <span class="switch-active bold" aria-hidden="true" style="color: white" data-localize="__MSG_on__">On</span>
                           <span class="switch-inactive bold fp-orange" aria-hidden="true" data-localize="__MSG_off__">Off</span>
                         </label>
-                         &nbsp;<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="__MSG_synchronize_settings_description__">?</span>
+                         &nbsp;<span id="synchronizeHelp" class="has-tip">?</span>
                     </div>
                   </div>
                   <span id="accounts"></span>
@@ -145,6 +147,7 @@
   <script src="scripts/foundation-6.4.2/foundation.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>
+  <script src="scripts/vex.combined.js"></script>
   <script src="scripts/proxies.js"></script>
   <canvas id="flag-icon-canvas-32" width="32" height="32" class="hide"></canvas>
   <canvas id="flag-icon-canvas-16" width="16" height="16" class="hide"></canvas>

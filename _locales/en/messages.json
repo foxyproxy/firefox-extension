@@ -48,8 +48,26 @@
 			"description": "Display IP address button"
 		},
 		"delete_browser_data": {
-			"message": "Del Browser Data",
-			"description": "Export proxies button"
+			"message": "Delete Browser Data",
+			"description": "Delete browser data button"
+		},
+		"delete_browser_data_to_not_delete_heading": {
+			"message": "Do Not Delete"
+		},
+		"delete_browser_data_to_not_delete_description": {
+			"message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates.",
+			"description": "Description of what is NOT to be deleted"
+		},
+		"delete_browser_data_to_delete_heading": {
+			"message": "Delete"
+		},
+		"delete_browser_data_to_delete_description": {
+			"message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data.",
+			"description": "Description of what is to be deleted"
+		},
+		"delete_browser_data_done": {
+			"message": "Done!",
+			"description": "Message displayed after delete browser data is finished"
 		},
 		"about": {
 			"message": "About",
@@ -59,7 +77,7 @@
 			"message": "Synchronize Settings",
 			"description": "Toggle settings synchronization button"
 		},
-		"synchronize_settings_description": {
+		"synchronize_settings_help": {
 			"message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local."
 		},
 		"on_off": {
