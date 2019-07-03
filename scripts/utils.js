@@ -1,27 +1,83 @@
 class Utils {
 
-  //static CHAR_CODE_ASTERISK = 42;
-  //static CHAR_CODE_QUESTION_MARK = 63;
+  // Nicer version of https://stackoverflow.com/a/39810769
+  // Localize data-localize attributes so that textContent of the node is set to
+  // the localized value of the data-localize attribute. It must have the __MSG_foo__ pattern.
+  // Do the same for attributes but replace them in-place (not textContent). This is
+  // to support attributes like title in <a title="localize me">, etc.
 
-  /*localizeHtmlPage() {
-    //Localize by replacing __MSG_***__ meta tags
-    var objects = document.getElementsByTagName('html');
-    for (var j = 0; j < objects.length; j++)
-    {
-        var obj = objects[j];
+  static localizeHtmlPage() {
 
-        var valStrH = obj.innerHTML.toString();
-        var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
-        {
-            return v1 ? browser.i18n.getMessage(v1) : "";
+    let localizeRegExp = new RegExp("__MSG_\S+__", "g");
+    function replace_i18n(elemOrAttr, strToLocalize, isAttribute) {
+      // Find all __MSG_xxxxx__ strings and replace
+      let localizedStr = strToLocalize.replace(/__MSG_\S+__/gi,
+        function(z) {
+          // If the message is missing, chrome.i18n.getMessage() returns an empty string ('').
+          // If the format of the getMessage() call is wrong — for example,
+          // messageName is not a string or the substitutions array has more than 9 elements
+          // this method returns undefined.
+          return chrome.i18n.getMessage(z.substring(6, z.length-2)) || "";
         });
 
-        if(valNewH != valStrH)
-        {
-            obj.innerHTML = valNewH;
+      if (strToLocalize == localizedStr) {
+				console.warn(`Missing localization for ${strToLocalize}. Using hard-coded default.`);
+			}
+			else {
+				// Replace content
+        if (isAttribute) {
+          elemOrAttr.value = localizedStr;
         }
+        else {
+          // Find the 1st child text node to replace. This assumes there's already
+          // fall-back translation text in the HTML. But it also handles nested elements like:
+          // <a href="/add-edit-proxy.html" data-localize="__MSG_proxy_add__">
+          //   <i class="fa fa-1point8x fa-plus-circle fp-orange"></i> Add
+          // </a>
+          let found = false;
+          for (let idx=0; !found && idx<elemOrAttr.childNodes.length; idx++) {
+            let childNode = elemOrAttr.childNodes[idx];
+            if (childNode.nodeType == Node.TEXT_NODE) {
+              childNode.textContent = localizedStr;
+              found = true;
+            }
+          }
+					if (!found) {
+						// OK, there's no fall-back translation in the HTML.
+						// Just append the text as a new text node at the end of the current node.
+						elemOrAttr.appendChild(document.createTextNode(localizedStr));
+          }
+					// Remove the data-localize attr to remove DOM clutter
+					// We can also "inspect element" and if this attribute is missing, we know
+					// the localization has been processed. Note that "view source" shows original content,
+					// not our replaced content. Don't rely on it.
+					elemOrAttr.removeAttribute("data-localize");
+        }
+      }
     }
-  }*/
+
+    // Localize elems with data-localize attributes
+    let elems = document.querySelectorAll("*[data-localize]");
+    elems.forEach(elem => {
+      let strToLocalize = elem.dataset.localize;
+      replace_i18n(elem, strToLocalize, false);
+    });
+
+    // Now attributes. Add others to the comma-separated list if needed.
+    elems = document.querySelectorAll("*[title^=__MSG_], *[href^=__MSG_]");
+    elems.forEach(elem => {
+      // Iterate over all attributes of this element, finding the attribute(s)
+      // that need localizing
+      for (let idx = 0; idx < elem.attributes.length; idx++) {
+        let attr = elem.attributes[idx], strToLocalize = elem.attributes[idx].value;
+        // Only handle attributes whose name is not data-localize (they were already handled above)
+        // and whose value contains the __MSG_ string
+        if (attr.name != "data-localize" && strToLocalize.includes("__MSG_")) {
+          replace_i18n(attr, strToLocalize, true);
+        }
+      }
+    });
+  }
 
   static displayNotification(msg, title) {
     browser.notifications.create("foxyproxy-notification", {

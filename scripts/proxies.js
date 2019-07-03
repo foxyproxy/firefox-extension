@@ -1,16 +1,18 @@
 $(document).foundation();
+Utils.localizeHtmlPage();
 let noRefresh = false;
+
 function start() {
   getAllSettings().then((settings) => {
     storageRetrievalSuccess(settings);
     installListeners();
   }).catch((e) => storageRetrievalError(e));
 
-
   usingSync().then((useSync) => {
     $("#syncOnOff").prop("checked", useSync);
   }).catch((e) => {console.error(`usingSync() error: ${e}`);reject(e)});
 }
+
 start();
 browser.runtime.onMessage.addListener((messageObj, sender) => {
   //console.log("browser.runtime.onMessage listener: ");
@@ -153,14 +155,16 @@ function installListeners() {
   });
 
   $(document).on("click", "#deleteAll", (evt) => {
-    if (confirm("Delete: are you sure?"))
+    if (confirm(chrome.i18n.getMessage("delete_confirmation")))
       deleteAllSettings().then(() => console.log("delete all completed"));
+		return false;
   });
 
   $(document).on("click", "a[data-single-delete]", (evt) => {
     let id = getNearestId(evt), title="Delete Proxy";
     console.log("deleteoneproxysetting: " + id);
-    if (confirm("Delete: are you sure?")) deleteProxyById(id).then(() => console.log("delete single completed"));
+    if (confirm(chrome.i18n.getMessage("delete_confirmation")))
+			deleteProxyById(id).then(() => console.log("delete single completed"));
     return false;
   });
 

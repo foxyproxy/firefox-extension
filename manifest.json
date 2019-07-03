@@ -1,9 +1,9 @@
 {
-    "name": "FoxyProxy Standard",
-    "short_name": "FoxyProxy Standard",
+    "name": "__MSG_app_name_foxyproxy_standard__",
+    "short_name": "__MSG_app_name_foxyproxy_standard__",
     "version": "6.5",
     "manifest_version": 2,
-    "description": "__MSG_appDescription__",
+    "description": "__MSG_app_description_foxyproxy_standard__",
     "icons": {
         "24": "images/48x48.svg",
         "48": "images/48x48.svg",
@@ -20,7 +20,7 @@
     },
     "browser_action": {
         "default_icon": "images/48x48.svg",
-        "default_title": "__MSG_appName__",
+        "default_title": "__MSG_app_name_foxyproxy_standard__",
         "default_popup": "popup.html"
     },
     "applications": {

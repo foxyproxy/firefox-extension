@@ -25,7 +25,7 @@
       </div>
       <div class="row callout">
         <div class="small-12 columns">
-          <h3>Error</h3><p>No settings could be found. Please re-install FoxyProxy.</p>
+          <h3 data-localize="__MSG_error__">Error</h3><p data-localize="__MSG_no_settings_found__">No settings could be found. Please re-install FoxyProxy.</p>
         </div>
       </div>
     </div>
@@ -35,28 +35,28 @@
         <div class="row">
           <div class="small-2 columns">
             <div class="small-12 columns fp-margin-bottom-small">
-              <a href="/add-edit-proxy.html"><i class="fa fa-1point8x fa-plus-circle fp-orange"></i></a> Add
+              <a href="/add-edit-proxy.html" data-localize="__MSG_proxy_add__"><i class="fa fa-1point8x fa-plus-circle fp-fontawsome-border-for-text"></i>Add</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a id="deleteAll"><i class="fa fa-1point8x fa-trash"></i></a> Delete&nbsp;All
+              <a id="deleteAll" data-localize="__MSG_proxy_delete_all__"><i class="fa fa-1point8x fa-trash fp-fontawsome-border-for-text"></i>Delete&nbsp;All</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a id="export"><i class="fa fa-1point8x fa-download"></i></a> Export
+              <a id="export" data-localize="__MSG_export__"><i class="fa fa-1point8x fa-download fp-fontawsome-border-for-text"></i>Export</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a id="import" href="/import.html"><i class="fa fa-1point8x fa-upload fp-orange"></i></a> Import
+              <a id="import" href="/import.html" data-localize="__MSG_import__"><i class="fa fa-1point8x fa-upload fp-fontawsome-border-for-text"></i>Import</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a href="/log.html"><i class="fa fa-1point8x fa-file-text"></i></a> Log
+              <a href="/log.html" data-localize="__MSG_log__"><i class="fa fa-1point8x fa-file-text fp-fontawsome-border-for-text"></i>Log</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a href="https://getfoxyproxy.org/geoip/" target="_new"><i class="fa fa-1point8x fa-globe"></i></a> What's My IP?
+              <a href="https://getfoxyproxy.org/geoip/" target="_new" data-localize="__MSG_whats_my_ip__"><i class="fa fa-1point8x fa-globe fp-fontawsome-border-for-text"></i>What's My IP?</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a id="nukeBrowsingData"><i class="fa fa-1point8x fa-eraser"></i></a> Del Browsing Data
+              <a id="nukeBrowsingData" data-localize="__MSG_delete_browser_data__"><i class="fa fa-1point8x fa-eraser fp-fontawsome-border-for-text"></i>Del Browser Data</a>
             </div>
             <div class="small-12 columns fp-margin-bottom-small">
-              <a href="/about.html"><i class="fa fa-1point8x fa-question"></i></a> About
+              <a href="/about.html" data-localize="__MSG_about__"><i class="fa fa-1point8x fa-question fp-fontawsome-border-for-text"></i>About</a>
             </div>
           </div>
 
@@ -73,13 +73,13 @@
                       </select>
                     </div>
                     <div class="small-4 columns">
-                        Synchronize settings: <input name="syncOnOff" class="switch-input" id="syncOnOff" type="checkbox" checked>
+                        <span data-localize="__MSG_synchronize_settings__">Synchronize settings</span> <input name="syncOnOff" class="switch-input" id="syncOnOff" type="checkbox" checked>
                         <label class="switch-paddle" for="syncOnOff" style="vertical-align:text-top">
-                          <span class="show-for-sr">On/Off</span>
-                          <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                          <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+                          <span class="show-for-sr" data-localize="__MSG_on_off__">On/Off</span>
+                          <span class="switch-active bold" aria-hidden="true" style="color: white" data-localize="__MSG_on__">On</span>
+                          <span class="switch-inactive bold fp-orange" aria-hidden="true" data-localize="__MSG_off__">Off</span>
                         </label>
-                         &nbsp;<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local.">?</span>
+                         &nbsp;<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="__MSG_synchronize_settings_description__">?</span>
                     </div>
                   </div>
                   <span id="accounts"></span>
@@ -93,15 +93,15 @@
 
     <!-- For some reason, we cannot successfully insert into a <select> that has 'patterns' and 'disabled' hard-coded in the HTML. So instead we add them dynamically with the rest of the options. -->
     <span class="hide-unimportant">
-      <option id="patterns" value="patterns" class="fp-orange" color="#f7941e">Use Enabled Proxies By Patterns and Priority</option>
+      <option id="patterns" value="patterns" class="fp-orange" color="#f7941e" data-localize="__MSG_mode_patterns_and_priority__">Use Enabled Proxies By Patterns and Priority</option>
       <!-- can't get the rendered color at runtime for some reason---always getting greys instead
           so put the color in another attribute -->
-      <option id="disabled" value="disabled" style="color: red" color="#ff0000">Turn Off FoxyProxy (Use Firefox Settings)</li>
+      <option id="disabled" value="disabled" style="color: red" color="#ff0000" data-localize="__MSG_mode_disabled__">Turn Off FoxyProxy (Use Firefox Settings)</li>
     </span>
     <span id="modeOptionTemplate" class="hide-unimportant">
       <!-- can't get the rendered color at runtime for some reason---always getting greys instead
           so put the color in another attribute -->
-      <option value="%idx" style="color: %color" color="%color">Use proxy %title for all URLs (ignore patterns)</option>
+      <option value="%idx" style="color: %color" color="%color" data-localize="__MSG_mode_dedicated__">Use proxy %title for all URLs (ignore patterns)</option>
     </span>
 
     <span id="proxyRowTemplate" class="hide-unimportant">
@@ -114,12 +114,12 @@
             <!-- next input box must have unique id to work properly -->
             <input name="onOff" class="tiny switch-input %hide-if-default-proxy %hide-if-unsupported" id="%data-id-onoff" type="checkbox" %onoffchecked>
             <label style="vertical-align:text-bottom" class="switch-paddle %hide-if-default-proxy %hide-if-unsupported" for="%data-id-onoff">
-              <span class="switch-active" aria-hidden="true" style="color: white">On</span>
-              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+              <span class="switch-active" aria-hidden="true" style="color: white" data-localize="__MSG_on__">On</span>
+              <span class="switch-inactive bold fp-orange" aria-hidden="true" data-localize="__MSG_off__">Off</span>
             </label>
             <a data-addedit-proxy style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="hide-for-large hide-for-medium" title="edit proxy settings"><i class="fa fa-1point8x fa-pencil"></i></a>
-            <a data-addedit-proxy style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium button tiny" title="edit proxy settings">Edit</a>
-            <a style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium %hide-if-default-proxy %hide-if-foxyproxy-basic button tiny patterns" title="add/edit patterns">Patterns</a>
+            <a data-addedit-proxy style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium button tiny" title="edit proxy settings" data-localize="__MSG_edit__">Edit</a>
+            <a style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="show-for-medium %hide-if-default-proxy %hide-if-foxyproxy-basic button tiny patterns" title="add/edit patterns" data-localize="__MSG_patterns__">Patterns</a>
              <a style="margin: 0 0 .5rem 0;font-size:12px;padding:.35rem" class="hide-for-large hide-for-medium %hide-if-default-proxy patterns" title="add/edit patterns"><i class="fa fa-1point8x fa-flask"></i></a>
 
             <a title="delete" data-single-delete class="%hide-if-default-proxy"><i class="fa fa-1point8x fa-trash"></i></a>

@@ -4322,20 +4322,6 @@ h1 {
 .dbutton .dropdown-pane {
   cursor: default; }
 
-#featuredClients div.owl-item {
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  height: 75px;
-  float: none; }
-
-#featuredClients div.owl-item a img {
-  max-width: 170px;
-  max-height: 70px; }
-
-#featuredClients div.owl-item a img.fp-longLogo {
-  max-width: 100%; }
-
 #login-form {
   border: 1px solid #cacaca;
   padding: 1rem;
@@ -4779,3 +4765,8 @@ div[data-addedit-proxy]:hover{
 
 .top-bar a:hover, .top-bar a:visited:hover, .top-bar a:active {
   color: #fefefe; }
+
+.fp-fontawsome-border-for-text {
+  /* for rtl languages, this should be margin-left */
+  margin-right: 0.5rem;
+}
