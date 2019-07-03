@@ -4,10 +4,10 @@ module.exports = function(grunt) {
 		compress: {
 		  main: {
 		    options: {
-		      archive: 'archive.zip'
+		      archive: 'target.zip'
 		    },
 		    files: [
-		      {src: ['*/**', '!node_modules/**'], dest: '/', filter: 'isFile'}
+		      {src: ['*/**', '!node_modules/**', '!.DS_Store', '!archive/**'], dest: '/', filter: 'isFile'}
 		    ]
 		  }
 		}
