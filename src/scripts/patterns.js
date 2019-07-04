@@ -2,18 +2,19 @@ $(document).foundation();
 vex.defaultOptions.className = 'vex-theme-default';
 let editingProxy,
   whitePatternsPerPage = 10, blackPatternsPerPage = 10,
-  patternRowTemplate = `
-<div data-idx="%data-idx" class="row pattern-row %data-active">
-  <div class="small-3 columns">%data-name</div>
-  <div class="small-3 columns">%data-pattern</div>
-  <div class="small-2 columns">%data-type</div>
-  <div class="small-1 columns">%data-protocols</div>
-  <div class="small-1 columns">%data-onoff</div>
-  <div class="small-2 columns">
-  <a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a>
-  <a data-edit class="float-right"><i class="fa fa-1point8x fa-pencil"></i></a>
-  <a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
-</div>`;
+  patternRowTemplate =
+  `<div data-idx="%data-idx" class="row pattern-row %data-active">
+    <div class="small-3 columns">%data-name</div>
+    <div class="small-3 columns">%data-pattern</div>
+    <div class="small-2 columns">%data-type</div>
+    <div class="small-1 columns">%data-protocols</div>
+    <div class="small-1 columns">%data-onoff</div>
+    <div class="small-2 columns">
+    <a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a>
+    <a data-edit class="float-right"><i class="fa fa-1point8x fa-pencil"></i></a>
+    <a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
+  </div>`,
+  dialogCanceled;
 
 // Keep this first. In case of error in DOMContentLoaded listener code, we need this to execute first
 $(document).on("click", "#errorOkButton", () => {
@@ -88,7 +89,6 @@ function renderPatterns(focusLastPageWhite=false, focusLastPageBlack=false) {
       .replace(/%data-idx/g, idx)
       .replace("%data-imported", patternObj.importedPattern ? "" : "hide-unimportant")
 
-    console.log(patternObj);
     if (patternObj.active) {
       t = t.replace(/%data-onoff/g, "on").replace("%data-active", "success");
     }
@@ -150,20 +150,27 @@ function installListeners() {
     return false;
   });
 
+  $(document).on("click", "a[data-edit]", (e) => {
+    let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
+    let pat = patternsArray[idx];
+    openDialog(pat);
+    return false;
+  });
+
   $(document).on("click", "#newWhite", () => {
-    editingProxy.whitePatterns.push(PATTERN_NEW);
-    document.getElementById(editingProxy.whitePatterns.length-1).scrollIntoView({
-      behavior: "smooth"
-    });
-    openDialog(editingProxy.whitePatterns.length-1);
+    // Make a copy of PATTERN_NEW and pass it to the vex dialog.
+    // Note that openDialog() returns immediately even though the dialog is modal
+    // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
+    openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.whitePatterns);
+  return false;
   });
 
   $(document).on("click", "#newBlack", () => {
-    editingProxy.blackPatterns.push(PATTERN_NEW);
-    document.getElementById(editingProxy.whitePatterns.length-1).scrollIntoView({
-      behavior: "smooth"
-    });
-    openDialog(editingProxy.blackPatterns.length-1);
+    // Make a copy of PATTERN_NEW and pass it to the vex dialog.
+    // Note that openDialog() returns immediately even though the dialog is modal
+    // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
+    openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.blackPatterns);
+  return false;
   });
 
   $(document).on("click", "#save", () => {
@@ -178,13 +185,6 @@ function installListeners() {
       patternsArray.splice(idx, 1);
       renderPatterns(); // TODO: refocus correct page number
     });
-    return false;
-  });
-
-  $(document).on("click", "a[data-edit]", (e) => {
-    let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
-    let pat = patternsArray[idx];
-    openDialog(pat);
     return false;
   });
 
@@ -222,7 +222,7 @@ function savePatterns() {
   return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
 }
 
-function openDialog(pat) {
+function openDialog(pat, isNew, patternArray) {
   vex.dialog.buttons.YES.className = "button";
   vex.dialog.buttons.NO.className = "button alert";
   vex.dialog.open({
@@ -283,7 +283,9 @@ function openDialog(pat) {
         pat.type = parseInt(data.type);
         pat.protocols = parseInt(data.protocols);
         pat.active = data.active == "on";
-        renderPatterns();
+  if (isNew)
+  patternArray.push(pat);
+  renderPatterns();
       }
     },
 
