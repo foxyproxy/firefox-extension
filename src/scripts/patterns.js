@@ -190,27 +190,29 @@ function openDialog(pat, isNew, patternArray) {
       Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
     </div>
     <div class="vex-custom-field-wrapper">
-        <label for="name">Pattern Name (optional)
+        <label for="name" class="bold">Pattern Name (optional)</label>
         <div class="vex-custom-input-wrapper">
             <input name="title" type="edit" style="width: 100%" value="${pat.title ? pat.title : ""}"/>
-        </div></label>
+        </div>
     </div>
     <div class="vex-custom-field-wrapper">
-        <label for="pattern">Pattern &mdash; <a href="/pattern-help.html" target="_blank">Help</a>
-        <input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/></label>
+        <label for="pattern" class="bold">Pattern &mdash; <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
+          <a href="/pattern-tester.html" target="_blank">Pattern Tester</a></label>
+        <input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/>
     </div>
 
     <div class="vex-custom-field-wrapper">
         <div class="vex-custom-input-wrapper">
-          <label>Is this a wildcard or regular expression?</label><p><label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
+          <label class="bold">Is the pattern a wildcard or regular expression?</label>
+          <label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
             ${pat.type == PATTERN_TYPE_WILDCARD ? `checked` : `` }/></label>
           <label style="display: inline">Regular Expression <input name="type" type="radio" value="${PATTERN_TYPE_REGEXP}"
-            ${pat.type == PATTERN_TYPE_REGEXP ? `checked` : `` }/></label></p>
+            ${pat.type == PATTERN_TYPE_REGEXP ? `checked` : `` }/></label>
         </div>
     </div>
     <div class="vex-custom-field-wrapper">
         <div class="vex-custom-input-wrapper">
-          <label>Use Pattern For Which Protocols?</label>
+          <label class="bold">Use Pattern For Which Protocols?</label>
           <select name="protocols">
             <option value="${PROTOCOL_ALL}">https and http</option>
             <option value="${PROTOCOL_HTTP}">http</option>
@@ -220,7 +222,7 @@ function openDialog(pat, isNew, patternArray) {
     </div>
     <div class="vex-custom-field-wrapper">
       <div class="vex-custom-input-wrapper">
-      <label>Enable/Disable the Pattern</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
+      <label class="bold">Enable/Disable the Pattern</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
       <label class="switch-paddle" for="active">
         <span class="show-for-sr">On/Off</span>
         <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
