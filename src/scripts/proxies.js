@@ -230,9 +230,9 @@ function installListeners() {
 	  vex.dialog.confirm({
 	    message: `${chrome.i18n.getMessage("delete_browser_data")}`,
 	    input: `
-			<h4>${chrome.i18n.getMessage("delete_browser_data_to_not_delete_heading")}</h4>
+			<h5>${chrome.i18n.getMessage("delete_browser_data_to_not_delete_heading")}</h5>
 			<p>${chrome.i18n.getMessage("delete_browser_data_to_not_delete_description")}</p>
-			<h4>${chrome.i18n.getMessage("delete_browser_data_to_delete_heading")}</h4>
+			<h5>${chrome.i18n.getMessage("delete_browser_data_to_delete_heading")}</h5>
 			<p>${chrome.i18n.getMessage("delete_browser_data_to_delete_description")}</p>`,
 			callback: function(data) {
 				if (data) {

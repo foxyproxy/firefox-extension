@@ -1,7 +1,6 @@
 $(document).foundation();
 vex.defaultOptions.className = 'vex-theme-default';
 let editingProxy,
-  whitePatternsPerPage = 10, blackPatternsPerPage = 10,
   patternRowTemplate =
   `<div data-idx="%data-idx" class="row pattern-row %data-active">
     <div class="small-3 columns">%data-name</div>
@@ -13,67 +12,34 @@ let editingProxy,
     <a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a>
     <a data-edit class="float-right"><i class="fa fa-1point8x fa-pencil"></i></a>
     <a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
-  </div>`,
-  dialogCanceled;
+  </div>`;
 
 // Keep this first. In case of error in DOMContentLoaded listener code, we need this to execute first
+// So user can return from whence he came.
 $(document).on("click", "#errorOkButton", () => {
-  console.log("cancel");
   location.href = "/proxies.html";
 });
 
-function renderPatterns(focusLastPageWhite=false, focusLastPageBlack=false) {
-  $("#whitePatternsPerPage").val(whitePatternsPerPage + "");
-  $("#blackPatternsPerPage").val(blackPatternsPerPage + "");
-  if (editingProxy.whitePatterns.length < 2) $("#whitePatternsPerPageContainer").hide();
-  else $("#whitePatternsPerPageContainer").show();
-  if (editingProxy.blackPatterns.length < 2) $("#blackPatternsPerPageContainer").hide();
-  else $("#blackPatternsPerPageContainer").show();
-
-  render(editingProxy.whitePatterns, "div[data-white-black-patterns=white]", "#noWhitePatterns", "#whitePager", whitePatternsPerPage, focusLastPageWhite);
-  render(editingProxy.blackPatterns,"div[data-white-black-patterns=black]", "#noBlackPatterns", "#blackPager", blackPatternsPerPage, focusLastPageBlack);
-
-  function render(arr, contentSelector, noneMsg, pagerSelector, itemsPerPage, focusLastPage) {
-    if (!arr || arr.length == 0) {
-      $(noneMsg).show();
-      $(pagerSelector).html("");
-      installListeners();
-      return;
-    }
-    if (arr.length <= itemsPerPage) {
-      // no pagination
-      let arrStr = [];
-      for (let i=0; i<arr.length; i++) {
-        arrStr.push(buildRow(arr[i], i));
-      }
-      $(contentSelector).html(arrStr.join(""));
-      $(pagerSelector).html("");
-      installListeners();
-      return;
-    }
-
-    let total = Math.ceil(arr.length / itemsPerPage);
-    // http://botmonster.com/jquery-bootpag/
-    $(pagerSelector).bootpag({
-      total: total,
-      maxVisible: 10,
-      page: 1, // Doesn't appear to do anything
-      href: pagerSelector,
-      firstLastUse: true,
-    }).on("page", function(event, pageNum) {
-      let arrStr = [],
-        start = (pageNum-1)*itemsPerPage,
-        end = pageNum*itemsPerPage-1 > arr.length-1 ? arr.length-1 : pageNum*itemsPerPage-1;
-      for (let i=start; i<=end; i++) {
-        arrStr.push(buildRow(arr[i], i));
-      }
-      $(contentSelector).html(arrStr.join(""));
-      installListeners();
-    });
-    $(pagerSelector).trigger("page", focusLastPage ? total : 1); // Load appropriate page. TODO: save position for future opening of /patterns.html
-    $(pagerSelector).bootpag({"page": focusLastPage ? total : 1}); // Set active page num
-    return true;
+function renderPatterns() {
+  let blackPatternHtmlStr = [];
+  for (let i=0; i<editingProxy.blackPatterns.length; i++) {
+    blackPatternHtmlStr.push(buildRow(editingProxy.blackPatterns[i], i));
   }
+  let whitePatternHtmlStr = [];
+  for (let i=0; i<editingProxy.whitePatterns.length; i++) {
+    whitePatternHtmlStr.push(buildRow(editingProxy.whitePatterns[i], i));
+  }
+
+  let blackScroller = new Clusterize({
+    rows: blackPatternHtmlStr,
+    scrollId: 'blackPatternScrollArea',
+    contentId: 'blackPatternContentArea'}),
+  whiteScroller = new Clusterize({
+    rows: whitePatternHtmlStr,
+    scrollId: 'whitePatternScrollArea',
+    contentId: 'whitePatternContentArea'});
+
+  installListeners();
 
   function buildRow(patternObj, idx) {
     let protocol;
@@ -138,7 +104,7 @@ function installListeners() {
   // Get the index and white or black array of the clicked item
   function getIdxAndPatternsArray(that) {
     let idx = parseInt(that.closest("div[data-idx]").attr("data-idx")),
-      patternsArray = that.closest("div[data-white-black-patterns").attr("data-white-black-patterns") == "white" ?
+      patternsArray = that.closest("#whitePatternContentArea").length ?
         editingProxy.whitePatterns : editingProxy.blackPatterns;
     return [idx, patternsArray];
   }
@@ -192,24 +158,11 @@ function installListeners() {
     location.href = "/proxies.html";
   });
 
-  $(document).on("click", "#changeWhitePatternsPerPage", () => {
-    whitePatternsPerPage = parseInt($("#whitePatternsPerPage").val());
-    console.log("whitePatternsPerPage: " + $("#whitePatternsPerPage").val());
-    if (isNaN(whitePatternsPerPage) || whitePatternsPerPage < 1) whitePatternsPerPage = 10;
-    renderPatterns();
-  });
-
-  $(document).on("click", "#changeBlackPatternsPerPage", () => {
-    blackPatternsPerPage = parseInt($("#blackPatternsPerPage").val());
-    if (isNaN(blackPatternsPerPage) || blackPatternsPerPage < 1) blackPatternsPerPage = 10;
-    renderPatterns();
-  });
-
   $(document).on("click", "#addLocal", function() {
     editingProxy.blackPatterns.push(PATTERN_LOCALHOSTURLS_BLACK);
     editingProxy.blackPatterns.push(PATTERN_INTERNALIPS_BLACK);
     editingProxy.blackPatterns.push(PATTERN_LOCALHOSTNAMES_BLACK);
-    renderPatterns(false, true);
+    renderPatterns();
     document.getElementById(editingProxy.blackPatterns.length-1).scrollIntoView({
       behavior: "smooth"
     });
@@ -230,23 +183,26 @@ function openDialog(pat, isNew, patternArray) {
     input: `
     <style>
       .vex-custom-field-wrapper {
-        margin-bottom: 1rem;
+        margin-bottom: .5rem;
       }
     </style>
+    <div class="callout alert">
+      Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
+    </div>
     <div class="vex-custom-field-wrapper">
-        <label for="name">Name
+        <label for="name">Pattern Name (optional)
         <div class="vex-custom-input-wrapper">
             <input name="title" type="edit" style="width: 100%" value="${pat.title ? pat.title : ""}"/>
         </div></label>
     </div>
     <div class="vex-custom-field-wrapper">
-        <label for="pattern">Pattern
+        <label for="pattern">Pattern &mdash; <a href="/pattern-help.html" target="_blank">Help</a>
         <input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/></label>
     </div>
 
     <div class="vex-custom-field-wrapper">
         <div class="vex-custom-input-wrapper">
-          <label>Type</label><p><label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
+          <label>Is this a wildcard or regular expression?</label><p><label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
             ${pat.type == PATTERN_TYPE_WILDCARD ? `checked` : `` }/></label>
           <label style="display: inline">Regular Expression <input name="type" type="radio" value="${PATTERN_TYPE_REGEXP}"
             ${pat.type == PATTERN_TYPE_REGEXP ? `checked` : `` }/></label></p>
@@ -254,9 +210,9 @@ function openDialog(pat, isNew, patternArray) {
     </div>
     <div class="vex-custom-field-wrapper">
         <div class="vex-custom-input-wrapper">
-          <label>Protocols</label>
+          <label>Use Pattern For Which Protocols?</label>
           <select name="protocols">
-            <option value="${PROTOCOL_ALL}">both</option>
+            <option value="${PROTOCOL_ALL}">https and http</option>
             <option value="${PROTOCOL_HTTP}">http</option>
             <option value="${PROTOCOL_HTTPS}">https</option>
           </ul>
@@ -264,15 +220,14 @@ function openDialog(pat, isNew, patternArray) {
     </div>
     <div class="vex-custom-field-wrapper">
       <div class="vex-custom-input-wrapper">
-      <label>On/Off</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
+      <label>Enable/Disable the Pattern</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
       <label class="switch-paddle" for="active">
         <span class="show-for-sr">On/Off</span>
         <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
         <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
       </label>
       </div>
-    </div>
-    `,
+    </div>`,
 
     callback: function(data) {
       if (data) {
@@ -283,9 +238,10 @@ function openDialog(pat, isNew, patternArray) {
         pat.type = parseInt(data.type);
         pat.protocols = parseInt(data.protocols);
         pat.active = data.active == "on";
-  if (isNew)
-  patternArray.push(pat);
-  renderPatterns();
+        if (isNew) {
+          patternArray.push(pat);
+        }
+        renderPatterns();
       }
     },
 

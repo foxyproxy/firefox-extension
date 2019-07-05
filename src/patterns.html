@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/foundation-6.4.2/foundation.css">
-    <link rel="stylesheet" href="styles/foundation-6.4.2/motion-ui.css">
     <link rel="stylesheet" href="styles/app.css">
     <link rel="stylesheet" href="styles/vex.css"/>
     <link rel="stylesheet" href="styles/vex-theme-default.css"/>
+		<link rel="stylesheet" href="styles/clusterize.css"/>
   </head>
   <body style="margin: 1rem">
 
@@ -37,9 +37,6 @@
     <div id="patternsRow" class="row hide-unimportant" style="margin: 0.5rem">
         <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
         <a href="/pattern-tester.html" target="_blank">Pattern Tester</a>
-        <div class="small-12 columns callout alert" style="margin-top: 1rem">
-          Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only URL domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
-        </div>
         <div class="row">
           <div class="small-9 columns">
             Add patterns to prevent this proxy being used for localhost and intranet/private IP addresses <span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
@@ -58,12 +55,11 @@
           <div class="small-1 columns pattern-row-header">On/Off</div>
           <div class="small-2 columns pattern-row-header"> </div>
         </div>
-        <div data-white-black-patterns="white"></div>
-        <div class="row">
-          <div class="small-9 columns" id="whitePager"></div>
-          <div id="whitePatternsPerPageContainer" class="small-3 columns"><span style="float: right"><label>Patterns Per Page</label><input style="display: inline; width: 3rem; margin-right: .5rem" id="whitePatternsPerPage" type="text"><input id="changeWhitePatternsPerPage" type="button" class="small button" value="Change" style="vertical-align: top"></span>
-          </div>
-        </div>
+				<div id="whitePatternScrollArea" class="clusterize-scroll">
+				  <div id="whitePatternContentArea" class="clusterize-content">
+				    <div class="clusterize-no-data">Loading data...</div>
+				  </div>
+				</div>
         <br>
         <div id="blackPatternTitle" class="row small-12 columns"><h5>Black Patterns</h5></div>
         <div class="row">
@@ -74,12 +70,11 @@
           <div class="small-1 columns pattern-row-header">On/Off</div>
           <div class="small-2 columns pattern-row-header"> </div>
         </div>
-        <div data-white-black-patterns="black"></div>
-        <div class="row">
-          <div class="small-9 columns" id="blackPager"></div>
-          <div id="blackPatternsPerPageContainer" class="small-3 columns"><span style="float: right"><label>Patterns Per Page</label><input style="display: inline; width: 3rem; margin-right: .5rem" id="blackPatternsPerPage" type="text"><input id="changeBlackPatternsPerPage" type="button" class="small button" value="Change" style="vertical-align: top"></span>
-          </div>
-        </div>
+				<div id="blackPatternScrollArea" class="clusterize-scroll">
+				  <div id="blackPatternContentArea" class="clusterize-content">
+				    <div class="clusterize-no-data">Loading data...</div>
+				  </div>
+				</div>
 
         <div class="small-12 columns"><br>
           <span style="float: right">
@@ -97,9 +92,9 @@
   <script src="scripts/jquery-3.4.1.js"></script>
   <script src="scripts/foundation-6.4.2/foundation.js"></script>
   <script src="scripts/foundation-6.4.2/motion-ui.js"></script>
-  <script src="scripts/jquery.bootpag.js"></script>
   <script src="scripts/vex.combined.js"></script>
   <script src="scripts/patterns.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>
+	<script src="scripts/clusterize.min.js"></script>
 </html>

@@ -21,7 +21,7 @@ if ("document" in window.self) {
 
 // Full polyfill for browsers with no classList support
 // Including IE < Edge missing SVGElement.classList
-if (!("classList" in document.createElement("_")) 
+if (!("classList" in document.createElement("_"))
 	|| document.createElementNS && !("classList" in document.createElementNS("http://www.w3.org/2000/svg","g"))) {
 
 (function (view) {
@@ -1056,7 +1056,7 @@ var buildDialogForm = function buildDialogForm (options) {
   var form = document.createElement('form')
   form.classList.add('vex-dialog-form')
 
-  var message = document.createElement('div')
+  var message = document.createElement('h4')
   message.classList.add('vex-dialog-message')
   message.appendChild(options.message instanceof window.Node ? options.message : domify(options.message))
 

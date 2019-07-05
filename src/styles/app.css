@@ -544,11 +544,11 @@ img {
 textarea {
   height: auto;
   min-height: 50px;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 select {
   width: 100%;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 #map_canvas img,
 #map_canvas embed,
@@ -567,7 +567,7 @@ button {
   background: transparent;
   padding: 0;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   line-height: 1; }
 
 .row {
@@ -1521,7 +1521,7 @@ kbd {
   transition: all 0.25s ease-out;
   vertical-align: middle;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   padding: 0.85em 1em;
   margin: 0 1rem 1rem 0;
   font-size: 0.9rem;
@@ -1647,7 +1647,7 @@ textarea {
   color: #8a8a8a;
   background-color: #fefefe;
   box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-  border-radius: 0.5rem;
+  border-radius: 3px;
   transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
   -webkit-appearance: none;
   -moz-appearance: none; }
@@ -1672,7 +1672,7 @@ textarea[readonly] {
 
 [type='submit'],
 [type='button'] {
-  border-radius: 0.5rem;
+  border-radius: 3px;
   -webkit-appearance: none;
   -moz-appearance: none; }
 
@@ -1721,7 +1721,7 @@ label {
   width: 100%;
   margin-bottom: 1rem; }
   .input-group > *:first-child {
-    border-radius: 0.5rem 0 0 0.5rem; }
+    border-radius: 3px 0 0 0.5rem; }
   .input-group > *:last-child > * {
     border-radius: 0 0.5rem 0.5rem 0; }
 
@@ -1780,14 +1780,14 @@ select {
   height: 2.4375rem;
   padding: 0.5rem;
   border: 1px solid #cacaca;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   margin: 0 0 1rem;
   font-size: 1rem;
   font-family: inherit;
   line-height: normal;
   color: #8a8a8a;
   background-color: #fafafa;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="24" viewBox="0 0 32 24"><polygon points="0,0 32,0 16,24" style="fill: rgb(51, 51, 51)"></polygon></svg>');
@@ -1929,7 +1929,7 @@ select {
   list-style-type: none;
   background: #fefefe;
   border: 1px solid #e6e6e6;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   margin-left: 0; }
 
 .accordion-title {
@@ -2101,7 +2101,7 @@ select {
   margin: 0 0 1rem 0;
   padding: 1rem;
   border: 1px solid rgba(10, 10, 10, 0.25);
-  border-radius: 0.5rem;
+  border-radius: 3px;
   position: relative;
   color: #737373 !important;
   background-color: white; }
@@ -2211,7 +2211,7 @@ select {
   visibility: hidden;
   width: 300px;
   z-index: 10;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   .dropdown-pane.is-open {
     visibility: visible; }
 
@@ -2341,7 +2341,7 @@ select {
   line-height: 1;
   white-space: nowrap;
   cursor: default;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   background: #f7941e;
   color: #fefefe; }
   .label.secondary {
@@ -2655,7 +2655,7 @@ body {
     font-size: 0.875rem;
     margin-right: 0.0625rem;
     display: none;
-    border-radius: 0.5rem; }
+    border-radius: 3px; }
     .pagination li:last-child, .pagination li:first-child {
       display: inline-block; }
     @media screen and (min-width: 40em) {
@@ -2666,7 +2666,7 @@ body {
     color: #0a0a0a;
     display: block;
     padding: 0.1875rem 0.625rem;
-    border-radius: 0.5rem; }
+    border-radius: 3px; }
     .pagination div:hover,
     .pagination button:hover {
       background: #f7941e;
@@ -2703,7 +2703,7 @@ body {
   background-color: #cacaca;
   height: 1rem;
   margin-bottom: 1rem;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   .progress.primary .progress-meter {
     background-color: #f7941e; }
   .progress.secondary .progress-meter {
@@ -2721,7 +2721,7 @@ body {
   width: 0%;
   height: 100%;
   background-color: #f7941e;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   .progress-meter .progress-meter-text {
     position: absolute;
     top: 50%;
@@ -2777,7 +2777,7 @@ body {
   transition: all 0.2s ease-in-out;
   -ms-touch-action: manipulation;
       touch-action: manipulation;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   [data-whatinput='mouse'] .slider-handle {
     outline: 0; }
   .slider-handle:hover {
@@ -2857,7 +2857,7 @@ body.is-reveal-open {
   border: 1px solid #cacaca;
   margin: 100px auto 0 auto;
   background-color: #fefefe;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   position: absolute;
   overflow-y: auto; }
   [data-whatinput='mouse'] .reveal {
@@ -2928,7 +2928,7 @@ body.is-reveal-open {
   width: 3.5rem;
   height: 1.5rem;
   transition: all 0.25s ease-out;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   color: inherit;
   font-weight: inherit; }
   input + .switch-paddle {
@@ -2945,7 +2945,7 @@ body.is-reveal-open {
     transition: all 0.25s ease-out;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
-    border-radius: 0.5rem; }
+    border-radius: 3px; }
   input:checked ~ .switch-paddle {
     background: #f7941e; }
     input:checked ~ .switch-paddle::after {
@@ -3009,7 +3009,7 @@ body.is-reveal-open {
 
 table {
   margin-bottom: 1rem;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   thead,
   tbody,
   tfoot {
@@ -3121,7 +3121,7 @@ table.hover tr:nth-of-type(even):hover {
   line-height: 0;
   max-width: 100%;
   transition: box-shadow 200ms ease-out;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   margin-bottom: 1rem; }
   .thumbnail:hover, .thumbnail:focus {
     box-shadow: 0 0 6px 1px rgba(247, 148, 30, 0.5); }
@@ -3188,7 +3188,7 @@ table.hover tr:nth-of-type(even):hover {
   z-index: 10;
   top: calc(100% + 0.6495rem);
   max-width: 10rem !important;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
   .tooltip::before {
     content: '';
     display: block;
@@ -4089,7 +4089,7 @@ footer h4 {
   border: 1px solid #aaa;
   padding: 0.1875rem;
   margin-right: 0;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 #fb-avatar {
   border: none;
@@ -4154,7 +4154,7 @@ ul.checkmark li:before {
 /* Pricing Tables */
 .pricing-table {
   border: solid 1px #cacaca;
-  border-radius: 0.5rem;
+  border-radius: 3px;
   margin-left: 0;
   margin-bottom: 1.25rem; }
 
@@ -4271,7 +4271,7 @@ ul.checkmark li:before {
 .fp-centered-callout {
   padding: 1rem;
   border: 1px solid rgba(10, 10, 10, 0.25);
-  border-radius: 0.5rem;
+  border-radius: 3px;
   position: relative;
   color: #737373;
   background-color: white; }
@@ -4325,7 +4325,7 @@ h1 {
 #login-form {
   border: 1px solid #cacaca;
   padding: 1rem;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 #acctpanel-label, #invoicepanel-label, #xactionspanel-label, #billpanel-label {
   font-size: 1.125rem;
@@ -4543,7 +4543,7 @@ h1 {
 
 .captcha {
   border: 1px solid #cacaca;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 .fp-accordion-title {
   display: block;
@@ -4603,7 +4603,7 @@ blockquote {
   background: #e6e6e6;
   border-left: 0.625rem solid #8a8a8a;
   padding: 0.3125rem 0.625rem;
-  border-radius: 0.5rem; }
+  border-radius: 3px; }
 
 .fp-orange {
   color: #f7941e; }
@@ -4628,7 +4628,7 @@ blockquote {
   margin: 0 0 0rem 0;
   padding: .1rem;
   border: 1px solid rgba(10, 10, 10, 0.25);
-  border-radius: 0.5rem;
+  border-radius: 3px;
   position: relative;
   color: #737373 !important;
   background-color: white;
@@ -4665,7 +4665,7 @@ tr.success {
   width: 2rem;
   height: 1rem;
   display: inline-block;
-  border-radius: 0.5rem;
+  border-radius: 3px;
 }
 .proxy-title {
   vertical-align: text-bottom;
@@ -4696,7 +4696,7 @@ tr.success {
 
 .pattern-row-header {
   font-weight: bold;
-  /*border-radius: 0.5rem;*/
+  /*border-radius: 3px;*/
 }
 
 .success {
