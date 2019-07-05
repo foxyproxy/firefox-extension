@@ -136,7 +136,7 @@ function installListeners() {
     // Note that openDialog() returns immediately even though the dialog is modal
     // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
     openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.blackPatterns);
-  return false;
+    return false;
   });
 
   $(document).on("click", "#save", () => {
@@ -166,6 +166,18 @@ function installListeners() {
     document.getElementById(editingProxy.blackPatterns.length-1).scrollIntoView({
       behavior: "smooth"
     });
+  });
+
+  $(document).on("click", "#export", () => {
+    exportPatterns();
+  });
+
+  $(document).on("click", "#import", () => {
+    importPatterns();
+  });
+
+  $(document).on("change", "#importFileSelected", function(evt) {
+    importFileSelected(evt.target.files[0], ["text/plain", "application/json"], 1024*1024*50 /* 50 MB */);
   });
 }
 
@@ -260,5 +272,44 @@ function openDialog(pat, isNew, patternArray) {
       }
       else return true;
     }
-  })
+  });
 }
+
+function exportPatterns() {
+  let tmpObject = {whitePatterns: editingProxy.whitePatterns, blackPatterns: editingProxy.blackPatterns},
+    blob = new Blob([JSON.stringify(tmpObject, null, 2)], {type : 'text/plain'}),
+    filename = "foxyproxy-patterns.json";
+  browser.downloads.download({
+    url: URL.createObjectURL(blob),
+    filename,
+    saveAs: true
+  }).then(() => console.log("Export/download finished")); // wait for it to complete before returning
+}
+
+function importPatterns() {
+  vex.dialog.buttons.YES.className = "button";
+  vex.dialog.buttons.NO.className = "button alert";
+  vex.dialog.alert({
+    message: 'Import Patterns',
+    input: `
+    <style>
+      .vex-custom-field-wrapper {
+        margin-bottom: .5rem;
+      }
+    </style>
+    <div class="callout alert">
+      <input id="importFileSelected" type="file"/>
+    </div>`
+  });
+}
+
+function importFileSelected(file, mimeTypeArr, maxSizeBytes) {
+  Utils.importFile(file, mimeTypeArr, maxSizeBytes, "json", (allPatterns) => {
+    editingProxy.whitePatterns = allPatterns.whitePatterns;
+    editingProxy.blackPatterns = allPatterns.blackPatterns;
+    vex.closeTop();
+    renderPatterns();
+    alert(`Imported ${editingProxy.whitePatterns.length} white patterns and ${editingProxy.blackPatterns.length} black patterns.`);
+  });
+}
+

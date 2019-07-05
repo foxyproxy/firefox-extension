@@ -37,14 +37,6 @@
     <div id="patternsRow" class="row hide-unimportant" style="margin: 0.5rem">
         <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
         <a href="/pattern-tester.html" target="_blank">Pattern Tester</a>
-        <div class="row">
-          <div class="small-9 columns">
-            Add patterns to prevent this proxy being used for localhost and intranet/private IP addresses <span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
-          </div>
-          <div class="small-3 columns">
-            <input id="addLocal" type="button" class="button small" value="Add">
-          </div>
-        </div>
 
         <div id="whitePatternTitle" class="row small-12 columns"><h5>White Patterns</h5></div>
         <div class="row">
@@ -75,8 +67,21 @@
 				    <div class="clusterize-no-data">Loading data...</div>
 				  </div>
 				</div>
+				<br>
+        <div class="small-9 columns">
+          <span style="float: right">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
+						<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
+					</span>
+        </div>
+        <div class="small-3 columns">
+          <input id="addLocal" type="button" class="tiny button" value="Add">
+        </div>
 
         <div class="small-12 columns"><br>
+					<span style="float: left">
+            <input id="export" type="button" class="button" value="Export Patterns">
+            <input id="import" type="button" class="button" value="Import Patterns">
+          </span>
           <span style="float: right">
             <input id="cancel" type="button" class="button alert" value="Cancel">
             <input id="newBlack" type="button" class="button" value="New Black">
@@ -91,7 +96,6 @@
   <script src="scripts/const.js"></script>
   <script src="scripts/jquery-3.4.1.js"></script>
   <script src="scripts/foundation-6.4.2/foundation.js"></script>
-  <script src="scripts/foundation-6.4.2/motion-ui.js"></script>
   <script src="scripts/vex.combined.js"></script>
   <script src="scripts/patterns.js"></script>
   <script src="scripts/storage.js"></script>
