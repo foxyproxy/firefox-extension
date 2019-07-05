@@ -4,7 +4,7 @@
         "description": "The full name of the FoxyProxy Standard"
     },
     "app_description_foxyproxy_standard": {
-        "message": "Proxy switching made simple!",
+        "message": "Proxy switching by URL, made easy!",
         "description": "The description of FoxyProxy Standard"
     },
     "app_name_foxyproxy_basic": {
@@ -15,6 +15,9 @@
         "message": "Quick on/off proxy switching with no URL patterns",
         "description": "The description of FoxyProxy Basic"
     },
+		"app_description_short_name": {
+			"message": "FoxyProxy Standard"
+		},
 		"error": {
 				"message": "Error",
 				"description": "General error title"

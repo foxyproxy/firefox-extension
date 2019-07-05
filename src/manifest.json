@@ -1,6 +1,6 @@
 {
     "name": "__MSG_app_name_foxyproxy_standard__",
-    "short_name": "__MSG_app_name_foxyproxy_standard__",
+    "short_name": "__MSG_app_description_short_name__",
     "version": "6.5",
     "manifest_version": 2,
     "description": "__MSG_app_description_foxyproxy_standard__",
@@ -20,7 +20,7 @@
     },
     "browser_action": {
         "default_icon": "images/48x48.svg",
-        "default_title": "__MSG_app_name_foxyproxy_standard__",
+        "default_title": "__MSG_app_description_short_name__",
         "default_popup": "popup.html"
     },
     "applications": {
@@ -37,7 +37,6 @@
         "webRequestBlocking",
         "downloads",
         "notifications",
-        "browsingData",
         "<all_urls>"
     ]
 }
