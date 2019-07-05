@@ -385,7 +385,7 @@ class Utils {
         url: URL.createObjectURL(blob),
         filename,
         saveAs: true
-      }).then(() => console.log("Export/download finished")); // wait for it to complete before returning
+      }).then(() => alert("Export finished")); // wait for it to complete before returning
     });
   }
 }
