@@ -1,4 +1,4 @@
-$(document).foundation();
+
 vex.defaultOptions.className = 'vex-theme-default';
 Utils.localizeHtmlPage();
 let noRefresh = false;

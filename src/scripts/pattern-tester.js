@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-  $(document).foundation();
   $(document).on("click", "#test", testPattern);
   $(document).on("click", "#help", () => browser.tabs.create({url: "/pattern-help.html", active: true}));
 

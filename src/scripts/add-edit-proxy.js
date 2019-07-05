@@ -1,4 +1,3 @@
-$(document).foundation();
 let idParam = Utils.urlParamsToJsonMap().id, oldProxySetting,
   color = new jscolor("colorChooser", {uppercase: false, hash: true});
 

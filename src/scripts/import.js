@@ -1,5 +1,3 @@
-$(document).foundation();
-
 document.addEventListener("DOMContentLoaded", function() {
   let upgraded = Utils.urlParamsToJsonMap().upgraded;
   console.log("is upgraded? " + upgraded);

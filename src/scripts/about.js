@@ -1,5 +1,3 @@
-$(document).foundation();
-
 document.addEventListener("DOMContentLoaded", function() {
   browser.management.getSelf().then((extInfo) => {
     $("#version").text(extInfo.version);

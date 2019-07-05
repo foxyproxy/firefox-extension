@@ -1,5 +1,7 @@
 /*!
- * jQuery Swapsie Plugin
+ * This is a fork of the jQuery Swapsies Plugin.
+ * Only changes are to make it compatible with jQuery 3.x instead of jQuery 2.x
+ *
  * Examples and documentation at: http://biostall.com/swap-and-re-order-divs-smoothly-using-jquery-swapsie-plugin
  * Copyright (c) 2010 Steve Marks - info@biostall.com
  * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
@@ -11,7 +13,7 @@ var swapping = false;
 (function($) {
     $.fn.extend({
         swap: function(options) {
-			
+
 			var defaults = {
 			    target: "",
 				speed: 1000,
@@ -19,15 +21,15 @@ var swapping = false;
 				callback: function() {}
 			};
 			var options = $.extend(defaults, options);
-			
+
 			return this.each(function() {
-				
+
 				var obj = $(this);
-				
+
 				if (options.target!="" && !swapping) {
-					
+
 					swapping = true;
-					
+
 					// set primary and secondary elements to relative if not already specified a positon CSS attribute
 					var current_primary_pos = obj.css("position");
 					var current_secondary_pos = $("#"+options.target).css("position");
@@ -38,7 +40,7 @@ var swapping = false;
 						$("#"+options.target).css("position", "relative");
 					}
 					//
-					
+
 					// calculate y-axis movement
 					var current_primary_position = obj.offset();
 					var current_primary_top = current_primary_position.top;
@@ -46,15 +48,15 @@ var swapping = false;
 					var current_secondary_top = current_secondary_position.top;
 					var direction_primary_y = '-';
 					var direction_secondary_y = '-';
-					if (current_primary_top<=current_secondary_top) { // if primary above secondary 
-						var direction_primary_y = '+'; 
+					if (current_primary_top<=current_secondary_top) { // if primary above secondary
+						var direction_primary_y = '+';
 						var total_y = current_secondary_top-current_primary_top;
-					}else{ // if primary below secondary 
+					}else{ // if primary below secondary
 						var total_y = current_primary_top-current_secondary_top;
 					}
 					if (direction_primary_y=='-') { direction_secondary_y='+'; }else{ direction_secondary_y='-'; }
 					//
-					
+
 					// calculate x-axis movement
 					var current_primary_position = obj.offset();
 					var current_primary_left = current_primary_position.left;
@@ -62,15 +64,15 @@ var swapping = false;
 					var current_secondary_left = current_secondary_position.left;
 					var direction_primary_x = '-';
 					var direction_secondary_x = '-';
-					if (current_primary_left<=current_secondary_left) { // if primary left of secondary 
-						var direction_primary_x = '+'; 
+					if (current_primary_left<=current_secondary_left) { // if primary left of secondary
+						var direction_primary_x = '+';
 						var total_x = current_secondary_left-current_primary_left;
-					}else{ // if primary below secondary 
+					}else{ // if primary below secondary
 						var total_x = current_primary_left-current_secondary_left;
 					}
 					if (direction_primary_x=='-') { direction_secondary_x='+'; }else{ direction_secondary_x='-'; }
 					//
-					
+
 					// do swapping
 					obj.animate({
 						opacity: options.opacity
@@ -93,18 +95,18 @@ var swapping = false;
 						}, options.speed, function() {
 							$("#"+options.target).animate({
 								opacity: "1"
-							}, 100, function() { 
+							}, 100, function() {
 								swapping = false; // call the callback and apply the scope:
     								options.callback.call(this);
  							});
 						});
 					});
-					
+
 				}
-				
+
 			});
-			
-			
+
+
         }
     });
 })(jQuery);

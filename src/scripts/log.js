@@ -1,4 +1,3 @@
-$(document).foundation();
 let logg;
 
 /*

@@ -1,4 +1,3 @@
-$(document).foundation();
 vex.defaultOptions.className = 'vex-theme-default';
 let editingProxy,
   patternRowTemplate =

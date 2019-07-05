@@ -3,7 +3,8 @@ html, body {
 }
 
 // Copied from app.css at https://getfoxyproxy.org
-// TODO: we either don't need all of this or we don't need all of foundation.css
+// TODO: we don't need all of these styles in the addon.
+// They are taken from foundation-6.4.2
 
 @charset "UTF-8";
 /**
