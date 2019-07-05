@@ -104,7 +104,10 @@
       color: #777;
       background: #e0e0e0; }
   .vex.vex-theme-default .vex-dialog-form .vex-dialog-message {
-		margin-bottom: .5em;
+		/* Eric Jung: changed to match h4 styles in app.css */
+		font-size: 1.5625rem;
+		font-weight: bold;
+		color: #cc6600;
 	}
   .vex.vex-theme-default .vex-dialog-form .vex-dialog-input {
     margin-bottom: 1em; }
