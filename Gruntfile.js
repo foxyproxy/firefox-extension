@@ -4,10 +4,12 @@ module.exports = function(grunt) {
 		compress: {
 		  main: {
 		    options: {
-		      archive: 'target.zip'
+		      archive: 'foxyproxy.zip'
 		    },
 		    files: [
-		      {src: ['*/**', '!node_modules/**', '!.DS_Store', '!archive/**'], dest: '/', filter: 'isFile'}
+		      {src: ['**', '!node_modules/**', '!.DS_Store', '!archive/**'],
+					cwd: 'src',
+					expand: true}
 		    ]
 		  }
 		}
