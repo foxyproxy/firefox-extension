@@ -15,9 +15,6 @@
         "message": "Quick on/off proxy switching with no URL patterns",
         "description": "The description of FoxyProxy Basic"
     },
-		"app_description_short_name": {
-			"message": "FoxyProxy Standard"
-		},
 		"error": {
 				"message": "Error",
 				"description": "General error title"
