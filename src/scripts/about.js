@@ -1,17 +1,9 @@
-document.addEventListener("DOMContentLoaded", function() {
-  browser.management.getSelf().then((extInfo) => {
-    $("#version").text(extInfo.version);
-    /* This requires the management permission, so don't do it.
-    let edition;
-    if (extInfo.id == "foxyproxy@eric.h.jung") edition = "FoxyProxy Standard";
-    else if (extInfo.id == "foxyproxy-basic@eric.h.jung") edition = "FoxyProxy Basic";
-    else edition = extInfo.id;*/
-    if (FOXYPROXY_BASIC) $("#edition").text("FoxyProxy Basic");
-    else $("#edition").text("FoxyProxy Standard");
-  });
-});
+// browser.management is only used here, 
+// you can also use browser.runtime.getManifest()
+// no JQuery used
 
-$(document).on("click", "#okBtn", function() {
-  location.href = "/proxies.html";
-});
+const manifest = browser.runtime.getManifest();
 
+document.querySelector('#version').textContent = manifest.version;
+document.querySelector('#edition').textContent = FOXYPROXY_BASIC ? 'FoxyProxy Basic' : 'FoxyProxy Standard';
+document.querySelector('#okBtn').addEventListener('click', () => location.href = '/proxies.html'):
