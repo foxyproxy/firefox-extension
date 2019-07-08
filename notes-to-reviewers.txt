@@ -1,9 +1,15 @@
 # 3rd-Party Libraries
 
-jquery-swapsies.js forked with minor change from http://biostall.com/wp-content/uploads/2010/07/jquery-swapsies.js -- only change is to make compatible with jQuery 3.x instead of jQuery 2.x
+## jquery-swapsies.js forked with minor change from http://biostall.com/wp-content/uploads/2010/07/jquery-swapsies.js
+Only change is to make compatible with jQuery 3.x instead of jQuery 2.x
 
+## JSColor
 http://jscolor.com/release/latest.zip (Unfortunately, there is no specific URL for 2.0.5, the version I am using)
 
-https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.combined.js
+## Vex Dialogs
+Minified: https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.combined.js
+Unminified: https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.combined.js
 
-https://github.com/NeXTs/Clusterize.js/blob/v0.18.0/clusterize.min.js
+## Clusterize
+Minified: https://raw.githubusercontent.com/NeXTs/Clusterize.js/v0.18.0/clusterize.min.js
+Unminified: https://raw.githubusercontent.com/NeXTs/Clusterize.js/v0.18.0/clusterize.js
