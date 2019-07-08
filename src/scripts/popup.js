@@ -30,7 +30,7 @@ function renderOptions(settings) {
     }
   });
 
-  $("#menuInsertPoint").html(rows.join(''));
+  $("#menuInsertPoint").text(rows.join(''));
   let mode = settings.mode ? settings.mode : PATTERNS;
   if (mode == PATTERNS) {
     $("#patternsSelected").replaceWith('<i class="fa fa-check" style="color:green"></i>&nbsp;');
