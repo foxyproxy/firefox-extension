@@ -74,51 +74,47 @@ $("#refreshBtn1,#refreshBtn2").on("click", () => {
 });
 
 function renderLog() {
-  function _xmlEncode(str) {
-    if (!str) return "";
-    return str.replace(/\<|\>|\&|\'|\"/g,
-      function($0) {
-        switch($0) {
-          case "<": return "&lt;";
-          case ">": return "&gt;";
-          case "&": return "&amp;";
-          case "'": return "&apos;";
-          case "\"": return "&quot;";
-        }
-      }
-    );
-  };
   let rows = [];
   for (let i=0; i<logg.length; i++) {
-    let t = $("#rowTemplate").html().trim(),
-      item = logg.item(i),
-      title =  item.proxySetting ? _xmlEncode(item.proxySetting.title) : "No matches",
-      address =  item.proxySetting ? _xmlEncode(item.proxySetting.address) : "No matches",
-      color = item.matchedPattern ? "success" : "secondary",
-      proxyColor = item.proxySetting.color;
-
+    let item = logg.item(i), pattern;
     if (item.matchedPattern) {
       pattern = item.matchedPattern == USE_PROXY_FOR_ALL_URLS ? "Use proxy for all URLs" :
-        _xmlEncode(item.matchedPattern.pattern);
+        item.matchedPattern.pattern;
     }
     else pattern = "No matches";
 
-    rows.push(t.replace(/%color|url|title|address|pattern|time|%proxyColor/gi,
-      function($0) {
-        switch($0) {
-          case "%color": return color;
-          case "url": return _xmlEncode(item.url);
-          case "title": return title;
-          case "address": return address;
-          case "pattern": return pattern;
-          case "time": return format(item.timestamp);
-          case "%proxyColor": return proxyColor;
-        }
-      }
-    ));
+		// Build a row for this log entry
+		let row = document.createElement("tr");
+		row.setAttribute("class", item.matchedPattern ? "success" : "secondary");
+		let cell1 = document.createElement("td");
+		row.appendChild(cell1);
+		let a1 = document.createElement("a");
+		cell1.appendChild(a1);
+		a1.setAttribute("href", item.url);
+		a1.setAttribute("target", "_blank");
+		a1.appendChild(document.createTextNode(item.url));
+		let cell2 = document.createElement("td");
+		row.appendChild(cell2);
+		cell2.appendChild(document.createTextNode(item.proxySetting ? item.proxySetting.title : "No matches"));
+		let cell3 = document.createElement("td");
+		row.appendChild(cell3);
+		cell3.style.backgroundColor = item.proxySetting ? item.proxySetting.color : "blue";
+		cell3.setAttribute("class", "fp-color-blob-log");
+		let cell4 = document.createElement("td");
+		row.appendChild(cell4);
+		cell4.appendChild(document.createTextNode(item.proxySetting ? item.proxySetting.address : "No matches"));
+		let cell5 = document.createElement("td");
+		row.appendChild(cell5);
+		cell5.appendChild(document.createTextNode(pattern));
+		let cell6 = document.createElement("td");
+		row.appendChild(cell6);
+		cell6.appendChild(document.createTextNode(format(item.timestamp)));
+    rows.push(row);
   }
-  $("#rows").html(''); // clear anything that's there
-  $("#rows").html(rows.join(''));
+
+	let parent = document.getElementById("rows");
+	[...parent.childNodes].forEach(el => el.remove())
+	rows.forEach(row => parent.appendChild(row));
   $("#spinnerRow").hide();
   $("#logRow").show();
 }
