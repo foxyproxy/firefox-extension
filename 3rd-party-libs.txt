@@ -21,3 +21,8 @@ Pretty dialogs with no jQuery dependency.
 
 Source: https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.combined.js <br>
 Docs: https://github.hubspot.com/vex/
+
+## DOMPurify
+
+Source: https://raw.githubusercontent.com/cure53/DOMPurify/1.0.11/dist/purify.min.js <br>
+Docs: https://github.com/cure53/DOMPurify

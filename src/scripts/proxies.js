@@ -29,7 +29,7 @@ function storageRetrievalSuccess(settings) {
   if (!settings.proxySettings || !settings.proxySettings.length) {
     // Display defaults
     console.log("No proxies found in storage.");
-    $("#accounts").html(''); // clear anything that's there
+    $("#accounts").html(DOMPurify.sanitize("", {SAFE_FOR_JQUERY: true}));// clear anything that's there
     $("#spinnerRow,#mainRow").hide();
     $("#noProxiesRow").show();
   }
@@ -99,15 +99,15 @@ function renderProxies(settings) {
 
     rows.push(t);
   }
-  $("#accounts").html(""); // clear anything that's there
-  $("#accounts").html(rows.join(""));
+  $("#accounts").html(DOMPurify.sanitize("", {SAFE_FOR_JQUERY: true})); // clear anything that's there
+  $("#accounts").html(DOMPurify.sanitize(rows.join(""), {SAFE_FOR_JQUERY: true}));
 
   // For some reason, we cannot successfully insert into a <select> that has 'patterns' and 'disabled'
   // hard-coded in the HTML.
   // So instead we add them dynamically with the rest of the options.
-  $("#mode").html(""); // clear anything that's there
+  $("#mode").html(DOMPurify.sanitize("", {SAFE_FOR_JQUERY: true})); // clear anything that's there
   if (!FOXYPROXY_BASIC) $("#patterns").clone().appendTo("#mode");
-  $("#mode").append(modeOptions.join(''));
+  $("#mode").append(DOMPurify.sanitize(modeOptions.join(""), {SAFE_FOR_JQUERY: true}));
   $("#disabled").clone().appendTo("#mode");
 
 

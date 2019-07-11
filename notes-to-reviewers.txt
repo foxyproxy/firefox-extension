@@ -13,3 +13,7 @@ Unminified: https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.com
 ## Clusterize
 Minified: https://raw.githubusercontent.com/NeXTs/Clusterize.js/v0.18.0/clusterize.min.js
 Unminified: https://raw.githubusercontent.com/NeXTs/Clusterize.js/v0.18.0/clusterize.js
+
+## DOMPurify
+Minified: https://raw.githubusercontent.com/cure53/DOMPurify/1.0.11/dist/purify.min.js
+Unminified: https://github.com/cure53/DOMPurify/blob/1.0.11/dist/purify.js
