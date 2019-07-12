@@ -1,12 +1,13 @@
-const idParam = Utils.urlParamsToJsonMap().id, oldProxySetting,
+const idParam = Utils.urlParamsToJsonMap().id,
   color = new jscolor("colorChooser", {uppercase: false, hash: true});
+let oldProxySetting;
 
 if (idParam) {
   // This is an edit operation. Read the data to be edited.
   getProxySettingById(idParam).then((proxyToEdit) => {
     oldProxySetting = proxyToEdit;
     // Populate the form
-    document.querySelector('#windowTitle').textContent('Edit Proxy ' + Utils.getNiceTitle(proxyToEdit));
+    document.querySelector('#windowTitle').textContent = 'Edit Proxy ' + Utils.getNiceTitle(proxyToEdit);
     document.querySelector('#newProxyTitle').value = proxyToEdit.title || '';
     document.querySelector('#newProxyType').value = proxyToEdit.type;
 
@@ -73,21 +74,21 @@ function showHideStuff() {
 
   const proxyType = parseInt(document.querySelector('#newProxyType').value);
 
-  if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD || proxyType === PROXY_TYPE_SYSTEM) {
-
+  if (proxyType == PROXY_TYPE_PAC || proxyType == PROXY_TYPE_WPAD || proxyType == PROXY_TYPE_SYSTEM) {
     [...document.querySelectorAll('.supported,.hideIfNoProxy')].forEach(item => item.style.display = 'none');
     [...document.querySelectorAll('.unsupported')].forEach(item => item.style.display = 'block');
   }
-  if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD) {
+  if (proxyType == PROXY_TYPE_PAC || proxyType == PROXY_TYPE_WPAD) {
     [...document.querySelectorAll('.show-if-pac-or-wpad')].forEach(item => item.style.display = 'block');
   }
-  if (proxyType === PROXY_TYPE_NONE) {
+  if (proxyType == PROXY_TYPE_NONE) {
     [...document.querySelectorAll('.hideIfNoProxy')].forEach(item => item.style.display = 'none');
   }
-  if (proxyType !== PROXY_TYPE_SOCKS5) {
+  if (proxyType != PROXY_TYPE_SOCKS5) {
     [...document.querySelectorAll('.hideIfNotSOCKS5')].forEach(item => item.style.display = 'none');
   }
   if (oldProxySetting) {
+		// Editing
     [...document.querySelectorAll('.hideIfEditing')].forEach(item => item.style.display = 'none');
   }
   if (FOXYPROXY_BASIC) {
@@ -97,7 +98,7 @@ function showHideStuff() {
 
 function resetForm() {
   color.fromString(DEFAULT_COLOR);
-  document.querySelector('#windowTitle').textContent('Add Proxy');
+  document.querySelector('#windowTitle').textContent = 'Add Proxy';
   document.querySelector('#newProxyTitle').value = '';
   document.querySelector('#newProxyType').value = PROXY_TYPE_HTTP;
   document.querySelector('#newProxyAddress').value = '';
@@ -119,17 +120,17 @@ function saveProxySettingFromGUI() {
   document.querySelector('#addEditRow').style.display = 'block';
 
   let proxySetting = {};
-  
+
   const newProxyTitle = document.querySelector('#newProxyTitle');
   if (newProxyTitle.value) { proxySetting.title = newProxyTitle.value; }
-  
+
   proxySetting.type = parseInt(document.querySelector('#newProxyType').value);
   proxySetting.color = document.querySelector('#colorChooser').value;
-  if (proxySetting.type !== PROXY_TYPE_NONE) {
+  if (proxySetting.type != PROXY_TYPE_NONE) {
     proxySetting.address = document.querySelector('#newProxyAddress').value;
     proxySetting.port = parseInt(document.querySelector('#newProxyPort').value);
     if (proxySetting.type == PROXY_TYPE_SOCKS5 && document.querySelector('#proxyDNS').checked) { proxySetting.proxyDNS = true; }
-    const username = document.querySelector('#newProxyUsername').value.trim(); 
+    const username = document.querySelector('#newProxyUsername').value.trim();
     const password = document.querySelector('#newProxyPassword').value.trim();
     if (username) { proxySetting.username = username; } // don't store ''
     if (password) { proxySetting.password = password; } // don't store ''
@@ -151,7 +152,7 @@ function saveProxySettingFromGUI() {
   else {
     // Add operation
     proxySetting.active = true;  // new entries are instantly active. TODO: add checkbox on GUI instead of assuming
-    // Do not use this proxy for internal IP addresses. TODO: add checkbox on GUI instead of assuming
+    // Do not use this proxy for internal IP addresses.
     if (document.querySelector('#onOffWhiteAll').checked) { proxySetting.whitePatterns = [PATTERN_ALL_WHITE]; }
     else { proxySetting.whitePatterns = []; }
 
@@ -168,8 +169,9 @@ function validateInput() {
   Utils.trimAllInputs();
   Utils.escapeAllInputs('#newProxyTitle,#newProxyAddress,#newProxyPort');
   const type = parseInt(document.querySelector('#newProxyType').value);
-  if (type === PROXY_TYPE_NONE) { return true; }
-  return markInputErrors('#newProxyAddress') && markInputErrors('#newProxyPort', true);
+  if (type == PROXY_TYPE_NONE) { return true; }
+	let r1 = markInputErrors("#newProxyAddress"), r2 = markInputErrors("#newProxyPort", true);
+  return r1 && r2;
 }
 
 // Return false if any item in the selector is empty or doesn't have only nums when
