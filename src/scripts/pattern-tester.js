@@ -1,58 +1,67 @@
-document.addEventListener("DOMContentLoaded", function() {
-  $(document).on("click", "#test", testPattern);
-  $(document).on("click", "#help", () => browser.tabs.create({url: "/pattern-help.html", active: true}));
+'use strict';
 
-  let patternObj = Utils.urlParamsToJsonMap().patternObj;
+document.querySelector('#test').addEventListener('click', testPattern);
+document.querySelector('#help').addEventListener('click', () => browser.tabs.create({url: '/pattern-help.html'}));
 
-  if (patternObj) {
-    $("#pattern").val(patternObj.pattern);
-    $("#protocols").val(patternObj.protocols);
-    $("#type").val(patternObj.type);
-    $("#url").val("");
-  }
-});
+const patternObj = Utils.urlParamsToJsonMap().patternObj;
+if (patternObj) {
+  document.querySelector('#pattern').value = patternObj.pattern;
+  document.querySelector('#protocols').value = patternObj.protocols;
+  document.querySelector('#type').value = patternObj.type;
+  document.querySelector('#url').value = '';
+}
+
 
 function testPattern() {
-  let urlInput = $("#url"), url = urlInput.val(), parsedURL;
-  urlInput.removeClass("is-invalid-input");
 
-  try {
-    parsedURL = new URL(url);
-  }
+  const urlInput = document.querySelector('#url');
+  urlInput.classList.remove('is-invalid-input');  // reset
+  let parsedURL;
+
+  try { parsedURL = new URL(urlInput.value); }
   catch (e) {
     console.error(e);
-    urlInput.addClass("is-invalid-input");
+    urlInput.classList.add('is-invalid-input');
     return false;
   }
-  if (!validateInput()) return;
-  let pattern = $("#pattern").val(), type = parseInt($("#type").val()), protocols = parseInt($("#protocols").val()),
-    regExp, schemeNum;
+
+  if (!validateInput()) { return; }
+
+	// There are 3 possible states that we report:
+	// 1. protocols do not match OR
+	// 2. pattern does not match OR
+	// 3. pattern matches
+	// In each case, we show/hide the appropriate HTML blocks. We have to do
+	// this each time testPattern() is called because this funciton many be
+	// called multiple times without the HTML resetting -- yet the user may have
+	// changed the inputs. So we just hide everything in the beginning and show
+	// the appropriate block each execution of testPattern().
+
+	[...document.querySelectorAll('#match,#noMatch,#noProtocolMatch')].forEach(item =>
+		item.classList.add('hide-unimportant'));
+
+  const pattern = document.querySelector('#pattern').value;
+  const type = parseInt(document.querySelector('#type').value);
+  const protocols = parseInt(document.querySelector('#protocols').value);
+  let schemeNum;
 
   // Check protocol first
-  if (parsedURL.protocol == "https:") schemeNum = PROTOCOL_HTTPS;
-  else if (parsedURL.protocol == "http:") schemeNum = PROTOCOL_HTTP;
+  if (parsedURL.protocol === 'https:') { schemeNum = PROTOCOL_HTTPS; }
+  else if (parsedURL.protocol === 'http:') { schemeNum = PROTOCOL_HTTP; }
 
-  if (protocols != PROTOCOL_ALL && protocols != schemeNum) {
-    console.log("no protocol match: " + schemeNum);
-    $("#match,#noMatch").hide();
-    $("#noProtocolMatch").show();
+  if (protocols !== PROTOCOL_ALL && protocols !== schemeNum) {
+    document.querySelector('#noProtocolMatch').classList.remove('hide-unimportant');
     return;
   }
 
-  if (type == PATTERN_TYPE_WILDCARD)
-    regExp = Utils.safeRegExp(Utils.wildcardStringToRegExpString(pattern));
-  else
-     regExp = Utils.safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
+  const regExp = type === PATTERN_TYPE_WILDCARD ?
+		Utils.safeRegExp(Utils.wildcardStringToRegExpString(pattern)) :
+		Utils.safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
 
-  if (regExp.test(parsedURL.host)) {
-    console.log("match");
-    $("#match").show();
-    $("#noMatch,#noProtocolMatch").hide();
-  }
-  else {
-    console.log("no match");
-    $("#match,#noProtocolMatch").hide();
-    $("#noMatch").show();
-  }
+	if (regExp.test(parsedURL.host)) {
+		document.querySelector('#match').classList.remove('hide-unimportant');
+	}
+	else {
+  	document.querySelector('#noMatch').classList.remove('hide-unimportant');
+	}
 }
-
