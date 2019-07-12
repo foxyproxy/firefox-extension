@@ -21,7 +21,7 @@ function markInputErrors() {
   const type = parseInt(document.querySelector('#type').value);
   switch (true) {
 
-    case type === PATTERN_TYPE_WILDCARD && pat.indexOf('/') >= 0:
+    case type === PATTERN_TYPE_WILDCARD && pat.includes('/'):
       alert("No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions.");
       patInput.classList.add('is-invalid-input');
       return false;
