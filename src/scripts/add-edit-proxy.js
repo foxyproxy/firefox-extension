@@ -69,7 +69,7 @@ document.querySelector('#newProxyType').addEventListener('change', showHideStuff
 
 function showHideStuff() {
   // Show everything, then hide as necessary
-  [...document.querySelectorAll('.supported,.hideIfNoProxy,.hideIfNotSOCKS')].forEach(item => item.style.display = 'block');
+  [...document.querySelectorAll('.supported,.hideIfNoProxy,.hideIfNotSOCKS')].forEach(item => item.style.display = '');
   [...document.querySelectorAll('.unsupported,.show-if-pac-or-wpad')].forEach(item => item.style.display = 'none');
 
   const proxyType = parseInt(document.querySelector('#newProxyType').value);
