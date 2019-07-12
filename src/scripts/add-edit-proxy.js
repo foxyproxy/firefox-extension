@@ -74,17 +74,17 @@ function showHideStuff() {
 
   const proxyType = parseInt(document.querySelector('#newProxyType').value);
 
-  if (proxyType == PROXY_TYPE_PAC || proxyType == PROXY_TYPE_WPAD || proxyType == PROXY_TYPE_SYSTEM) {
+  if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD || proxyType === PROXY_TYPE_SYSTEM) {
     [...document.querySelectorAll('.supported,.hideIfNoProxy')].forEach(item => item.style.display = 'none');
     [...document.querySelectorAll('.unsupported')].forEach(item => item.style.display = 'block');
   }
-  if (proxyType == PROXY_TYPE_PAC || proxyType == PROXY_TYPE_WPAD) {
+  if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD) {
     [...document.querySelectorAll('.show-if-pac-or-wpad')].forEach(item => item.style.display = 'block');
   }
-  if (proxyType == PROXY_TYPE_NONE) {
+  if (proxyType === PROXY_TYPE_NONE) {
     [...document.querySelectorAll('.hideIfNoProxy')].forEach(item => item.style.display = 'none');
   }
-  if (proxyType != PROXY_TYPE_SOCKS5) {
+  if (proxyType !== PROXY_TYPE_SOCKS5) {
     [...document.querySelectorAll('.hideIfNotSOCKS5')].forEach(item => item.style.display = 'none');
   }
   if (oldProxySetting) {
@@ -126,10 +126,10 @@ function saveProxySettingFromGUI() {
 
   proxySetting.type = parseInt(document.querySelector('#newProxyType').value);
   proxySetting.color = document.querySelector('#colorChooser').value;
-  if (proxySetting.type != PROXY_TYPE_NONE) {
+  if (proxySetting.type !== PROXY_TYPE_NONE) {
     proxySetting.address = document.querySelector('#newProxyAddress').value;
     proxySetting.port = parseInt(document.querySelector('#newProxyPort').value);
-    if (proxySetting.type == PROXY_TYPE_SOCKS5 && document.querySelector('#proxyDNS').checked) { proxySetting.proxyDNS = true; }
+    if (proxySetting.type === PROXY_TYPE_SOCKS5 && document.querySelector('#proxyDNS').checked) { proxySetting.proxyDNS = true; }
     const username = document.querySelector('#newProxyUsername').value.trim();
     const password = document.querySelector('#newProxyPassword').value.trim();
     if (username) { proxySetting.username = username; } // don't store ''
@@ -169,7 +169,7 @@ function validateInput() {
   Utils.trimAllInputs();
   Utils.escapeAllInputs('#newProxyTitle,#newProxyAddress,#newProxyPort');
   const type = parseInt(document.querySelector('#newProxyType').value);
-  if (type == PROXY_TYPE_NONE) { return true; }
+  if (type === PROXY_TYPE_NONE) { return true; }
 	let r1 = markInputErrors("#newProxyAddress"), r2 = markInputErrors("#newProxyPort", true);
   return r1 && r2;
 }
