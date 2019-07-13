@@ -1,3 +1,5 @@
+'use strict';
+
 const idParam = Utils.urlParamsToJsonMap().id,
   color = new jscolor("colorChooser", {uppercase: false, hash: true});
 let oldProxySetting;
@@ -18,7 +20,7 @@ if (idParam) {
     document.querySelector('#newProxyPassword').value = proxyToEdit.password || '';
     document.querySelector('#proxyDNS').checked = proxyToEdit.proxyDNS || false;
     document.querySelector('#pacURL').value = proxyToEdit.pacURL || '';
-    [...document.querySelectorAll('.hideIfEditing')].forEach(item => item.style.display = 'none');
+    document.querySelectorAll('.hideIfEditing').forEach(item => item.style.display = 'none');
     showHideStuff();
     document.querySelector('#spinnerRow').style.display = 'none';
     document.querySelector('#addEditRow').style.display = 'block';
@@ -30,7 +32,7 @@ else {
   showHideStuff();
 }
 
-[...document.querySelectorAll('#newProxyCancel, #newProxyCancel2')].forEach(item =>
+document.querySelectorAll('#newProxyCancel, #newProxyCancel2').forEach(item =>
   item.addEventListener('click', () => {
   // Set the password field type to text (not password) so that Firefox doesn't prompt
   // the user to save the password. Since we've already hidden this content with spinner,
@@ -69,30 +71,30 @@ document.querySelector('#newProxyType').addEventListener('change', showHideStuff
 
 function showHideStuff() {
   // Show everything, then hide as necessary
-  [...document.querySelectorAll('.supported,.hideIfNoProxy,.hideIfNotSOCKS')].forEach(item => item.style.display = '');
-  [...document.querySelectorAll('.unsupported,.show-if-pac-or-wpad')].forEach(item => item.style.display = 'none');
+  document.querySelectorAll('.supported,.hideIfNoProxy,.hideIfNotSOCKS').forEach(item => item.style.display = '');
+  document.querySelectorAll('.unsupported,.show-if-pac-or-wpad').forEach(item => item.style.display = 'none');
 
   const proxyType = parseInt(document.querySelector('#newProxyType').value);
 
   if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD || proxyType === PROXY_TYPE_SYSTEM) {
-    [...document.querySelectorAll('.supported,.hideIfNoProxy')].forEach(item => item.style.display = 'none');
-    [...document.querySelectorAll('.unsupported')].forEach(item => item.style.display = 'block');
+    document.querySelectorAll('.supported,.hideIfNoProxy').forEach(item => item.style.display = 'none');
+    document.querySelectorAll('.unsupported').forEach(item => item.style.display = 'block');
   }
   if (proxyType === PROXY_TYPE_PAC || proxyType === PROXY_TYPE_WPAD) {
-    [...document.querySelectorAll('.show-if-pac-or-wpad')].forEach(item => item.style.display = 'block');
+    document.querySelectorAll('.show-if-pac-or-wpad').forEach(item => item.style.display = 'block');
   }
   if (proxyType === PROXY_TYPE_NONE) {
-    [...document.querySelectorAll('.hideIfNoProxy')].forEach(item => item.style.display = 'none');
+    document.querySelectorAll('.hideIfNoProxy').forEach(item => item.style.display = 'none');
   }
   if (proxyType !== PROXY_TYPE_SOCKS5) {
-    [...document.querySelectorAll('.hideIfNotSOCKS5')].forEach(item => item.style.display = 'none');
+    document.querySelectorAll('.hideIfNotSOCKS5').forEach(item => item.style.display = 'none');
   }
   if (oldProxySetting) {
-		// Editing
-    [...document.querySelectorAll('.hideIfEditing')].forEach(item => item.style.display = 'none');
+    // Editing
+    document.querySelectorAll('.hideIfEditing').forEach(item => item.style.display = 'none');
   }
   if (FOXYPROXY_BASIC) {
-    [...document.querySelectorAll('.hideIfFoxyProxyBasic')].forEach(item => item.style.display = 'none');
+    document.querySelectorAll('.hideIfFoxyProxyBasic').forEach(item => item.style.display = 'none');
   }
 }
 
@@ -170,7 +172,7 @@ function validateInput() {
   Utils.escapeAllInputs('#newProxyTitle,#newProxyAddress,#newProxyPort');
   const type = parseInt(document.querySelector('#newProxyType').value);
   if (type === PROXY_TYPE_NONE) { return true; }
-	let r1 = markInputErrors("#newProxyAddress"), r2 = markInputErrors("#newProxyPort", true);
+  let r1 = markInputErrors("#newProxyAddress"), r2 = markInputErrors("#newProxyPort", true);
   return r1 && r2;
 }
 
