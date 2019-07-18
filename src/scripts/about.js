@@ -1,3 +1,5 @@
+'use strict';
+
 const manifest = browser.runtime.getManifest();
 
 document.querySelector('#version').textContent = manifest.version;
