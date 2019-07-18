@@ -4771,3 +4771,9 @@ div[data-addedit-proxy]:hover{
   /* for rtl languages, this should be margin-left */
   margin-right: 0.5rem;
 }
+
+
+/* --- extra --- */
+.template {
+  display: none !important;
+}
