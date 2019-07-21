@@ -5,14 +5,18 @@
     "manifest_version": 2,
     "description": "__MSG_app_description_foxyproxy_standard__",
     "icons": {
-        "24": "images/48x48.svg",
+        "16": "images/48x48.svg",
+        "32": "images/48x48.svg",
         "48": "images/48x48.svg",
-        "96": "images/48x48.svg"
+        "64": "images/48x48.svg",
+        "128": "images/48x48.svg"
     },
     "default_locale": "en",
     "background": {
-        "page": "background.html"
+      "scripts": ["scripts/jquery-3.4.1.js", "scripts/utils.js", "scripts/const.js", 
+                  "scripts/storage.js", "scripts/log-entries.js", "scripts/background.js"]
     },
+
     "options_ui": {
         "page": "proxies.html",
         "open_in_tab": true,
