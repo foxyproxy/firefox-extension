@@ -39,12 +39,12 @@ document.querySelector('nav a[data-i18n="deleteBrowserData"]').addEventListener(
 // change to DOM
   vex.dialog.buttons.YES.className = 'button';
   vex.dialog.confirm({
-    message: `${chrome.i18n.getMessage("delete_browser_data")}`,
+    message: `${chrome.i18n.getMessage('delete_browser_data')}`,
     input: `
-    <h5>${chrome.i18n.getMessage("deleteNot")}</h5>
-    <p>${chrome.i18n.getMessage("deleteBrowserDataNotDescription")}</p>
-    <h5>${chrome.i18n.getMessage("delete")}</h5>
-    <p>${chrome.i18n.getMessage("deleteBrowserDataDescription")}</p>`,
+    <h5>${chrome.i18n.getMessage('deleteNot')}</h5>
+    <p>${chrome.i18n.getMessage('deleteBrowserDataNotDescription')}</p>
+    <h5>${chrome.i18n.getMessage('delete')}</h5>
+    <p>${chrome.i18n.getMessage('deleteBrowserDataDescription')}</p>`,
     callback: function(data) {
       if (data) {
         // Not cancelled
@@ -202,8 +202,9 @@ function renderProxies(settings) {
 
 async function processButton() {
 
-  console.log(this);
-  const id = this.parentNode.parentNode.id;
+  const parent = this.parentNode.parentNode;
+  const id = parent.id;
+
   switch (this.dataset.i18n) {
 
     case 'help|title':
@@ -224,16 +225,16 @@ async function processButton() {
 
     case 'delete|title':
       console.log('delete one proxy setting: ' + id);
-      confirm(chrome.i18n.getMessage('delete_confirmation')) &&
+      confirm(chrome.i18n.getMessage('confirmDelete')) &&
         deleteProxyById(id).then(() => console.log('delete single completed'));
       break;
 
     case 'up|title':
       console.log('move up'); 
-      const previousProxySettingId = this.parentNode.parentNode.previousElementSibling.id;
+      const previousProxySettingId = parent.previousElementSibling.id;
       console.log(`id: ${id}, previousProxySettingId: ${previousProxySettingId}`);
 
-      this.swap({
+      $('#' + id).swap({
           target: previousProxySettingId, // Mandatory. The ID of the element we want to swap with
           opacity: '0.5', // If set will give the swapping elements a translucent effect while in motion
           speed: 100, // The time taken in milliseconds for the animation to occur
@@ -248,10 +249,11 @@ async function processButton() {
     
     case 'down|title':
       console.log('move down');
-      const nextProxySettingId = this.parentNode.parentNode.nextElementSibling.id;
+      
+      const nextProxySettingId = parent.nextElementSibling.id;
       console.log(`id: ${id}, nextProxySettingId: ${nextProxySettingId}`);
-  
-      this.swap({
+ 
+      $('#' + id).swap({
           target: nextProxySettingId, // Mandatory. The ID of the element we want to swap with
           opacity: '0.5', // If set will give the swapping elements a translucent effect while in motion
           speed: 100, // The time taken in milliseconds for the animation to occur
