@@ -1,0 +1,69 @@
+{
+  "mode": "patterns",
+  "proxySettings": [
+    {
+      "title": "some title",
+      "type": 3,
+      "color": "#3860cc",
+      "address": "123.123.123.123",
+      "port": 123,
+      "username": "foo",
+      "password": "bar",
+      "active": true,
+      "whitePatterns": [
+        {
+          "title": "everything",
+          "active": true,
+          "pattern": "*",
+          "type": 1,
+          "protocols": 1
+        }
+      ],
+      "blackPatterns": [
+        {
+          "title": "local hostnames (usually no dots in the name). Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
+          "active": true,
+          "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?(?:localhost|127\\.\\d+\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
+          "type": 2,
+          "protocols": 1
+        },
+        {
+          "title": "local subnets (IANA reserved address space). Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
+          "active": true,
+          "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?(?:192\\.168\\.\\d+\\.\\d+|10\\.\\d+\\.\\d+\\.\\d+|172\\.(?:1[6789]|2[0-9]|3[01])\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
+          "type": 2,
+          "protocols": 1
+        },
+        {
+          "title": "localhost - matches the local host optionally prefixed by a user:password authentication string and optionally suffixed by a port number. The entire local subnet (127.0.0.0/8) matches. Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
+          "active": true,
+          "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?[\\w-]+(?::\\d+)?(?:/.*)?$",
+          "type": 2,
+          "protocols": 1
+        }
+      ],
+      "id": "5yunu1562958387189"
+    },
+    {
+      "title": "Default",
+      "type": 5,
+      "color": "#0055e5",
+      "active": true,
+      "whitePatterns": [
+        {
+          "title": "all URLs",
+          "active": true,
+          "pattern": "*",
+          "type": 1,
+          "protocols": 1
+        }
+      ],
+      "blackPatterns": [],
+      "id": "k20d21508277536715"
+    }
+  ],
+  "logging": {
+    "size": 500,
+    "active": true
+  }
+}
