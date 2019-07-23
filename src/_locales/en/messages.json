@@ -1,122 +1,110 @@
 {
-    "app_name_foxyproxy_standard": {
-        "message": "FoxyProxy Standard",
-        "description": "The full name of the FoxyProxy Standard"
-    },
-    "app_description_foxyproxy_standard": {
-        "message": "Proxy switching by URL, made easy!",
-        "description": "The description of FoxyProxy Standard"
-    },
-    "app_name_foxyproxy_basic": {
-        "message": "FoxyProxy Basic",
-        "description": "The full name of the FoxyProxy Basic"
-    },
-    "app_description_foxyproxy_basic": {
-        "message": "Quick on/off proxy switching with no URL patterns",
-        "description": "The description of FoxyProxy Basic"
-    },
-		"app_description_short_name": {
-			"message": "FoxyProxy Standard"
-		},
-		"error": {
-				"message": "Error",
-				"description": "General error title"
-		},
-		"no_settings_found": {
-				"message": "No settings could be found. Please re-install FoxyProxy.",
-				"description": "Stored settings not found, not even the default one created at installation."
-		},
-    "proxy_add": {
-      "message": "Add",
-      "description": "Add new proxy button"
-    },
-		"proxy_delete_all": {
-			"message": "Delete All",
-			"description": "Delete all proxies button"
-		},
-		"export": {
-			"message": "Export",
-			"description": "Export proxies button"
-		},
-		"import": {
-			"message": "Import",
-			"description": "Import proxies button"
-		},
-		"log": {
-			"message": "Log",
-			"description": "Display log button"
-		},
-		"whats_my_ip": {
-			"message": "What's My IP?",
-			"description": "Display IP address button"
-		},
-		"delete_browser_data": {
-			"message": "Delete Browser Data",
-			"description": "Delete browser data button"
-		},
-		"delete_browser_data_to_not_delete_heading": {
-			"message": "Do Not Delete"
-		},
-		"delete_browser_data_to_not_delete_description": {
-			"message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates.",
-			"description": "Description of what is NOT to be deleted"
-		},
-		"delete_browser_data_to_delete_heading": {
-			"message": "Delete"
-		},
-		"delete_browser_data_to_delete_description": {
-			"message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data.",
-			"description": "Description of what is to be deleted"
-		},
-		"delete_browser_data_done": {
-			"message": "Done!",
-			"description": "Message displayed after delete browser data is finished"
-		},
-		"about": {
-			"message": "About",
-			"description": "Display About page button"
-		},
-		"synchronize_settings": {
-			"message": "Synchronize Settings",
-			"description": "Toggle settings synchronization button"
-		},
-		"synchronize_settings_help": {
-			"message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local."
-		},
-		"on_off": {
-			"message": "On/Off",
-			"description": "On/Off toggle text"
-		},
-		"on": {
-			"message": "On"
-		},
-		"off": {
-			"message": "Off"
-		},
-		"mode_patterns_and_priority": {
-			"message": "Use Enabled Proxies By Patterns and Priority",
-			"description": "Switching mode that uses white and black patterns as you have ordered them"
-		},
-		"mode_disabled": {
-			"message": "Turn Off FoxyProxy (Use Firefox Settings)",
-			"description": "Completely disable FoxyProxy and revert to using Firefox proxy settings, if any"
-		},
-		"mode_dedicated": {
-			"message": "Use proxy %title for all URLs (ignore patterns)",
-			"description": "Use selected proxy for all URLS, regardless of any patterns"
-		},
-		"edit": {
-			"message": "Edit",
-			"description": "Edit proxy button"
-		},
-		"patterns": {
-			"message": "Patterns",
-			"description": "Edit patterns button"
-		},
-		"delete_confirmation": {
-			"message": "Delete: are you sure?",
-			"description": "Confirm deletion"
-		}
+  "app_name_foxyproxy_standard": { "message": "FoxyProxy Standard" },
+  "app_description_foxyproxy_standard": { "message": "Proxy switching by URL, made easy!" },
+  "app_name_foxyproxy_basic": { "message": "FoxyProxy Basic" },
+  "app_description_foxyproxy_basic": { "message": "Quick on/off proxy switching with no URL patterns" },
+  
+  
+  "error": { "message": "Error" },
+  "erroNoSettings": { "message": "No settings could be found. Please re-install FoxyProxy." },
+
+  "deleteAll": { "message": "Delete All" },
+  "export": { "message": "Export" },
+  "import": { "message": "Import" },
+  "log": { "message": "Log" },
+  "myIP": { "message": "What's My IP?" },
+  
+  "exportEnd": { "message": "Export finished" },
+  
+  
+  "delete": { "message": "Delete" },
+  "deleteNot": { "message": "Do Not Delete" },
+  "deleteBrowserData": { "message": "Delete Browser Data" },
+  "deleteBrowserDataDescription": { "message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data." },
+  "deleteBrowserDataNotDescription": { "message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates." },
+  "done": { "message": "Done!" },
+  
+  "about": { "message": "About" },
+  "syncSettings": { "message": "Synchronize Settings" },
+  "syncSettingsHelp": { "message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local." },
+  "onOff": { "message": "On/Off" },
+  "on": { "message": "On" },
+  "off": { "message": "Off" },
+  
+  
+  "modePatterns": { "message": "Enabled Proxies By Patterns and Priority" },
+  "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
+//  "modeDedicated": { "message": "$1 for all" },
+  "modeSelection": { "message": "Use selected proxy for all URLs" },
+
+  
+  
+  "edit": { "message": "Edit" },
+  "patterns": { "message": "Patterns" },
+  "confirmDelete": { "message": "Are you sure you want to delete?" },
+  
+  "addProxy": { "message": "Add Proxy" },
+  "editProxy": { "message": "Edit Proxy $1" },
+  
+  
+  "addEditPatterns": { "message": "Add/Edit Patterns" },
+  "addEditPatternsFor": { "message": "Add/Edit Patterns for $1" },
+  
+  
+  "errorWas": { "message": "There was an error. Please try again." },
+  "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
+
+  "up": { "message": "move up" },
+  "down": { "message": "move down" },
 
 
-}
+
+  "name": { "message": "Name" },
+  "pattern": { "message": "Pattern" },
+  "type": { "message": "Type" },
+  "whitePatterns": { "message": "White Patterns" },
+  "blackPatterns": { "message": "Black Patterns" },
+  "importedPattern": { "message": "This pattern was imported from an older version of FoxyProxy and changed during import. Here is the original, unchanged pattern:" },
+
+
+  "proxyType": { "message": "Proxy Type" },
+  "color": { "message": "Color" },
+  "title": { "message": "Title or Description (optional)" },
+  "ip": { "message": "IP address, DNS name, server name" },
+  "port": { "message": "Port" },
+  "username": { "message": "Username (optional)" },
+  "password": { "message": "Password (optional)" },
+  "togglePW": { "message": "Toggle Password" },
+
+  "patternTester": { "message": "Pattern Tester" },
+  "patternHelp": { "message": "Pattern Help" },
+  "welcome": { "message": "Welcome" },
+  "options": { "message": "Options" },
+
+//  "ok": { "message": "OK" },
+  "clear": { "message": "Clear" },
+  "refresh": { "message": "Refresh" },
+  "cancel": { "message": "Cancel" },
+  "back": { "message": "Back" },
+  "test": { "message": "Test" },
+  "help": { "message": "Help" },
+  "exportPatterns": { "message": "ExportPatterns" },
+  "importPatterns": { "message": "ImportPatterns" },
+  "newWhite": { "message": "New White" },
+  "newBlack": { "message": "New Black" },
+  "save": { "message": "Save" },
+  "add": { "message": "Add" },
+  "saveAdd": { "message": "Save & Add Another" },
+  "saveEditPattern": { "message": "Save & Edit Patterns" },
+
+
+
+  
+  
+  "url": { "message": "URL" },
+  "proxyTitle": { "message": "Proxy Title" },
+  "proxyColor": { "message": "Proxy Color" },
+  "proxyAddress": { "message": "Proxy Address" },
+  "matchPattern": { "message": "Match Pattern" },
+  "timestamp": { "message": "Timestamp" }
+} 
