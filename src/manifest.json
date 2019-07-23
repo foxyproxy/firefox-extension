@@ -23,6 +23,7 @@
     "open_in_tab": true,
     "browser_style": false
   },
+  
   "browser_action": {
     "default_icon": "images/icon.svg",
     "default_title": "__MSG_app_name_foxyproxy_standard__",
