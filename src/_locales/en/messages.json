@@ -57,6 +57,7 @@
   "up": { "message": "move up" },
   "down": { "message": "move down" },
 
+  "disabled": { "message": "Disabled" },
 
 
   "name": { "message": "Name" },
