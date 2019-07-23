@@ -12,7 +12,7 @@
       .flex { display: flex; }
       .flex > * { flex: 1; }
       nav { width: 14em; margin-right: 0.5em; }
-      nav a { display: block; padding: 0.2em 0.5em;  border-radius: 0 50px 50px 0; transition: all 0.5s ease-in-out; }
+      nav a { display: block; padding: 0.2em 0.5em; border-radius: 0 50px 50px 0; transition: all 0.5s ease-in-out; }
       nav a:hover { background-color: #ffebcd; }
       select { max-width: 25em; }
       button.button { font-size: 0.8em; padding: 0.4em; margin: 0.1em;  vertical-align: top; }
@@ -25,6 +25,9 @@
       .pxy:first-of-type button.up,
       .pxy:nth-last-child(2) button.down { visibility: hidden; }
       #accounts div:last-of-type { margin: 0; }
+      .title, .address { display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .title { width: 6em; margin: 0 0.5em; }
+      .address { max-width: 10em; }
     </style>
 
   </head>
@@ -86,8 +89,8 @@
         <div class="callout flex template pxy" style="padding: 0.5em 1em 0 1em;">
           <div>
             <span class="fp-color-blob"></span>
-            <span class=""></span>
-            <span class=""></span>
+            <span class="title"></span>
+            <span class="address"></span>
           </div>
           <div style="text-align: right;">
             <input type="checkbox" name="onOff" class="tiny switch-input" id="">
