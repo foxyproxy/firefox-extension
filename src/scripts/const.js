@@ -1,4 +1,4 @@
-const FOXYPROXY_BASIC=false;
+const FOXYPROXY_BASIC = false;
 
 // Bit-wise flags so we can add/remove these independently. We may add more later so PROTOCOL_ALL is future-proof.
 const PROTOCOL_ALL = 1; // in case other protocols besides http and https are supported later
@@ -29,6 +29,7 @@ const RANDOM = "random";
 const ROUND_ROBIN = "roundrobin";
 const DISABLED = "disabled";
 
+// PATTERN_NEW only used in patterns.js
 const PATTERN_NEW = {
   title: "",
   active: true,
@@ -37,6 +38,7 @@ const PATTERN_NEW = {
   protocols: PROTOCOL_ALL
 };
 
+// only used in add-edit-proxy.js
 const PATTERN_ALL_WHITE = {
   title: "all URLs",
   active: true,

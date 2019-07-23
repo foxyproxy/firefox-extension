@@ -11,9 +11,10 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----- global
 const accounts = document.querySelector('#accounts');
 const mode = document.querySelector('#mode');
-const syncOnOff = document.querySelector('input[name="syncOnOff"]')
+const syncOnOff = document.querySelector('input[name="syncOnOff"]');
 
 vex.defaultOptions.className = 'vex-theme-default';
+vex.dialog.buttons.YES.className = 'button';
 let noRefresh = false;
 
 
@@ -21,7 +22,7 @@ let noRefresh = false;
 mode.addEventListener('change', () => setMode(mode.value));
 
 syncOnOff.addEventListener('click', function() {
-  const useSync = this.checked;
+  const useSync = this.checked;console.log(useSync);
   setStorageSync(useSync).then(() => console.log('sync value changed to ' + useSync));
 });
 
@@ -37,7 +38,6 @@ document.querySelector('nav a[data-i18n="export"]').addEventListener('click', Ut
 
 document.querySelector('nav a[data-i18n="deleteBrowserData"]').addEventListener('click', () => {
 // change to DOM
-  vex.dialog.buttons.YES.className = 'button';
   vex.dialog.confirm({
     message: `${chrome.i18n.getMessage('delete_browser_data')}`,
     input: `
@@ -48,23 +48,22 @@ document.querySelector('nav a[data-i18n="deleteBrowserData"]').addEventListener(
     callback: function(data) {
       if (data) {
         // Not cancelled
-        browser.browsingData.remove(
-            {}, {
-            //"appcache": true,
-            "cache": true,
-            "cookies": true,
-            "downloads": false,
-            //"fileSystems": true,
-            "formData": false,
-            "history": false,
-            "indexedDB": true,
-            "localStorage": true,
-            "pluginData": true,
-            //"passwords": true,
-            //"webSQL": true,
-            //"serverBoundCertificates": true,
-            "serviceWorkers": true
-          }).then(() => { Utils.displayNotification(chrome.i18n.getMessage('done')); });
+        browser.browsingData.remove({}, {
+          //appcache: true,
+          cache: true,
+          cookies: true,
+          downloads: false,
+          //fileSystems: true,
+          formData: false,
+          history: false,
+          indexedDB: true,
+          localStorage: true,
+          pluginData: true,
+          //passwords: true,
+          //webSQL: true,
+          //serverBoundCertificates: true,
+          serviceWorkers: true
+        }).then(() => Utils.displayNotification(chrome.i18n.getMessage('done')));
       }
     }
   });
@@ -73,10 +72,10 @@ document.querySelector('nav a[data-i18n="deleteBrowserData"]').addEventListener(
 
 start();
 function start() {
-  console.log(' called');
+
   getAllSettings().then((settings) => storageRetrievalSuccess(settings))
     .catch((e) => storageRetrievalError(e));
-  
+
   usingSync().then((useSync) => syncOnOff.checked = useSync)
     .catch((e) => { console.error(`usingSync() error: ${e}`); reject(e); });
 }
@@ -94,8 +93,7 @@ browser.storage.onChanged.addListener((oldAndNewSettings) => {
 
 
 browser.runtime.onMessage.addListener((messageObj, sender) => {
-  //console.log("browser.runtime.onMessage listener: ");
-  // console.log(messageObj);
+  //console.log("browser.runtime.onMessage listener: ", messageObj);
   if (messageObj === MESSAGE_TYPE_DISABLED) { mode.value = DISABLED; }
 });
 
@@ -110,9 +108,7 @@ function storageRetrievalSuccess(settings) {
   }
   else {
     console.log('Proxies found in storage.');
- console.time('renderProxies');   
     renderProxies(settings);
- console.timeEnd('renderProxies');   
     document.querySelector('#spinner').classList.add('hide-unimportant');
     document.querySelector('#accountsRow').classList.remove('hide-unimportant');
   }
@@ -127,6 +123,7 @@ function storageRetrievalError(error) {
 function renderProxies(settings) {
 
   accounts.textContent = ''; // clearing the content
+  [...mode.children].forEach(item => mode.children.length > 2 && item.remove());
 
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
@@ -196,6 +193,7 @@ function renderProxies(settings) {
   document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('click', function() {
     const id = this.parentNode.parentNode.id;
     console.log('toggle on/off', id);
+    noRefresh = true;
     toggleActiveProxySetting(id).then(() => console.log('toggle done'))
   }));
 }
@@ -208,10 +206,9 @@ async function processButton() {
   switch (this.dataset.i18n) {
 
     case 'help|title':
-      vex.dialog.buttons.YES.className = 'button';
       vex.dialog.alert({
-        message: chrome.i18n.getMessage('syncSettings'),
-        input: chrome.i18n.getMessage('syncSettingsHelp')
+        message: chrome.i18n.getMessage('syncSettings') + '',
+        input: chrome.i18n.getMessage('syncSettingsHelp') + ''
       });
       break;
 
@@ -230,41 +227,18 @@ async function processButton() {
       break;
 
     case 'up|title':
-      console.log('move up'); 
-      const previousProxySettingId = parent.previousElementSibling.id;
-      console.log(`id: ${id}, previousProxySettingId: ${previousProxySettingId}`);
-
-      $('#' + id).swap({
-          target: previousProxySettingId, // Mandatory. The ID of the element we want to swap with
-          opacity: '0.5', // If set will give the swapping elements a translucent effect while in motion
-          speed: 100, // The time taken in milliseconds for the animation to occur
-          callback: function() { // Optional. Callback function once the swap is complete
-            noRefresh = true;
-            swapProxySettingWithNeighbor(id, previousProxySettingId).then((settings) => {
-              console.log("swapProxySettingWithNeighbor() succeeded");
-              renderProxies(settings);
-            }).catch((e) => {console.error("swapProxySettingWithNeighbor failed: " + e)});
-          }
-      });
-    
     case 'down|title':
-      console.log('move down');
-      
-      const nextProxySettingId = parent.nextElementSibling.id;
-      console.log(`id: ${id}, nextProxySettingId: ${nextProxySettingId}`);
- 
-      $('#' + id).swap({
-          target: nextProxySettingId, // Mandatory. The ID of the element we want to swap with
-          opacity: '0.5', // If set will give the swapping elements a translucent effect while in motion
-          speed: 100, // The time taken in milliseconds for the animation to occur
-          callback: function() { // Optional. Callback function once the swap is complete
-            noRefresh = true;
-            swapProxySettingWithNeighbor(id, nextProxySettingId).then((settings) => {
-              console.log('swapProxySettingWithNeighbor() succeeded');
-              renderProxies(settings);
-            }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));
-          }
-      });
+      const target = this.dataset.i18n === 'up|title' ? parent.previousElementSibling : parent.nextElementSibling;
+      const insert = this.dataset.i18n === 'up|title' ? target : target.nextElementSibling;
+      parent.parentNode.insertBefore(parent, insert);
+      target.classList.add('off');
+      parent.classList.add('on');
+      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 800);
+      noRefresh = true;
+ /*     swapProxySettingWithNeighbor(id, target.id).then((settings) => {
+        console.log('swapProxySettingWithNeighbor() succeeded');
+        renderProxies(settings);
+      }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));*/
       break;
   }
 }

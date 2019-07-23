@@ -1,3 +1,5 @@
+'use strict';
+
 class Utils {
 
   // Nicer version of https://stackoverflow.com/a/39810769
@@ -6,9 +8,11 @@ class Utils {
   // Do the same for attributes but replace them in-place (not textContent). This is
   // to support attributes like title in <a title="localize me">, etc.
 
+  // localizeHtmlPage only used in proxies.js which has now been removed
+/*  
   static localizeHtmlPage() {
 
-    let localizeRegExp = new RegExp("__MSG_\S+__", "g");
+    let localizeRegExp = new RegExp('__MSG_\S+__', 'g');
     function replace_i18n(elemOrAttr, strToLocalize, isAttribute) {
       // Find all __MSG_xxxxx__ strings and replace
       let localizedStr = strToLocalize.replace(/__MSG_\S+__/gi,
@@ -17,14 +21,14 @@ class Utils {
           // If the format of the getMessage() call is wrong — for example,
           // messageName is not a string or the substitutions array has more than 9 elements
           // this method returns undefined.
-          return chrome.i18n.getMessage(z.substring(6, z.length-2)) || "";
+          return chrome.i18n.getMessage(z.substring(6, z.length-2)) || '';
         });
 
       if (strToLocalize == localizedStr) {
-				console.warn(`Missing localization for ${strToLocalize}. Using hard-coded default.`);
-			}
-			else {
-				// Replace content
+        console.warn(`Missing localization for ${strToLocalize}. Using hard-coded default.`);
+      }
+      else {
+        // Replace content
         if (isAttribute) {
           elemOrAttr.value = localizedStr;
         }
@@ -37,34 +41,34 @@ class Utils {
           let found = false;
           for (let idx=0; !found && idx<elemOrAttr.childNodes.length; idx++) {
             let childNode = elemOrAttr.childNodes[idx];
-            if (childNode.nodeType == Node.TEXT_NODE) {
+            if (childNode.nodeType === Node.TEXT_NODE) {
               childNode.textContent = localizedStr;
               found = true;
             }
           }
-					if (!found) {
-						// OK, there's no fall-back translation in the HTML.
-						// Just append the text as a new text node at the end of the current node.
-						elemOrAttr.appendChild(document.createTextNode(localizedStr));
+          if (!found) {
+            // OK, there's no fall-back translation in the HTML.
+            // Just append the text as a new text node at the end of the current node.
+            elemOrAttr.appendChild(document.createTextNode(localizedStr));
           }
-					// Remove the data-localize attr to remove DOM clutter
-					// We can also "inspect element" and if this attribute is missing, we know
-					// the localization has been processed. Note that "view source" shows original content,
-					// not our replaced content. Don't rely on it.
-					elemOrAttr.removeAttribute("data-localize");
+          // Remove the data-localize attr to remove DOM clutter
+          // We can also "inspect element" and if this attribute is missing, we know
+          // the localization has been processed. Note that "view source" shows original content,
+          // not our replaced content. Don't rely on it.
+          elemOrAttr.removeAttribute('data-localize');
         }
       }
     }
 
     // Localize elems with data-localize attributes
-    let elems = document.querySelectorAll("*[data-localize]");
+    let elems = document.querySelectorAll('[data-localize]');
     elems.forEach(elem => {
       let strToLocalize = elem.dataset.localize;
       replace_i18n(elem, strToLocalize, false);
     });
 
     // Now attributes. Add others to the comma-separated list if needed.
-    elems = document.querySelectorAll("*[title^=__MSG_], *[href^=__MSG_]");
+    elems = document.querySelectorAll('[title^=__MSG_], [href^=__MSG_]');
     elems.forEach(elem => {
       // Iterate over all attributes of this element, finding the attribute(s)
       // that need localizing
@@ -72,19 +76,20 @@ class Utils {
         let attr = elem.attributes[idx], strToLocalize = elem.attributes[idx].value;
         // Only handle attributes whose name is not data-localize (they were already handled above)
         // and whose value contains the __MSG_ string
-        if (attr.name != "data-localize" && strToLocalize.includes("__MSG_")) {
+        if (attr.name !== 'data-localize' && strToLocalize.includes('__MSG_')) {
           replace_i18n(attr, strToLocalize, true);
         }
       }
     });
   }
-
-  static displayNotification(msg, title) {
-    browser.notifications.create("foxyproxy-notification", {
-      type: "basic",
-      iconUrl: "icons/48x48.svg",
-      title: title || "FoxyProxy",
-      message: msg
+*/
+  static displayNotification(message, title = 'FoxyProxy') {
+    // the id is not used anywhere and can be omitted, it is only useful if you want to manually close the notification early
+    browser.notifications.create('foxyproxy-notification', {
+      type: 'basic',
+      iconUrl: '/images/icon.svg',
+      title,
+      message
     });
   }
 
@@ -113,11 +118,11 @@ class Utils {
   }
 
   static jsonObject2UriComponent(o) {
-    return o ? Utils._b64EncodeUnicode(JSON.stringify(o)) : "";
+    return o ? Utils._b64EncodeUnicode(JSON.stringify(o)) : '';
   }
 
  /* static uriComponent2JsonObject(o) {
-    return o ? JSON.parse(Utils._b64DecodeUnicode(o)) : "";
+    return o ? JSON.parse(Utils._b64DecodeUnicode(o)) : '';
   }*/
 
   // To handle Unicode chars:
@@ -141,26 +146,43 @@ class Utils {
       }).join(''));
   }
 
-  static trimAllInputs(selector = ":input") {
+  static trimAllInputs() { // it is all Input so the selector is fixed
+
+    document.querySelectorAll('input').forEach(item => item.value = item.value.trim());
+  }
+/*
+  static trimAllInputs(selector = ':input') {
     let allInputs = $(selector);
     allInputs.each(function() {
       $(this).val(($(this).val().trim()));
     });
   }
 
-  static escapeAllInputs(selector = ":input") {
+*/
+
+
+  // this is setting selector in add-edit-proxy.js#172
+  // it is only used in 1 files and better to have it as an normal funciton in add-edit-proxy.js rather than a gloabl
+  static escapeAllInputs(selector = 'input') {
+    // since they are all removed then the replace can be combined
+    document.querySelectorAll(selector).forEach(item =>
+      item.value = item.value.replace(/[&<>"']+/g, ''));
+  }
+
+/*
+  static escapeAllInputs(selector = ':input') {
     let allInputs = $(selector);
     allInputs.each(function() {
       $(this).val($(this).val()
-        .replace(/&/g, "") // If we replace with the escaped value, e.g. &amp; then the value will be double-escaped next time user opens the screen and this is called
-        .replace(/</g, "")
-        .replace(/>/g, "")
-        .replace(/"/g, "")
-        .replace(/'/g, "")
+        .replace(/&/g, '') // If we replace with the escaped value, e.g. &amp; then the value will be double-escaped next time user opens the screen and this is called
+        .replace(/</g, '')
+        .replace(/>/g, '')
+        .replace(/"/g, '')
+        .replace(/'/g, '')
       );
     });
   }
-
+*/
   /**
    * Convert:
    *
@@ -184,34 +206,35 @@ class Utils {
   }*/
 
   static wildcardStringToRegExpString(pat) {
+
     let start = 0, end = pat.length, matchOptionalSubdomains = false;
-    if (pat[0] == ".") pat = '*' + pat;
-    if (pat.indexOf("**") == 0) {
+
+    if (pat[0] === '.') { pat = '*' + pat; }
+
+    if (pat.startsWith('**')) {
       // Strip asterisks from front and back
-      while (pat[start] == "*" && start < end) start++;
-      while (pat[end - 1] == "*" && start < end) end--;
+      while (pat[start] === '*' && start < end) start++;
+      while (pat[end - 1] === '*' && start < end) end--;
       // If there's only an asterisk left, match everything
-      if (end - start == 1 && pat[start] == "*") return new RegExp("");
+      if (end - start == 1 && pat[start] == '*') return new RegExp('');
     }
-    else if (pat.indexOf("*.") == 0) {
-      matchOptionalSubdomains = true;
-    }
+    else if (pat.startsWith('*.')) { matchOptionalSubdomains = true; }
 
     let regExpStr = pat.substring(start, end+1)
       // $& replaces with the string found, but with that string escaped
-      .replace(/[$.+()^{}\]\[|]/g, "\\$&")
-      .replace(/\*/g, ".*")
-      .replace(/\?/g, ".");
+      .replace(/[$.+()^{}\]\[|]/g, '\\$&')
+      .replace(/\*/g, '.*')
+      .replace(/\?/g, '.');
 
     if (matchOptionalSubdomains) {
         // Non-capturing group that matches:
         // any group of non-whitespace characters following by an optional . repeated zero or more times
-        regExpStr = "(?:\\S+\\.)*" + regExpStr.substring(4);
+        regExpStr = '(?:\\S+\\.)*' + regExpStr.substring(4);
     }
 
     // Leading or ending double-asterisks mean exact starting and ending positions
-    if (start == 0) regExpStr = "^" + regExpStr;
-    if (end == pat.length) regExpStr += "$";
+    if (start == 0) { regExpStr = '^' + regExpStr; }
+    if (end == pat.length) { regExpStr += '$'; }
     return regExpStr;
   }
 
@@ -220,18 +243,18 @@ class Utils {
       return new RegExp(regExpStr);
     }
     catch(e) {
-      console.error("safeRegExp(): Error creating regexp for pattern: " + JSON.stringify(regExpStr));
+      console.error('safeRegExp(): Error creating regexp for pattern: ' + JSON.stringify(regExpStr));
       console.error(e);
-      Utils.displayNotification("Error creating regular expression for pattern: " + regExpStr);
-      return new RegExp("a^"); // match nothing
+      Utils.displayNotification('Error creating regular expression for pattern: ' + regExpStr);
+      return new RegExp('a^'); // match nothing
     }
   }
 
   static findMatchingProxySetting(url, host, proxySettings) {
-    let scheme = url.substring(0, url.indexOf("://")), schemeNum;
-    if (scheme == "https") schemeNum = PROTOCOL_HTTPS;
-    else if (scheme == "http") schemeNum = PROTOCOL_HTTP;
-    //console.log("findMatchingProxySetting(): scheme is " + scheme);
+    let scheme = url.substring(0, url.indexOf('://')), schemeNum;
+    if (scheme === 'https') { schemeNum = PROTOCOL_HTTPS; }
+    else if (scheme === 'http') { schemeNum = PROTOCOL_HTTP; }
+    //console.log('findMatchingProxySetting(): scheme is ' + scheme);
 
     //console.log(`Utils.findMatchingProxySetting(): host is ${host} and url is ${url}`);
     // for loop is slightly faster than .forEach(), which calls a function and all the overhead with that
@@ -240,35 +263,35 @@ class Utils {
     for (let i=0; i<proxySettings.length; i++) {
       let proxySetting = proxySettings[i];
       // Check black patterns first
-      //console.log("Utils.findMatchingProxySetting(): checking black patterns");
+      //console.log('Utils.findMatchingProxySetting(): checking black patterns');
       let patternObj = Utils.checkPatterns(proxySetting.blackPatterns, schemeNum, host);
       if (patternObj) {
-        console.log("Utils.findMatchingProxySetting(): black match found: " + JSON.stringify(patternObj.pattern));
+        console.log('Utils.findMatchingProxySetting(): black match found: ' + JSON.stringify(patternObj.pattern));
         continue; // A black pattern matched. Skip this proxySetting
       }
 
-      //console.log("Utils.findMatchingProxySetting(): checking white patterns");
+      //console.log('Utils.findMatchingProxySetting(): checking white patterns');
       patternObj = Utils.checkPatterns(proxySetting.whitePatterns, schemeNum, host);
       if (patternObj) {
-        //console.log("Utils.findMatchingProxySetting(): white match found: " + JSON.stringify(patternObj.pattern));
+        //console.log('Utils.findMatchingProxySetting(): white match found: ' + JSON.stringify(patternObj.pattern));
         return {proxySetting: proxySetting, matchedPattern: patternObj};
       }
     }
-    console.log("Utils.findMatchingProxySetting(): no match found. Returning null.");
+    console.log('Utils.findMatchingProxySetting(): no match found. Returning null.');
     return null; // No white matches
   }
 
   static checkPatterns(patterns, schemeNum, host) {
     for (let j=0; j<patterns.length; j++) {
       let patternObj = patterns[j];
-      //console.log("Utils.checkPatterns(): protocol of pattern is: " + patternObj.protocols);
+      //console.log('Utils.checkPatterns(): protocol of pattern is: ' + patternObj.protocols);
       if (patternObj.protocols != PROTOCOL_ALL && patternObj.protocols != schemeNum) {
-        //console.log("Utils.checkPatterns(): protocol mismatch; skipping.");
+        //console.log('Utils.checkPatterns(): protocol mismatch; skipping.');
         continue;
       }
-      //console.log("Utils.checkPatterns(): checking pattern " + patternObj.regExp.toString() + " against " + host);
+      //console.log('Utils.checkPatterns(): checking pattern ' + patternObj.regExp.toString() + ' against ' + host);
       if (patternObj.regExp.test(host)) {
-        //console.log("Utils.checkPatterns(): match found. Returning " + JSON.stringify(patternObj));
+        //console.log('Utils.checkPatterns(): match found. Returning ' + JSON.stringify(patternObj));
         return patternObj;
       }
     }
@@ -276,51 +299,58 @@ class Utils {
   }
 
   static getNiceTitle(proxySetting) {
-    let title = proxySetting.title ? proxySetting.title : (proxySetting.address + ":" + (proxySetting.port));
+    let title = proxySetting.title ? proxySetting.title : (proxySetting.address + ':' + (proxySetting.port));
     return Utils.ellipsis(title);
   }
 
   static ellipsis(str, len=25) {
-    if (!str) return "";
-    return str.length > len ? (str.substring(0, len) + "...") : str;
+    if (!str) return '';
+    return str.length > len ? (str.substring(0, len) + '...') : str;
   }
 
+  // only used in popup.js & proxies.js maybe better to keep it local rather than global
+  // it would also be easier to manipulate the DOM locally
   static getOption(proxySetting) {
-    if (Utils.isUnsupportedType(proxySetting.type)) return "";
-    return $("#modeOptionTemplate").html().
-      replace("%title", Utils.getNiceTitle(proxySetting)).
+    if (Utils.isUnsupportedType(proxySetting.type)) { return ''; }
+    // replace with DOM manipulation later
+    return document.querySelector('#modeOptionTemplate').innerHTML.
+      replace('%title', Utils.getNiceTitle(proxySetting)).
       replace(/%color/g, proxySetting.color).
-      replace("%value", proxySetting.id).
+      replace('%value', proxySetting.id).
       replace(/%idx/g, proxySetting.id).trim();
   }
-
+  
+  // used proxies.js popup.js
   static isUnsupportedType(type) {
-    return type == PROXY_TYPE_PAC || type == PROXY_TYPE_WPAD || type == PROXY_TYPE_SYSTEM || type == PROXY_TYPE_PASS;
+    return type === PROXY_TYPE_PAC || type === PROXY_TYPE_WPAD || type === PROXY_TYPE_SYSTEM || type === PROXY_TYPE_PASS;
   }
 
   // Force only one page to be shown at a time in order to avoid synch problems across multiple instances
+  // only used in popup.js for log/proxies, remvoed from popup.js
+/*  
   static showInternalPage(logOrProxies) {
     let internalUrls = [
-        browser.runtime.getURL("log.html"),
-        browser.runtime.getURL("proxies.html"),
-        browser.runtime.getURL("add-edit-proxy.html"),
-        browser.runtime.getURL("add-edit-patterns.html"),
-        browser.runtime.getURL("patterns.html"),
-        browser.runtime.getURL("import.html"),
-        browser.runtime.getURL("about.html"),
-        browser.runtime.getURL("first-install.html")
-        //browser.runtime.getURL("pattern-help.html")
+        browser.runtime.getURL('log.html'),
+        browser.runtime.getURL('options.html'),
+        browser.runtime.getURL('add-edit-proxy.html'),
+        browser.runtime.getURL('add-edit-patterns.html'),
+        browser.runtime.getURL('patterns.html'),
+        browser.runtime.getURL('import.html'),
+        browser.runtime.getURL('about.html'),
+        browser.runtime.getURL('first-install.html')
+        //browser.runtime.getURL('pattern-help.html')
       ],
-      url = logOrProxies == "log" ? internalUrls[0]: internalUrls[1];
+      url = logOrProxies === 'log' ? internalUrls[0]: internalUrls[1];
 
     return browser.windows.getAll({
         populate: true,
-        windowTypes: ["normal"]
+        windowTypes: ['normal']
       }).then((windowInfoArray) => {
         let found = false;
-        for (let windowInfo of windowInfoArray) {
-          for (let tab of windowInfo.tabs) {
-            let u = new URL(tab.url) /* requires tab permission */, urlNoParams = u.origin + u.pathname;
+        for (const windowInfo of windowInfoArray) {
+          for (const tab of windowInfo.tabs) {
+            let u = new URL(tab.url), // requires tab permission
+            urlNoParams = u.origin + u.pathname;
             if (internalUrls.includes(urlNoParams)) { // Some of our pages have URL params. Ignore the params.
               found = true;
               browser.windows.update(windowInfo.id, {focused: true});
@@ -328,39 +358,38 @@ class Utils {
             }
           }
         }
-        if (!found) return browser.tabs.create({url: url, active: true});
+        if (!found) { return browser.tabs.create({url: url, active: true}); }
       });
   }
-
+*/
   static importFile(file, mimeTypeArr, maxSizeBytes, jsonOrXml, callback) {
     if (!file) {
-      alert("There was an error");
+      alert('There was an error');
       return;
     }
 
     // Check MIME type
     if (!mimeTypeArr.includes(file.type)) {
-      alert("Unsupported file format");
+      alert('Unsupported file format');
       return;
     }
 
     if (file.size > maxSizeBytes) {
-      alert("Filesize is too large");
+      alert('Filesize is too large');
       return;
     }
 
     let reader  = new FileReader();
     reader.onloadend = () => {
-      if (reader.error) alert("Error reading file.");
+      if (reader.error) alert('Error reading file.');
       else {
         let settings;
         try {
-          if (jsonOrXml == "json")
-            settings = JSON.parse(reader.result);
-          else if (jsonOrXml == "xml") {
-            let parser = new DOMParser();
-            settings = parser.parseFromString(reader.result, "text/xml");
-            if (settings.documentElement.nodeName == "parsererror") throw new Error();
+          if (jsonOrXml === 'json') { settings = JSON.parse(reader.result); }
+          else if (jsonOrXml === 'xml') {
+            const parser = new DOMParser();
+            settings = parser.parseFromString(reader.result, 'text/xml');
+            if (settings.documentElement.nodeName == 'parsererror') { throw new Error(); }
           }
         }
         catch(e) {
@@ -368,24 +397,22 @@ class Utils {
           alert("Error parsing file. Please remove sensitive data from the file, and then email it to support@getfoxyproxy.org so we can fix bugs in our parser.");
           return;
         }
-        if (settings) {
-          if (confirm("This will overwite existing proxy settings. Are you sure?")) callback(settings);
-        }
+        if (settings && confirm('This will overwite existing proxy settings. Are you sure?')) { callback(settings); }
       }
     };
-    reader.onerror = () => { alert("Error reading file")};
+    reader.onerror = () => { alert('Error reading file'); };
     reader.readAsText(file);
   }
 
   static exportFile() {
     getAllSettings().then((settings) => {
-      let blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain'}),
-        filename = "foxyproxy.json";
+      const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain'});
+      const filename = 'foxyproxy.json';
       browser.downloads.download({
         url: URL.createObjectURL(blob),
         filename,
         saveAs: true
-      }).then(() => alert("Export finished")); // wait for it to complete before returning
+      }).then(() => Utils.displayNotification(chrome.i18n.getMessage('exportEnd'))); // wait for it to complete before returning
     });
   }
 }

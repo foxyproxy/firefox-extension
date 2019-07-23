@@ -1,3 +1,5 @@
+'use strict';
+
 function validateInput() {
   Utils.trimAllInputs();
   return markInputErrors();
@@ -6,39 +8,41 @@ function validateInput() {
 // Return false if any item in the selector is empty or doesn't have only nums when
 // |numbersOnly| is true
 function markInputErrors() {
-  let ret = true;
-  let patInput = $("#pattern"), pat = patInput.val();
-  patInput.removeClass("is-invalid-input");
+
+  const patInput = document.querySelector('#pattern');
+  patInput.classList.remove('is-invalid-input'); // reset
+  const pat = patInput.value;
+
   if (!pat) {
-    patInput.addClass("is-invalid-input");
-    //ret = false;
-    return;
+    patInput.classList.add('is-invalid-input');
+    return false;
   }
-  let type = parseInt($("#type").val());
-  if (type == PATTERN_TYPE_WILDCARD && pat.indexOf("/") >= 0) {
-    alert("No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions.");
-    patInput.addClass("is-invalid-input");
-    ret = false;
+
+  const type = parseInt(document.querySelector('#type').value);
+  switch (true) {
+
+    case type === PATTERN_TYPE_WILDCARD && pat.includes('/'):
+      alert(chrome.i18n.getMessage('errorSlash'));
+      patInput.classList.add('is-invalid-input');
+      return false;
+
+    case type === PATTERN_TYPE_REGEXP:
+      try { new RegExp(pat); }
+      catch (e) {
+        console.error(e);
+        patInput.classList.add('is-invalid-input');
+        return false;
+      }
+      break;
+
+    default:
+      try { new RegExp(Utils.wildcardStringToRegExpString(pat)); }
+      catch (e) {
+        console.error(e);
+        patInput.classList.add('is-invalid-input');
+        return false;
+      }
   }
-  if (type == PATTERN_TYPE_REGEXP) {
-    try {
-      new RegExp(pat);
-    }
-    catch (e) {
-      console.error(e);
-      patInput.addClass("is-invalid-input");
-      ret = false;
-    }
-  }
-  else {
-    try {
-      new RegExp(Utils.wildcardStringToRegExpString(pat));
-    }
-    catch (e) {
-      console.error(e);
-      patInput.addClass("is-invalid-input");
-      ret = false;
-    }
-  }
-  return ret;
+
+  return true;
 }
