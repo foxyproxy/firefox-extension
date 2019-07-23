@@ -161,7 +161,7 @@ function mkRow(patternObj, index, template, bw) {
 
 function savePatterns() {
 
-  document.querySelector('#patternsRow').classList.add('hide-unimportant');
+  //document.querySelector('#patternsRow').classList.add('hide-unimportant');
   document.querySelector('#spinner').classList.remove('hide-unimportant');
   return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
 }

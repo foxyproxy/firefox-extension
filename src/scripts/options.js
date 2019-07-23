@@ -84,7 +84,7 @@ function start() {
 // one example is user deleting a proxy setting that is the current mode.
 // another: user changes mode from popup.html
 browser.storage.onChanged.addListener((oldAndNewSettings) => {
-  console.log('proxies.js: settings changed on disk');
+  //console.log('proxies.js: settings changed on disk');
   if (noRefresh) { noRefresh = false; } // We made the change ourselves
   //else location.reload();
   else { start(); }
@@ -192,7 +192,7 @@ function renderProxies(settings) {
 
   document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('click', function() {
     const id = this.parentNode.parentNode.id;
-    console.log('toggle on/off', id);
+    //console.log('toggle on/off', id);
     noRefresh = true;
     toggleActiveProxySetting(id).then(() => console.log('toggle done'))
   }));
@@ -221,7 +221,7 @@ async function processButton() {
       break;
 
     case 'delete|title':
-      console.log('delete one proxy setting: ' + id);
+      //console.log('delete one proxy setting: ' + id);
       confirm(chrome.i18n.getMessage('confirmDelete')) &&
         deleteProxyById(id).then(() => console.log('delete single completed'));
       break;
@@ -233,12 +233,12 @@ async function processButton() {
       parent.parentNode.insertBefore(parent, insert);
       target.classList.add('off');
       parent.classList.add('on');
-      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 800);
+      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 500);
       noRefresh = true;
- /*     swapProxySettingWithNeighbor(id, target.id).then((settings) => {
-        console.log('swapProxySettingWithNeighbor() succeeded');
+      swapProxySettingWithNeighbor(id, target.id).then((settings) => {
+        //console.log('swapProxySettingWithNeighbor() succeeded');
         renderProxies(settings);
-      }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));*/
+      }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));
       break;
   }
 }
