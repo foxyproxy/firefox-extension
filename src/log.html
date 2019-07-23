@@ -1,30 +1,39 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="log">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      tbody tr:hover { background-color: #cae1d3 !important; }
+      tbody td { padding: 0.2em; }
+      td:nth-child(3) { width: 1em; border: 2px solid #fff; }
+    </style>
   </head>
-  <body style="margin: 2rem">
+  <body style="padding: 1em;">
 
-    <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row column callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
-      </div>
+    <!-- header -->
+    <div class="callout">
+      <h3 data-i18n="options"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> FoxyProxy </h3>
     </div>
 
-    <div id="logRow" class="row hide-unimportant" style="margin: 0.5rem">
-      <div class="row callout"><div class="small-12 columns"><img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2></div></div>
-      <div class="row callout">
-        <div class="small-12 columns">
-          <h3 style="display:inline">Log</h3>
-          <span style="float: right">
-            <input id="clearBtn1" type="button" class="button" value="Clear">
-            <input id="refreshBtn1" type="button" class="button" value="Refresh">
-            <input id="okBtn1" type="button" class="button" value="Ok">
-          </span><br>
+    <!-- spinner -->
+    <div id="spinner" class="callout hide-unimportant">
+      <span class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></span>
+    </div>
+
+
+
+    <!-- main -->
+    <div class="callout" style="padding: 2em;">
+
+
+      <div style="display: flex;">
+
+        <div style="flex: 1;">
+          <h3 style="display: inline-block; margin-right: 0.5em;" data-i18n="log"></h3>
           <input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
           <label class="switch-paddle" for="onOff">
             <span class="show-for-sr">On/Off</span>
@@ -32,36 +41,47 @@
             <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
           </label>
         </div>
-        <div class="small-12 columns">
-            <div class="row callout"><strong>Failed URLs display here, too!</strong> A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.</div>
+
+        <div style="flex: 1; text-align: right;">
+          <button type="button" class="button" data-i18n="back">&#x25c1; </button>
+          <button type="button" class="button" data-i18n="refresh"></button>
+          <button type="button" class="button alert" data-i18n="clear"></button>
         </div>
-        <div class="small-12 columns">
-          <div class="row">
-            <table id="logTable">
-              <thead><tr><th>URL</th><th>Proxy Title</th><th>Proxy Color</th><th>Proxy Address</th><th>Match Pattern</th><th>Timestamp</th></thead>
-              <tbody id="rows"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="small-12 columns">
-          <span style="float: right">
-            <input id="clearBtn2" type="button" class="button" value="Clear">
-            <input id="refreshBtn2" type="button" class="button" value="Refresh">
-            <input id="okBtn2" type="button" class="button" value="Ok">
-          </span>
-        </div>
+
       </div>
+
+
+
+      <div class="callout"><strong>Failed URLs display here, too!</strong> A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.
+      </div>
+
+      <div style="max-height: 40vh; overflow-y: auto;">
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th data-i18n="url"></th><th data-i18n="proxyTitle"></th><th data-i18n="proxyColor"></th>
+              <th data-i18n="proxyAddress"></th><th data-i18n="matchPattern"></th><th data-i18n="timestamp"></th>
+             </tr>
+            <!-- template -->
+            <tr class="template">
+               <td><a href="" target="_blank"></a></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+
     </div>
-  </body>
-  <script src="scripts/jquery-3.4.1.min.js"></script>
+
   <script src="scripts/const.js"></script>
   <script src="scripts/utils.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/log.js"></script>
-
-  <table style="display: none">
-    <tbody id="rowTemplate" >
-      <tr class="%color"><td><a href="url" target="_blank">url</a></td><td>title</td><td style="background-color: %proxyColor" class="fp-color-blob-log">&nbsp;</td><td>address</td><td>pattern</td><td>time</td></tr>
-    </tbody>
-  </table>
+  </body>
 </html>

@@ -1,46 +1,54 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      h6 {border-bottom: 1px solid #ccc; }
+      .button { margin-bottom: 0; padding: 0.5em 1em; }
+      li { cursor: pointer; line-height: normal; }
+      li:hover { background-color: #ffebcd; }
+      li span { display: inline-block; margin: 0 0.4em 0 1em; color: transparent; }
+      li.on span { color: inherit; }
+      li:nth-last-child(2) { color: orange; }
+      li:nth-last-child(2) span, li:last-of-type span { margin-left: 0; }
+      li:last-of-type { color: red; }
+    </style>
   </head>
-  <body style="margin: 0 .3rem">
-    <div class="row"><p><!-- spacer --></p></div>
+  <body style="padding: 0.4em;">
 
-    <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
-      </div>
+    <!-- header -->
+    <div class="callout" style="padding: 0.5em; margin: 0 0 0.4em 0;">
+      <h3><img src="/images/icon.svg" style="vertical-align: middle; width: 36px" alt=""> FoxyProxy </h3>
     </div>
+    
+    <!-- spinner --><!-- 
+    <div id="spinner" class="callout hide-unimportant">
+      <span class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></span>
+    </div> -->
 
-    <div id="errorRow" class="row hide-unimportant">
-      <div class="small-12 small-centered columns">
-        <div class="row callout">
-          <p>There was an error</p>
-        </div>
-      </div>
-    </div>
+    <!-- error -->
+    <div class="callout hide-unimportant"><h5 data-i18n="errorWas"></h5></div>
+    
+    <!-- main -->
+    <div id="optionsRow" class="callout hide-unimportant" style="margin: 0;">
+        <h6 data-i18n="modeSelection"></h6>
+        <ul class="vertical menu">
+  
+          <!-- template -->
+          <li class="template"><span class="fa fa-check"></span></li>
 
-    <div id="optionsRow" class="callout hide-unimportant">
-        <img src="/images/48x48.svg"><h2 style="display:inline;margin-left:.5rem;">FoxyProxy</h2>
-        <ul id="fp-browserActionPopup" class="vertical menu">
-          <li id="patternsListItem"><a id="patterns" class="fp-orange"><span id="patternsSelected"></span>Use Enabled Proxies By Patterns and Priority</a></li>
-          <span id="menuInsertPoint"></span>
-          <!--<li> <a id="enable">&nbsp;Turn On All Proxies</a></li>-->
-          <li><a id="disabled" style="color: red"><span id="disabledSelected"></span>Turn Off FoxyProxy (Use Firefox Settings)</a></li>
-          <li><hr id="horizRule"/></li>
-          <li><a id="log">Log</a></li>
-          <li><a id="where">What's My IP?</a></link>
-          <li><a id="options">Options</a></li>
+          <li id="patterns" data-i18n="modePatterns" style="margin-top: 0.5em !important;"><span class="fa fa-check"></span></li>
+          <li id="disabled" data-i18n="modeDisabled"><span class="fa fa-check"></span></li>
         </ul>
+        <div style="margin-top: 1em; text-align: center;">
+          <button type="button" class="button" data-i18n="options"></button>
+          <button type="button" class="button" data-i18n="myIP"></button>
+          <button type="button" class="button" data-i18n="log"></button>
+        </div>
     </div>
 
-  <span class="hide-unimportant" id="modeOptionTemplate"><li class="fp-browserActionPopup"><a id="%idx" style="color: %color"><span id="%idxSelected"></span>Use proxy %title for all URLs (ignore patterns)</a></li></span>
-
-  <script src="scripts/jquery-3.4.1.min.js"></script>
   <script src="scripts/const.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>

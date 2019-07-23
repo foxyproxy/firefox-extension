@@ -1,116 +1,186 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="add">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
-  </head>
-  <body style="margin: 1rem 2rem 0rem 2rem">
+    <style>
+      .flex { display: flex; }
+      .flex > * { flex: 1; }
+      input::placeholder { font-style: italic; }
+      .main div:nth-child(1) { flex: 2;  margin-right: 1em; }
+      .main div:nth-child(2) { flex: 3; }
+      .main label { display: inline-block; }
 
-      <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row column callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
-      </div>
+      .onOff > label { flex: 4;  margin-right: 1em; }
+      .onOff > div { flex: 1 !important; }
+      .main button:last-of-type { margin-right: 0; }
+      .unsupported { margin-top: 1.5em; }
+
+      .onOff, .pac, .unsupported { display: none; }
+      input[name="nav"] { display: none; }
+      #http:checked ~ div div.onOff:not(.dns),
+      #https:checked ~ div div.onOff:not(.dns),
+      #socks4:checked ~ div div.onOff:not(.dns) {
+        display: flex;
+      }
+      #socks5:checked ~ div div.onOff { display: flex; }
+      #pac:checked ~ div div.pac,
+      #wpad:checked ~ div div.pac {
+        display: block;
+      }
+      #pac:checked ~ div div.unsupported,
+      #wpad:checked ~ div div.unsupported,
+      #system:checked ~ div div.unsupported  {
+        display: block;
+      }
+      #pac:checked ~ div div.rightData,
+      #wpad:checked ~ div div.rightData,
+      #system:checked ~ div div.rightData,
+      #pac:checked ~ div button:not(:first-of-type),
+      #wpad:checked ~ div button:not(:first-of-type),
+      #system:checked ~ div button:not(:first-of-type) {
+        display: none;
+      }
+      #direct:checked ~ div div.proxyData {
+        display: none;
+      }
+
+    </style>
+  </head>
+  <body style="padding: 1em;">
+
+    <!-- Navigation -->
+    <input type="radio" name="nav" id="http" checked>
+    <input type="radio" name="nav" id="https">
+    <input type="radio" name="nav" id="socks5">
+    <input type="radio" name="nav" id="socks4">
+    <input type="radio" name="nav" id="direct">
+    <input type="radio" name="nav" id="pac">
+    <input type="radio" name="nav" id="wpad">
+    <input type="radio" name="nav" id="system">
+
+    <!-- header -->
+    <div class="callout">
+      <h3><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> <span></span></h3>
     </div>
 
-    <div id="addEditRow" class="row hide-unimportant">
-      <div class="row callout"><div class="small-12 columns"><img src="/images/48x48.svg"><h2 id="windowTitle" style="vertical-align:middle;display:inline;margin-left:1rem;"></h2></div></div>
-      <div class="row callout">
-        <div class="small-5 columns">
-          <div class="row small-12 columns">
-            <label>Proxy Type <i class="fa fa-star fp-orange"></i>
-              <select id="newProxyType">
-                <option value="1" selected>HTTP</option>
-                <option value="3">SOCKS5</option>
-                <option value="4">SOCKS4</option>
-                <option value="2">SSL</option>
-                <option value="6">PAC script or PAC URL</option>
-                <option value="7">WPAD</option>
-                <option value="8">Use system settings</option>
-                <option value="5">No Proxy (direct internet connection)</option>
-              </select>
+
+    <!-- main -->
+    <div class="callout flex main" style="padding: 2em;">
+
+      <!-- left column -->
+      <div>
+        <label data-i18n="proxyType"></label>
+        <select id="proxyType">
+          <option value="1" selected>HTTP</option>
+          <option value="2">HTTPS/SSL</option>
+          <option value="3">SOCKS5</option>
+          <option value="4">SOCKS4</option>
+          <option value="6">PAC script or PAC URL</option>
+          <option value="7">WPAD</option>
+          <option value="8">Use system settings</option>
+          <option value="5">No Proxy (direct internet connection)</option>
+        </select>
+
+        <label data-i18n="color"></label>
+        <input type="color" id="color" value="#ff7700">
+        <input id="colorChooser" class="button" type="text">
+
+        <div class="flex onOff notForBasic">
+          <label>Add whitelist pattern to match all URLs</label>
+          <div>
+            <input name="onOff" class="switch-input" id="onOffWhiteAll" type="checkbox" checked>
+            <label class="switch-paddle" for="onOffWhiteAll">
+              <span class="show-for-sr">On/Off</span>
+              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
             </label>
           </div>
-          <div class="row">
-            <div class="small-12 columns">
-              <label>Color</label><input id="colorChooser" class="button" type="text">
-            </div>
-          </div>
-          <div class="row hide-unimportant show-if-pac-or-wpad">
-            <div class="small-12 columns">
-              <label>URL <i class="fa fa-star fp-orange"></i><input id="pacURL" type="text"></label>
-            </div>
-          </div>
-          <div class="row fp-margin-bottom hideIfEditing supported hideIfNoProxy hideIfFoxyProxyBasic">
-            <div class="small-7 columns">
-              <label>Add whitelist pattern to match all URLs</label>
-            </div>
-            <div class="small-5 columns">
-              <input name="onOff1" class="switch-input" id="onOffWhiteAll" type="checkbox" checked>
-              <label class="switch-paddle" for="onOffWhiteAll">
-                <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-              </label>
-            </div>
-          </div>
-          <div class="row hideIfEditing fp-margin-bottom supported hideIfNoProxy hideIfFoxyProxyBasic">
-            <div class="small-7 columns">
-              <label>Do not use for localhost and intranet/private IP addresses</label><span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" tabindex="1" title="Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
-            </div>
-            <div class="small-5 columns">
-                <input name="onOff2" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
-                <label class="switch-paddle" for="onOffBlackAll">
-                  <span class="show-for-sr">On/Off</span>
-                  <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                  <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-                </label>
-            </div>
-          </div>
-          <div class="row fp-margin-bottom supported hideIfNotSOCKS5 hideIfNoProxy">
-            <div class="small-7 columns"><label>Send DNS through SOCKS5 proxy?</label></div>
-            <div class="small-5 columns">
-              <input name="proxyDNS" class="switch-input" id="proxyDNS" type="checkbox" checked>
-              <label class="switch-paddle" for="proxyDNS">
-                <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-              </label>
-            </div>
+        </div>
+
+        <div class="flex onOff notForBasic">
+          <label>Do not use for localhost and intranet/private IP addresses
+            &nbsp;&nbsp;<span class="has-tip" title="Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span></label>
+
+          <div>
+            <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
+            <label class="switch-paddle" for="onOffBlackAll">
+              <span class="show-for-sr">On/Off</span>
+              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+            </label>
           </div>
         </div>
-        <div class="small-7 columns">
-          <label class="supported">Title or Description (optional)<input id="newProxyTitle" type="text"></label>
-          <span class="hideIfNoProxy">
-            <label>IP address, DNS name, server name <i class="fa fa-star fp-orange"></i> <input id="newProxyAddress" type="text"></label>
-            <label>Port <i class="fa fa-star fp-orange"></i> <input id="newProxyPort" type="text"></label>
-            <label>Username (optional) <input id="newProxyUsername" type="text"></label>
-            <label>Password (optional) <a id="toggleNewProxyPasswordType"><i class="fa fa-eye fp-orange"></i></a><input id="newProxyPassword" type="password"></label>
-          </span>
-          <span>
-            <input id="newProxyCancel" type="button" class="button alert supported" value="Cancel">
-            <input id="newProxySaveAddAnother" type="button" class="button hideIfEditing supported" value="Save &amp; Add Another">
-            <input id="newProxySaveThenPatterns" type="button" class="button hideIfEditing hideIfFoxyProxyBasic supported" value="Save &amp; Edit Patterns">
-            <input id="newProxySave" type="button" class="button supported" value="Save">
-          </span>
+
+        <!-- SOCKS5 -->
+        <div class="flex onOff dns">
+          <label>Send DNS through SOCKS5 proxy</label>
+          <div>
+            <input name="proxyDNS" class="switch-input" id="proxyDNS" type="checkbox" checked>
+            <label class="switch-paddle" for="proxyDNS">
+              <span class="show-for-sr">On/Off</span>
+              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+            </label>
+          </div>
         </div>
-        <div class="small-7 columns unsupported">
+
+        <!-- PAC/WPAD -->
+        <div class="pac">
+          <label>URL</label> <i class="fa fa-star fp-orange"></i>
+          <input id="pacURL" type="text">
+        </div>
+
+
+
+
+
+      </div>
+
+      <!-- right column -->
+      <div>
+        <div class="rightData">
+          <label class="supported" data-i18n="title"></label>
+          <input id="proxyTitle" type="text" placeholder="title">
+
+          <div class="proxyData">
+            <label data-i18n="ip"></label> <i class="fa fa-star fp-orange"></i>
+            <input id="proxyAddress" type="text" placeholder="111.111.111.111, www.example.com">
+
+            <label data-i18n="port"></label> <i class="fa fa-star fp-orange"></i>
+            <input id="proxyPort" type="text" placeholder="443">
+
+            <label data-i18n="username"></label>
+            <input id="proxyUsername" type="text" placeholder="username">
+
+            <label data-i18n="password"></label>
+            <button type="button" data-i18n="togglePW|title"><i class="fa fa-eye fp-orange"></i></button>
+            <input id="proxyPassword" type="password" placeholder="*****">
+          </div>
+        </div>
+
+        <div class="callout alert unsupported">
           <h5>Not supported</h5>
-          <div class="small-12 columns callout alert">Due to several Firefox bugs, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485">PAC</a>, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630">System Settings</a> are not yet supported.</div>
-          <label class="supported">Title or Description (optional)<input id="newProxyTitle" type="text"></label>
-          <span>
-            <input id="newProxyCancel2" type="button" class="button alert" value="Cancel">
-          </span>
+          <p>Due to several Firefox bugs, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485">PAC</a>, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630">System Settings</a> are not yet supported.</p>
+       </div>
+
+        <div class="buttons" style="text-align: right;">
+          <button type="button" class="button alert" data-i18n="cancel"></button>
+          <button type="button" class="button" data-i18n="saveAdd"></button>
+          <button type="button" class="button notForBasic" data-i18n="saveEditPattern"></button>
+          <button type="button" class="button" data-i18n="save"></button>
         </div>
+
       </div>
     </div>
-  </body>
+
   <script src="scripts/const.js"></script>
-  <script src="scripts/jquery-3.4.1.min.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>
-  <script src="scripts/jscolor-2.0.5.js"></script>
+  <script src="scripts/jscolor-2.0.5.js"></script><!-- only used here -->
   <script src="scripts/add-edit-proxy.js"></script>
+  </body>
 </html>
