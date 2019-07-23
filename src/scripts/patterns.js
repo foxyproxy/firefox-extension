@@ -147,8 +147,8 @@ function mkRow(patternObj, index, template, bw) {
     case PROTOCOL_HTTPS: protocol = 'HTTPS'; break;
   }
 
-  td[0].textContent = patternObj.title ? Utils.ellipsis(patternObj.title) : '\u00A0'; // Unicode &nbsp;
-  td[1].textContent = Utils.ellipsis(patternObj.pattern);
+  td[0].textContent = patternObj.title || '\u00A0'; // Unicode &nbsp;  // ellipsis is handled by CSS 
+  td[1].textContent = patternObj.pattern;  // ellipsis is handled by CSS 
   td[2].textContent = patternObj.type == PATTERN_TYPE_WILDCARD ? 'Wildcard': 'Reg Exp';
   td[3].textContent = protocol;
   td[4].textContent = patternObj.active ? 'On' : 'Off';

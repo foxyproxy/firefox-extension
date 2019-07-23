@@ -141,8 +141,8 @@ function renderProxies(settings) {
 
     div.id = item.id;
     node[0].style.backgroundColor = item.color;
-    node[1].textContent = Utils.getNiceTitle(item);
-    node[2].textContent = Utils.ellipsis(item.address);
+    node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS 
+    node[2].textContent = item.address; // ellipsis is handled by CSS
     node[3].id = item.id + '-onoff';
     node[3].checked = item.active;
     node[4].setAttribute('for', node[3].id);

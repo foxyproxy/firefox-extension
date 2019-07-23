@@ -32,7 +32,7 @@ function popupError(error) {
   console.log(`popupError(): ${error}`);
   // using hide-unimportant class app.css#4575 to show/hide
   // note: all elements are hidden, only need to unhide
-  document.querySelector('#errorRow').classList.remove('hide-unimportant');
+  document.querySelector('#error').classList.remove('hide-unimportant');
 }
 
 function renderOptions(settings) {
@@ -42,7 +42,7 @@ function renderOptions(settings) {
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
   const temp = document.querySelector('li.template');
-
+  
   settings.proxySettings.forEach(item => {
 
     if (!Utils.isUnsupportedType(item.type)) { // if supported
