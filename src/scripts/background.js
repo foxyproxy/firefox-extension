@@ -140,7 +140,7 @@ function sendSettingsToProxyScript(settings) {
       proxyScriptLoaded = true;
       // Right now we only support PATTERNS
       browser.browserAction.setIcon({path: '/images/icon.svg'});
-      browser.browserAction.setTitle({title: 'Patterns'});
+      browser.browserAction.setTitle({title: chrome.i18n.getMessage('Patterns')});
       browser.browserAction.setBadgeText({text: ''});
       // Remove inactive proxySetting objects and patterns. We also create empty arrays when necessary, never nulls.
       if (settings.proxySettings && Array.isArray(settings.proxySettings)) {
@@ -196,7 +196,7 @@ function setDisabled(isError) {
     proxyScriptLoaded = false;
     activeSettings = null; // For provideCredentialsAsync()
     browser.browserAction.setIcon({path: 'images/icon-off.svg'});
-    browser.browserAction.setTitle({title: 'Disabled'});
+    browser.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
     browser.browserAction.setBadgeText({text: ''});
     browser.runtime.sendMessage(DISABLED_SETTINGS_OBJ, {toProxyScript: true}); // Is this needed? We're unregistered.
     if (isError) {
