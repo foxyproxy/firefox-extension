@@ -16,7 +16,6 @@ browser.runtime.getBackgroundPage().then((page) => {
   //console.log("logg active is " + logg.active);
   onOff.checked = logg.active;
   renderLog(); // log content will be shown if there are any regardless of onOff
-
 });
 
 onOff.addEventListener('click', async (e) => {

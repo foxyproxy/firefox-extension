@@ -73,7 +73,7 @@ if (idParam) {
     
     // Populate the form
     document.title = 'FoxyProxy ' + chrome.i18n.getMessage('editProxy', '');
-    header.textContent = chrome.i18n.getMessage('editProxy', Utils.getNiceTitle(proxyToEdit));
+    header.textContent = chrome.i18n.getMessage('editProxy', proxyToEdit.title || `${proxyToEdit.address}:${proxyToEdit.port}`);
     
     // input
     document.querySelector('#proxyTitle').value = proxyToEdit.title || '';

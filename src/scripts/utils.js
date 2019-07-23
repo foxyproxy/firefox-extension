@@ -297,7 +297,8 @@ class Utils {
     }
     return null;
   }
-
+/*
+// not used any more
   static getNiceTitle(proxySetting) {
     let title = proxySetting.title ? proxySetting.title : (proxySetting.address + ':' + (proxySetting.port));
     return Utils.ellipsis(title);
@@ -307,7 +308,7 @@ class Utils {
     if (!str) return '';
     return str.length > len ? (str.substring(0, len) + '...') : str;
   }
-
+*/
   // only used in popup.js & proxies.js maybe better to keep it local rather than global
   // it would also be easier to manipulate the DOM locally
   static getOption(proxySetting) {

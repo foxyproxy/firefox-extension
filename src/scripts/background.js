@@ -5,7 +5,7 @@ let proxyScriptLoaded = false, activeSettings,browserVersion;
 
 // BEGIN: used in log.js
 // Use |var| not |let| so it's accessible from log.js
-var logg;
+let logg; // no need for var.. it doesn't affect log.js
 function getLogg() {
   return logg;
 }
@@ -20,10 +20,8 @@ function ignoreNextWrite() {
 
 // onProxyError will be renamed to onError
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1388619
-if ('onProxyError' in browser.proxy)
-  browser.proxy.onProxyError.addListener(e => console.error(`pac.js error: ${e.message}`));
-else
-  browser.proxy.onError.addListener(e => console.error(`pac.js error: ${e.message}`));
+const API = 'onProxyError' in browser.proxy ? browser.proxy.onProxyError : browser.proxy.onerror;
+API.addListener(e => console.error(`pac.js error: ${e.message}`));
 
 browser.runtime.onMessage.addListener((messageObj, sender) => {
   if (messageObj === MESSAGE_TYPE_DELETING_ALL_SETTINGS) {
@@ -44,9 +42,10 @@ browser.runtime.onMessage.addListener((messageObj, sender) => {
     //console.log('Got log message from PAC: ' + JSON.stringify(messageObj));
     // browser.runtime.sendMessage({type: MESSAGE_TYPE_LOG, url: url, matchedPattern: patternObj, proxySetting: proxySetting, error: true});
     if (logg) logg.add(messageObj);
-
-    browser.browserAction.setTitle({title: Utils.getNiceTitle(messageObj.proxySetting)});
-    browser.browserAction.setBadgeText({text: Utils.getNiceTitle(messageObj.proxySetting)});
+    // badge only shows 4 characters, no need to process it
+    const title = proxySetting.title || `${proxySetting.address}:${proxySetting.port}`;
+    browser.browserAction.setTitle({title}); 
+    browser.browserAction.setBadgeText({text: title});
     browser.browserAction.setBadgeBackgroundColor({color: messageObj.proxySetting.color});
   }
 });
@@ -133,6 +132,7 @@ function filterAndValidatePatterns(patternObjArr) {
 }
 
 function sendSettingsToProxyScript(settings) {
+  
   if (!settings || !settings.mode || settings.mode === DISABLED || (FOXYPROXY_BASIC && settings.mode === PATTERNS))
     setDisabled();
   else if (settings.mode === PATTERNS || settings.mode === RANDOM || settings.mode === ROUND_ROBIN) {
@@ -148,8 +148,8 @@ function sendSettingsToProxyScript(settings) {
         settings.proxySettings.forEach((ps) => {
           // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
           // imported this property as a string rather than boolean.
-          if (ps.proxyDNS === 'true') ps.proxyDNS = true;
-          else if (ps.proxyDNS === 'false') ps.proxyDNS = false;
+          if (ps.proxyDNS === 'true') { ps.proxyDNS = true; }
+          else if (ps.proxyDNS === 'false') { ps.proxyDNS = false; }
           ps.whitePatterns = filterAndValidatePatterns(ps.whitePatterns);
           ps.blackPatterns = filterAndValidatePatterns(ps.blackPatterns);
         });
@@ -173,9 +173,10 @@ function sendSettingsToProxyScript(settings) {
       let tmp = settings.proxySettings.find(e => e.id === settings.mode);
       if (tmp) {
         //browser.browserAction.setIcon({imageData: getColoredImage(tmp.color)});
+        const title = temp.title || `${temp.address}:${temp.port}`;
         browser.browserAction.setIcon({path: '/images/icon.svg'});
-        browser.browserAction.setTitle({title: Utils.getNiceTitle(tmp)});
-        browser.browserAction.setBadgeText({text: Utils.getNiceTitle(tmp)});
+        browser.browserAction.setTitle({title});
+        browser.browserAction.setBadgeText({text: title});
         browser.browserAction.setBadgeBackgroundColor({color: tmp.color});
         activeSettings = {mode: settings.mode, proxySettings: [tmp]}; // For provideCredentialsAsync()
         browser.runtime.sendMessage(activeSettings, {toProxyScript: true});
@@ -190,12 +191,13 @@ function sendSettingsToProxyScript(settings) {
 
 const DISABLED_SETTINGS_OBJ = {mode: DISABLED, proxySettings: []};
 function setDisabled(isError) {
+  
   unregisterProxyScript().then(() => {
     proxyScriptLoaded = false;
     activeSettings = null; // For provideCredentialsAsync()
     browser.browserAction.setIcon({path: 'images/icon-off.svg'});
     browser.browserAction.setTitle({title: 'Disabled'});
-    browser.browserAction.setBadgeText({text:''});
+    browser.browserAction.setBadgeText({text: ''});
     browser.runtime.sendMessage(DISABLED_SETTINGS_OBJ, {toProxyScript: true}); // Is this needed? We're unregistered.
     if (isError) {
       console.log('DISABLING DUE TO ERROR!');
@@ -213,6 +215,7 @@ function setDisabled(isError) {
 // getColoredImage is only used in background.js and it is commented oout so not used at all
 // getColoredImage also is the only part that uses JQuery in background.js
 // only utils.js uses JQuery ... removed from utils.js as well
+/*
 function getColoredImage(color) {
   // Modified from https://stackoverflow.com/a/30140386/3646737
 
@@ -232,7 +235,7 @@ function getColoredImage(color) {
   ctx.drawImage(img, 0, 0);
   return ctx.getImageData(0, 0, 48, 48);
 }
-
+*/
 /**
  * After https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 is fixed, onAuthRequired() not needed.
  */

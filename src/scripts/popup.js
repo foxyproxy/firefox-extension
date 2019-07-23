@@ -52,8 +52,7 @@ function renderOptions(settings) {
       li.id = item.id;
       li.style.color = item.color;
       li.id = item.id;
-      //a.appendChild(document.createTextNode(chrome.i18n.getMessage('modeDedicated', Utils.getNiceTitle(item))));
-      li.appendChild(document.createTextNode(Utils.getNiceTitle(item)));
+      li.appendChild(document.createTextNode(item.title || `${item.address}:${item.port}`));
 
       docfrag.appendChild(li);
     }
