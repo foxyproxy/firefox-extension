@@ -247,7 +247,7 @@ function openDialog(pat, isNew, patternArray) {
       }
       let pat = this.value.pattern && this.value.pattern.trim();
       if (!pat) {
-        alert("Please enter a pattern");
+        alert(chrome.i18n.getMessage('errorPattern'));
         return false;
       }
       else return true;
@@ -297,7 +297,8 @@ function importFileSelected(file, mimeTypeArr, maxSizeBytes) {
     editingProxy.blackPatterns = allPatterns.blackPatterns;
     vex.closeTop();
     renderPatterns();
-    alert(`Imported ${editingProxy.whitePatterns.length} white patterns and ${editingProxy.blackPatterns.length} black patterns.`);
+    Utils.displayNotification(chrome.i18n.getMessage('importBW', editingProxy.whitePatterns.length, editingProxy.blackPatterns.length));
+    
   });
 }
 

@@ -9,7 +9,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 const upgraded = Utils.urlParamsToJsonMap().upgraded;
-console.log('is upgraded? ' + upgraded);
+//console.log('is upgraded? ' + upgraded);
 // .hide-unimportant in app.css#4575 already has display: none;
 // we only need to remove .hide-unimportant to show the item
 document.querySelector(upgraded ? '.hide-if-not-upgrade' : '.hide-if-upgrade').classList.remove('hide-unimportant');
@@ -39,7 +39,7 @@ function process() {
 
 function importJson(settings) {
   deleteAllSettings().then(() => writeAllSettings(settings).then(() => {
-    alert('Import finished'); 
+    Utils.displayNotification(chrome.i18n.getMessage('importEnd'));
     location.href = '/options.html';
   }));
 }
@@ -270,11 +270,9 @@ function importXml(oldSettings) {
   //console.log("Done");
   deleteAllSettings().then(() => writeAllSettings(newSettings, false).then(() => {
     //Utils.displayNotification("Import finished");
-    if (patternsEdited) {
-      alert("Some patterns were changed because they contained slashes. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns to be sure the edits are acceptable.");
-    }
+    if (patternsEdited) { Utils.displayNotification(chrome.i18n.getMessage('patternsChanged')); }
     else {
-      alert("Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any.");
+      Utils.displayNotification(chrome.i18n.getMessage('importEndSlash'));
       location.href = '/options.html';
     }
   }));

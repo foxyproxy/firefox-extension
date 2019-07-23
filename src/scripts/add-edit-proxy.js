@@ -10,9 +10,9 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 
 // ----- global
 let oldProxySetting;
-const idParam = Utils.urlParamsToJsonMap().id,
-  color = new jscolor("colorChooser", {uppercase: false, hash: true});
-
+const idParam = Utils.urlParamsToJsonMap().id;
+const  color = new jscolor("colorChooser", {uppercase: false, hash: true});
+console.log(Utils.urlParamsToJsonMap());
 const header = document.querySelector('h3 span'); // dynamic header
 const proxyPassword = document.querySelector('#proxyPassword');
 
