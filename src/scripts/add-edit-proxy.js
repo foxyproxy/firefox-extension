@@ -10,19 +10,57 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 
 // ----- global
 let oldProxySetting;
-const idParam = Utils.urlParamsToJsonMap().id;
-const  color = new jscolor("colorChooser", {uppercase: false, hash: true});
-console.log(Utils.urlParamsToJsonMap());
+const color = new jscolor('colorChooser', {uppercase: false, hash: true});
+
 const header = document.querySelector('h3 span'); // dynamic header
-const proxyPassword = document.querySelector('#proxyPassword');
+setHeader();
+
+// ----- check for Edit
+const id = localStorage.getItem('id');
+if (id) { // This is an edit operation
+
+  const sync = localStorage.getItem('sync');
+
+  // clear localStorage
+  localStorage.removeItem('id');
+  localStorage.removeItem('sync');
+/*
+  getProxySettingById(id) chains 6 Promise queues which is time consuming
+  getProxySettingById(id).then()
+  console.time('getProxySettingById');
+  getProxySettingById(id).then(() => console.timeEnd('getProxySettingById'));
+  time taken above method: 182ms
+  time taken bellow method: 50ms
+*/
+  const API = sync === 'true'  ? browser.storage.sync : browser.storage.local;
+  API.get(id).then((data) => {
+
+    if (id === LASTRESORT && Object.keys(data).length === 0) { // error prevention
+      processOptions(DEFAULT_PROXY_SETTING);
+    }
+    data[id].id = id;
+    processOptions(data[id]);
+  })
+  .catch((e) => console.error('Unable to edit saved proxy proxy (could not get existing settings): ' + e));
+}
+
 
 // --- show & hide element using CSS
 const nav = [...document.querySelectorAll('input[name="nav"]')];
-nav[0].checked = true;
+//nav[0].checked = true;
+
 const proxyType = document.querySelector('#proxyType');
-proxyType.addEventListener('change', function() {
-  nav[this.value -1].checked = true;
-});
+proxyType.addEventListener('change', function() { nav[this.value -1].checked = true; });
+
+const proxyTitle = document.querySelector('#proxyTitle');
+proxyTitle.focus();
+
+const proxyAddress =  document.querySelector('#proxyAddress');
+const proxyPort = document.querySelector('#proxyPort');
+const proxyUsername = document.querySelector('#proxyUsername');
+const proxyPassword = document.querySelector('#proxyPassword');
+const proxyDNS = document.querySelector('#proxyDNS');
+const pacURL = document.querySelector('#pacURL');
 
 // --- remove nodes completely for FP Basic
 FOXYPROXY_BASIC && document.querySelectorAll('.notForBasic').forEach(item => item.remove());
@@ -41,7 +79,7 @@ function process() {
 
     case 'saveAdd':
       if (!validateInput()) { return; }
-      saveProxySetting().then(() => resetForm())
+      saveProxySetting().then(resetOptions)
       .catch((e) => console.error('Error saving proxy: ' + e));
       break;
 
@@ -64,77 +102,79 @@ function process() {
   }
 }
 
+function setHeader(proxy) {
 
-if (idParam) {
-  // This is an edit operation. Read the data to be edited.
-  getProxySettingById(idParam).then((proxyToEdit) => { console.log(proxyToEdit);
-    
-    oldProxySetting = proxyToEdit;
-    
-    // Populate the form
+  if (proxy) {
     document.title = 'FoxyProxy ' + chrome.i18n.getMessage('editProxy', '');
-    header.textContent = chrome.i18n.getMessage('editProxy', proxyToEdit.title || `${proxyToEdit.address}:${proxyToEdit.port}`);
-    
-    // input
-    document.querySelector('#proxyTitle').value = proxyToEdit.title || '';
-    document.querySelector('#proxyAddress').value = proxyToEdit.address || '';
-    document.querySelector('#proxyPort').value = proxyToEdit.port || '';
-    document.querySelector('#proxyUsername').value = proxyToEdit.username || '';
-    proxyPassword.value = proxyToEdit.password || ''; 
-    document.querySelector('#pacURL').value = proxyToEdit.pacURL || '';   
-    
-    // select
-    proxyType.value = proxyToEdit.type;
-    
-    // checkbox
-    document.querySelector('#proxyDNS').checked = proxyToEdit.proxyDNS || false;
-    
-    // color
-    document.querySelector('#color').value = proxyToEdit.color || DEFAULT_COLOR;
-    color.fromString(proxyToEdit.color || DEFAULT_COLOR);
-  })
-  .catch((e) => console.error('Unable to edit saved proxy proxy (could not get existing settings): ' + e));
-}
-else { resetForm(); }
-
-
-function resetForm() {
-  
+    header.textContent = chrome.i18n.getMessage('editProxy', proxy.title || `${proxy.address}:${proxy.port}`);
+    return;
+  }
   document.title = 'FoxyProxy ' + chrome.i18n.getMessage('addProxy');
   header.textContent = chrome.i18n.getMessage('addProxy');
-  
-  proxyType.value = PROXY_TYPE_HTTP;
-
-  document.querySelectorAll('input[type="text"]').forEach(item => item.value = '');
-  document.querySelectorAll('input[type="checkbox"]').forEach(item => item.checked = true);
-  
-  document.querySelector('#color').value = DEFAULT_COLOR;
-  color.fromString(DEFAULT_COLOR);  
-  
-  document.querySelector('#proxyTitle').focus();
 }
 
- 
+
+function processOptions(proxy) {
+
+    //console.log(proxy);
+    oldProxySetting = proxy;
+
+    // Populate the form
+    setHeader(proxy);
+
+    // input
+    proxyTitle.value = proxy.title || '';
+    proxyAddress.value = proxy.address || '';
+    proxyPort.value = proxy.port || '';
+    proxyUsername.value = proxy.username || '';
+    proxyPassword.value = proxy.password || '';
+    pacURL.value = proxy.pacURL || '';
+
+    // select
+    proxyType.value = proxy.type;
+
+    // checkbox
+    proxyDNS.checked = proxy.proxyDNS || false;
+
+    // color
+    color.fromString(proxy.color || DEFAULT_COLOR);
+}
+
+function resetOptions() {
+
+  setHeader();
+
+  //proxyType.value = '1'; // http
+  
+  // to help entering sets quickly, some fields are kept
+  [proxyTitle, proxyAddress].forEach(item => item.value = '');
+  //document.querySelectorAll('input[type="text"]').forEach(item => item.value = '');
+  //document.querySelectorAll('input[type="checkbox"]').forEach(item => item.checked = true);
+
+  color.fromString(DEFAULT_COLOR);
+
+  proxyTitle.focus();
+}
+
+
 function saveProxySetting() {
 
   let proxySetting = {};
 
-  const proxyTitle = document.querySelector('#proxyTitle').value;
-  if (proxyTitle) { proxySetting.title = proxyTitle; }
+  if (proxyTitle.value) { proxySetting.title = proxyTitle; }
 
   proxySetting.type = proxyType.value *1;
-  
+
   proxySetting.color = document.querySelector('#colorChooser').value;
-  
+
   if (proxySetting.type !== PROXY_TYPE_NONE) {
-    
-    proxySetting.address = document.querySelector('#proxyAddress').value;
-    proxySetting.port = document.querySelector('#proxyPort').value *1;
-    if (proxySetting.type === PROXY_TYPE_SOCKS5 && document.querySelector('#proxyDNS').checked) { proxySetting.proxyDNS = true; }
-    const username = document.querySelector('#proxyUsername').value; // already trimmed in validateInput()
-    const password = proxyPassword.value;
-    if (username) { proxySetting.username = username; } // don't store ''
-    if (password) { proxySetting.password = password; } // don't store ''
+
+    proxySetting.address = proxyAddress.value;
+    proxySetting.port = proxyPort.value *1;
+    if (proxySetting.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked) { proxySetting.proxyDNS = true; }
+    // already trimmed in validateInput() , don't store ''
+    if (proxyUsername.value) { proxySetting.username = proxyUsername.value; }
+    if (proxyPassword.value) { proxySetting.password = proxyPassword.value; }
   }
 
     // prevent Firefox's save password prompt
@@ -154,7 +194,7 @@ function saveProxySetting() {
     // Do not use this proxy for internal IP addresses.
     proxySetting.whitePatterns = document.querySelector('#onOffWhiteAll').checked ? [PATTERN_ALL_WHITE] : [];
 
-    proxySetting.blackPatterns = document.querySelector('#onOffBlackAll').checked ? 
+    proxySetting.blackPatterns = document.querySelector('#onOffBlackAll').checked ?
       [PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK] : [];
 
 
@@ -165,23 +205,27 @@ function saveProxySetting() {
 function validateInput() {
 
   Utils.trimAllInputs();
-  Utils.escapeAllInputs('#proxyTitle, #proxyAddress, #proxyPort');
+
+  // let's handle here, #proxyPort will be checks later separately
+  // Utils.escapeAllInputs('#proxyTitle,#proxyAddress,#proxyPort');
+  // escape all inputs
+  [proxyTitle, proxyAddress].forEach(item => item.value = item.value.replace(/[&<>"']+/g, ''));
 
   if (proxyType.value *1 === PROXY_TYPE_NONE) { return true; }
-  
-  let item = document.querySelector('#proxyAddress');
-  item.classList.remove('is-invalid-input'); // reset
-  if (!item.value) {
-    item.classList.add('is-invalid-input');
+
+  // checking proxyAddress
+  proxyAddress.classList.remove('is-invalid-input'); // reset
+  if (!proxyAddress.value) {
+    proxyAddress.classList.add('is-invalid-input');
     return false;
   }
-  
-  item = document.querySelector('#proxyPort');
-  item.classList.remove('is-invalid-input'); // reset
-  if (!item.value *1) {
-    item.classList.add('is-invalid-input');
+
+  // checking proxyPort
+  proxyPort.classList.remove('is-invalid-input'); // reset
+  if (!proxyPort.value *1) { // check to see if it is a digit and not 0
+    proxyPort.classList.add('is-invalid-input');
     return false;
   }
-  
+
   return true;
 }

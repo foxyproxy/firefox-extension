@@ -120,21 +120,15 @@ function storageRetrievalSuccess(settings) {
 
     // using hide-unimportant class app.css#4575 to show/hide
     // note: all elements are hidden, only need to unhide
-    hideSpinner();
+    document.querySelector('#spinner').classList.add('hide-unimportant');
     document.querySelector('#error').classList.remove('hide-unimportant');
-    return;
   }
-
-  console.log('Proxies found in storage.');
-  renderProxies(settings);
-  hideSpinner();
-}
-
-function hideSpinner() {
-  
-  const spinner = document.querySelector('#spinner');
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+  else {
+    console.log('Proxies found in storage.');
+    renderProxies(settings);
+    document.querySelector('#spinner').classList.add('hide-unimportant');
+    document.querySelector('#accountsRow').classList.remove('hide-unimportant');
+  }
 }
 
 function storageRetrievalError(error) {
@@ -155,7 +149,21 @@ function renderProxies(settings) {
 
   settings.mode = settings.mode || 'patterns'; // defaults to patterns
 
-  settings.proxySettings.forEach((item, index) => {
+/*
+{
+  id: item.id;,
+  type: item.type,
+  color: item..color,
+  title: item.title,
+  address: item.address,
+  port: item.port,
+  username: item.username,
+  password: item.password
+}
+*/
+
+
+  settings.proxySettings.forEach((item) => {
 
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
@@ -200,8 +208,9 @@ function renderProxies(settings) {
     docfrag2.appendChild(opt);
   });
 
+
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
-  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild.previousElementSibling);
+  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.firstElementChild);
 
   const opt = mode.querySelector(`option[value="${settings.mode}"]`);
   if (opt) {

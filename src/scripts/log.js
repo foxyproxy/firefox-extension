@@ -11,12 +11,21 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 let logg;
 const onOff = document.querySelector('#onOff'); // cache for later
 
-browser.runtime.getBackgroundPage().then((page) => {
-  logg = page.getLogg();
+browser.runtime.getBackgroundPage().then((bg) => {
+  logg = bg.getLogg();
   //console.log("logg active is " + logg.active);
   onOff.checked = logg.active;
-  renderLog(); // log content will be shown if there are any regardless of onOff
+  renderLog(); // log content will be shown if there are any, regardless of onOff
+  hideSpinner();
 });
+
+function hideSpinner() {
+  
+  const spinner = document.querySelector('#spinner');
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+}
+
 
 onOff.addEventListener('click', async (e) => {
 

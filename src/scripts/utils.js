@@ -110,11 +110,22 @@ class Utils {
 
   // https://stackoverflow.com/questions/8486099/how-do-i-parse-a-url-query-parameters-in-javascript
   static urlParamsToJsonMap() {
+/*   
     let regex = /[?&]([^=#]+)=([^&#]*)/g, params = {}, match;
     while (match = regex.exec(location.href)) {
       params[match[1]] = JSON.parse(Utils._b64DecodeUnicode(match[2]));
     }
     return params;
+*/
+    // above code caters for far too many possibilites than needed here
+    // using location.search i.e. ??id=Imp6aWtjYzE1MTQ5NTQ3NzQ4NDci
+    // remoing the ? leaving the Query string
+    // normally we would split('&') for multiple parameters
+    // but we only use one parameter here
+    // we done even need to return an obj, we can return just the id  (maybe change later)
+    // _b64DecodeUnicode is not needed for FP use
+    const [prop, value] = location.search.substring(1).split('=');
+    return prop === 'id' ? { id: JSON.parse(Utils._b64DecodeUnicode(value)) } : {}; 
   }
 
   static jsonObject2UriComponent(o) {
@@ -160,15 +171,16 @@ class Utils {
 
 */
 
-
+/*
   // this is setting selector in add-edit-proxy.js#172
   // it is only used in 1 files and better to have it as an normal funciton in add-edit-proxy.js rather than a gloabl
   static escapeAllInputs(selector = 'input') {
     // since they are all removed then the replace can be combined
+    // only used in add-edit-proxy.js ... move to add-edit-proxy.js
     document.querySelectorAll(selector).forEach(item =>
       item.value = item.value.replace(/[&<>"']+/g, ''));
   }
-
+*/
 /*
   static escapeAllInputs(selector = ':input') {
     let allInputs = $(selector);
@@ -308,7 +320,7 @@ class Utils {
     if (!str) return '';
     return str.length > len ? (str.substring(0, len) + '...') : str;
   }
-*/
+
   // only used in popup.js & proxies.js maybe better to keep it local rather than global
   // it would also be easier to manipulate the DOM locally
   static getOption(proxySetting) {
@@ -320,7 +332,7 @@ class Utils {
       replace('%value', proxySetting.id).
       replace(/%idx/g, proxySetting.id).trim();
   }
-  
+*/  
   // used proxies.js popup.js
   static isUnsupportedType(type) {
     return type === PROXY_TYPE_PAC || type === PROXY_TYPE_WPAD || type === PROXY_TYPE_SYSTEM || type === PROXY_TYPE_PASS;

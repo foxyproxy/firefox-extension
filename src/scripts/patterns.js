@@ -12,26 +12,51 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 let editingProxy;
 vex.defaultOptions.className = 'vex-theme-default';
 
-const parsedURL = Utils.urlParamsToJsonMap();
-//console.log("parsedURL is ", parsedURL);
-if (parsedURL.id) {
-  // Read the data to be edited.
-  getProxySettingById(parsedURL.id).then((ps) => {
-    editingProxy = ps;
-    init();
+const header = document.querySelector('#header')
+header.textContent = chrome.i18n.getMessage('addEditPatterns');
+
+// ----- check for Edit
+const id = localStorage.getItem('id');
+if (id) { // This is an edit operation
+
+  const sync = localStorage.getItem('sync');
+
+  // clear localStorage
+  localStorage.removeItem('id');
+  localStorage.removeItem('sync');
+
+  const API = sync === 'true'  ? browser.storage.sync : browser.storage.local;
+  API.get(id).then((data) => {
+
+    if (id === LASTRESORT && Object.keys(data).length === 0) { // error prevention
+      processOptions(DEFAULT_PROXY_SETTING);
+    }
+    data[id].id = id;
+    editingProxy = data[id];
+
+    if (editingProxy.title) { header.textContent = chrome.i18n.getMessage('addEditPatternsFor', editingProxy.title); }
+
+    renderPatterns();
+    hideSpinner();
   })
-  .catch((e) => {
-    document.querySelector('#spinner').classList.add('hide-unimportant');
-    document.querySelector('#error').classList.remove('hide-unimportant');
-    console.error("1: Unable to read saved proxy (could not get existing settings): " + e);
-  });
+  .catch((e) => console.error("1: Unable to read saved proxy (could not get existing settings): " + e));
 }
 else {
   // Error, shouldn't ever get here
-  document.querySelector('#spinner').classList.add('hide-unimportant');
+  hideSpinner();
   document.querySelector('#error').classList.remove('hide-unimportant');
-  console.error("2: Unable to read saved proxy proxy (could not get existing settings)");
+  document.querySelector('.main').classList.add('hide-unimportant');
+  console.error("2: Unable to read saved proxy proxy (could not get existing settings)");  
 }
+
+function hideSpinner() {
+  
+  const spinner = document.querySelector('#spinner');
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+}
+
+
 
 // --- processing all buttons
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
@@ -88,27 +113,8 @@ function processEdit() {
       patternsArray.splice(idx, 1);
       renderPatterns(); // TODO: refocus correct page number
       break;
-    
-    
-
   }
 }
-
-
-function init() {
-  // Populate the form
-  const heading = editingProxy.title ?
-      chrome.i18n.getMessage('addEditPatternsFor', editingProxy.title) : chrome.i18n.getMessage('addEditPatterns');
-
-  document.querySelector('#header').appendChild(document.createTextNode(heading));
-
-  renderPatterns();
-  document.querySelector('#spinner').classList.add('hide-unimportant');  
-  //document.querySelector('#patternsRow').classList.remove('hide-unimportant');
-}
-
-
-
 
 
 function renderPatterns() {
@@ -120,10 +126,10 @@ function renderPatterns() {
   tbody[0].textContent = ''; // clearing the content
   tbody[1].textContent = ''; // clearing the content
 
-  editingProxy.whitePatterns.forEach((item, index) => docfrag.appendChild(mkRow(item, index, tr, 'white')));
+  editingProxy.whitePatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'white')));
   docfrag.hasChildNodes() && tbody[0].appendChild(docfrag);
 
-  editingProxy.blackPatterns.forEach((item, index) => docfrag.appendChild(mkRow(item, index, tr, 'black')));
+  editingProxy.blackPatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'black')));
   docfrag.hasChildNodes() && tbody[1].appendChild(docfrag);
 
   // add Listeners();
@@ -131,7 +137,7 @@ function renderPatterns() {
 
 }
 
-function mkRow(patternObj, index, template, bw) {
+function makeRow(patternObj, index, template, bw) {
 
   const tr = template.cloneNode(true);
   tr.classList.remove('template');
@@ -162,7 +168,7 @@ function mkRow(patternObj, index, template, bw) {
 function savePatterns() {
 
   //document.querySelector('#patternsRow').classList.add('hide-unimportant');
-  document.querySelector('#spinner').classList.remove('hide-unimportant');
+  //document.querySelector('#spinner').classList.remove('hide-unimportant');
   return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
 }
 
@@ -298,7 +304,6 @@ function importFileSelected(file, mimeTypeArr, maxSizeBytes) {
     vex.closeTop();
     renderPatterns();
     Utils.displayNotification(chrome.i18n.getMessage('importBW', editingProxy.whitePatterns.length, editingProxy.blackPatterns.length));
-    
   });
 }
 

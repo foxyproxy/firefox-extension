@@ -120,21 +120,14 @@ function storageRetrievalSuccess(settings) {
 
     // using hide-unimportant class app.css#4575 to show/hide
     // note: all elements are hidden, only need to unhide
-    hideSpinner();
+    document.querySelector('#spinner').classList.add('hide-unimportant');
     document.querySelector('#error').classList.remove('hide-unimportant');
-    return;
   }
-
-  console.log('Proxies found in storage.');
-  renderProxies(settings);
-  hideSpinner();
-}
-
-function hideSpinner() {
-  
-  const spinner = document.querySelector('#spinner');
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+  else {
+    console.log('Proxies found in storage.');
+    renderProxies(settings);
+    document.querySelector('#accountsRow').classList.remove('hide-unimportant');
+  }
 }
 
 function storageRetrievalError(error) {
@@ -155,6 +148,13 @@ function renderProxies(settings) {
 
   settings.mode = settings.mode || 'patterns'; // defaults to patterns
 
+console.log(settings.proxySettings.length);
+for (let i = 0; i < 10; i++) {
+ settings.proxySettings.forEach(item => settings.proxySettings.push(item));
+}
+console.log(settings.proxySettings.length);
+
+console.time('insert');
   settings.proxySettings.forEach((item, index) => {
 
     const div = temp.cloneNode(true);
@@ -198,7 +198,20 @@ function renderProxies(settings) {
     const opt = new Option(node[1].textContent, item.id);
     opt.style.color = item.color;
     docfrag2.appendChild(opt);
+/*    
+    
+    with chunck insert 4500+ms
+    wihtout 1056ms
+    Firefox rendering takes a few seconds
+    
+    // insert in sets of 10
+    if (index && !(index%100)) { //console.log(index, ' called');console.timeEnd('insert');console.time('insert');
+      accounts.appendChild(docfrag);
+      mode.insertBefore(docfrag2, mode.lastElementChild.previousElementSibling);
+      document.querySelector('#spinner').classList.add('hide-unimportant');
+    } */
   });
+console.timeEnd('insert');
 
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild.previousElementSibling);
