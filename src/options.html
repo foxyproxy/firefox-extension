@@ -24,10 +24,29 @@
       .pxy.on { box-shadow: 0px 3px 6px rgba(0,0,0,0.6); }
       .pxy:first-of-type button.up,
       .pxy:nth-last-child(2) button.down { visibility: hidden; }
+      #accounts { max-height: 60vh; overflow-y: auto; }
       #accounts div:last-of-type { margin: 0; }
       .title, .address { display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .title { width: 6em; margin: 0 0.5em; }
       .address { max-width: 10em; }
+      .has-tip { margin: 0 0.3em; }
+      #spinner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: 10000;
+        transition: all 1s ease-in-out;
+        font-size: 20em;
+      }
+      #spinner.on { opacity: 0.5; }
     </style>
 
   </head>
@@ -35,13 +54,11 @@
 
     <!-- header -->
     <div class="callout">
-      <h3 data-i18n="options"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> FoxyProxy </h3>
+      <h3 data-i18n="options"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> </h3>
     </div>
 
     <!-- spinner --> <!-- options, patterns, log -->
-    <div id="spinner" class="callout">
-      <span class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></span>
-    </div>
+    <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
 
     <!-- error -->
     <div id="error" class="callout hide-unimportant"><h5 data-i18n="erroNoSettings"></h5></div>
@@ -51,17 +68,17 @@
     <div class="callout" style="display: flex;">
 
       <nav>
-        <a href="/add-edit-proxy.html" data-i18n="add"><i class="fa fa-1point8x fa-plus-circle fp-fontawsome-border-for-text"></i></a>
+        <a data-i18n="add"><i class="fa fa-1point8x fa-plus-circle fp-fontawsome-border-for-text"></i></a>
         <a data-i18n="deleteAll"><i class="fa fa-1point8x fa-trash fp-fontawsome-border-for-text"></i></a>
         <a data-i18n="export"><i class="fa fa-1point8x fa-download fp-fontawsome-border-for-text"></i></a>
-        <a href="/import.html" data-i18n="import"><i class="fa fa-1point8x fa-upload fp-fontawsome-border-for-text"></i></a>
-        <a href="/log.html" data-i18n="log"><i class="fa fa-1point8x fa-file-text fp-fontawsome-border-for-text"></i></a>
-        <a href="https://getfoxyproxy.org/geoip/" target="_new" data-i18n="myIP"><i class="fa fa-1point8x fa-globe fp-fontawsome-border-for-text"></i></a>
+        <a data-i18n="import"><i class="fa fa-1point8x fa-upload fp-fontawsome-border-for-text"></i></a>
+        <a data-i18n="log"><i class="fa fa-1point8x fa-file-text fp-fontawsome-border-for-text"></i></a>
+        <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-1point8x fa-globe fp-fontawsome-border-for-text"></i></a>
         <a data-i18n="deleteBrowserData"><i class="fa fa-1point8x fa-eraser fp-fontawsome-border-for-text"></i></a>
-        <a href="/about.html" data-i18n="about"><i class="fa fa-1point8x fa-question fp-fontawsome-border-for-text"></i></a>
+        <a data-i18n="about"><i class="fa fa-1point8x fa-question fp-fontawsome-border-for-text"></i></a>
       </nav>
 
-      <div id="accountsRow" class="callout" style="flex-grow: 1;" class="hide-unimportant">
+      <div id="accountsRow" class="callout" style="flex-grow: 1;">
 
         <!-- select & sync -->
         <div class="flex">
@@ -72,13 +89,13 @@
 
           <div style="text-align: right;">
               <span data-i18n="syncSettings"></span>
+              <button type="button" class="has-tip" data-i18n="help|title">?</button>
               <input id="syncOnOff" type="checkbox" name="syncOnOff" class="switch-input" checked>
-              <label class="switch-paddle" for="syncOnOff" style="vertical-align:text-top">
+              <label class="switch-paddle" for="syncOnOff" style="vertical-align: middle;">
                 <span class="show-for-sr" data-i18n="onOff"></span>
                 <span class="switch-active bold" aria-hidden="true" style="color: white" data-i18n="on"></span>
                 <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
               </label>
-               &nbsp;<button type="button" class="has-tip" data-i18n="help|title">?</button>
           </div>
         </div>
 
