@@ -37,7 +37,7 @@ chrome.storage.local.get(null, result => {
   }
   // sync is set
   syncOnOff.checked = true;
-  chrome.storage.sync.get(null, result => prepareSettings(result));
+  chrome.storage.sync.get(null, prepareSettings);
 });
 
 
@@ -69,11 +69,13 @@ function prepareSettings(settings) {
     }    
   };
   
-
-  if (!keys.length) { // settings is {} // storage.js note ....  if (!settings) { // unreliable !{} is false
+  if (!keys.length) { // settings is {}
     ret.proxySettings = [def];
-    return ret;
+    renderProxies(ret);
+    hideSpinner(); 
   }
+  
+  console.log('Proxies found in storage.');
 
   keys.forEach(key => {
   
@@ -89,15 +91,16 @@ function prepareSettings(settings) {
       default:
         const temp = settings[key];
         temp.id = key; // Copy the id into the object because we are not using it as a key in the array
-        delete temp.index; // Re-calculated when/if this object is written to disk again (user may move proxySetting up/down)
         temp.id === LASTRESORT && (lastResortFound = true);
         ret.proxySettings.push(temp);
     }
   });
 
   ret.proxySettings.sort((a, b) => a.index - b.index);
+  ret.proxySettings.forEach(item => delete item.index); // Re-calculated when/if this object is written to disk again (user may move proxySetting up/down)
 
   !lastResortFound && ret.proxySettings.push(def); // add default lastresort
 
-  return ret;
+  renderProxies(ret);
+  hideSpinner(); 
 }
