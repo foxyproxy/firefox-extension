@@ -1,16 +1,43 @@
-// A rework of getAllSettings()
-// there is a small (255) speed improvemet due to redeced bumebr of Promises (can become more if brwoser is doing a lot of things)
-// the logic has been reworked and simplified
+/*
+A rework of getAllSettings() & usingSync()
+there is a small (255) speed improvemet due to redeced bumebr of Promises (can become more if brwoser is doing a lot of things)
+the logic has been reworked and simplified
 
-// I will add the code to handle getProxySettingById(id) within the same function
+I will add the code to handle getProxySettingById(id) within the same function
+
+
+// currently ........
+// usingSync()
+1- new Promise
+2- _initializeStorage()
+  3.1 new Promise
+  3.2 browser.storage.local.get()
+
+// getAllSettings()
+1- new Promise
+2- _getAllSettingsNative()
+3- _initializeStorage()
+  3.1 new Promise
+  3.2 browser.storage.local.get()
+4- storage.get()
+
+*/
+
 
 /* --- experimental ---- */
 // using chrome compatible code
-
+// no need for usingSync()
 // check for sync
 chrome.storage.local.get(null, result => {
-  // sync is NOT set or it is false, use this result ELSE get from sync
-  !result.sync ? prepareSettings(result) : chrome.storage.sync.get(null, result => prepareSettings(result));
+  // sync is NOT set or it is false, use this result
+  if (!result.sync) { 
+    prepareSettings(result);
+    syncOnOff.checked = false;
+    return;
+  }
+  // sync is set
+  syncOnOff.checked = true;
+  chrome.storage.sync.get(null, result => prepareSettings(result));
 });
 
 
