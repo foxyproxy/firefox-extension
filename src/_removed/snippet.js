@@ -9,17 +9,12 @@
 
 // check for sync
 chrome.storage.local.get(null, result => {
-  // sync is NOT set or it is false, use this result
-  if (!result.sync) { 
-    prepareSettigns(result);
-    return;
-  }
-  // sync is set
-  chrome.storage.sync.get(null, result => prepareSettigns(result));
+  // sync is NOT set or it is false, use this result ELSE get from sync
+  !result.sync ? prepareSettings(result) : chrome.storage.sync.get(null, result => prepareSettings(result));
 });
 
 
-function prepareSettigns(settings) {
+function prepareSettings(settings) {
 
   //if (settings && !settings.mode) { }// 5.0 settings
   
