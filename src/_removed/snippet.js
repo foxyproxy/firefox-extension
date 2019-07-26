@@ -28,18 +28,21 @@ I will add the code to handle getProxySettingById(id) within the same function
 // using chrome compatible code
 // no need for usingSync()
 // check for sync
-chrome.storage.local.get(null, result => {
-  // sync is NOT set or it is false, use this result
-  if (!result.sync) { 
-    prepareSettings(result);
-    syncOnOff.checked = false;
-    return;
-  }
-  // sync is set
-  syncOnOff.checked = true;
-  chrome.storage.sync.get(null, prepareSettings);
-});
-
+  chrome.storage.local.get(null, result => {
+    // sync is NOT set or it is false, use this result
+    if (!result.sync) { 
+      syncOnOff.checked = false;
+      renderOptions(prepareSettings(result));
+      hideSpinner(); 
+      return;
+    }
+    // sync is set
+    syncOnOff.checked = true;
+    chrome.storage.sync.get(null, result => {
+      renderOptions(prepareSettings(result));
+      hideSpinner();       
+    });
+  });
 
 function prepareSettings(settings) {
 
@@ -71,8 +74,7 @@ function prepareSettings(settings) {
   
   if (!keys.length) { // settings is {}
     ret.proxySettings = [def];
-    renderProxies(ret);
-    hideSpinner(); 
+    return ret;
   }
   
   console.log('Proxies found in storage.');
@@ -101,6 +103,5 @@ function prepareSettings(settings) {
 
   !lastResortFound && ret.proxySettings.push(def); // add default lastresort
 
-  renderProxies(ret);
-  hideSpinner(); 
+  return ret;
 }
