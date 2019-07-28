@@ -1,8 +1,8 @@
 {
-  "app_name_foxyproxy_standard": { "message": "FoxyProxy Standard" },
-  "app_description_foxyproxy_standard": { "message": "Proxy switching by URL, made easy!" },
-  "app_name_foxyproxy_basic": { "message": "FoxyProxy Basic" },
-  "app_description_foxyproxy_basic": { "message": "Quick on/off proxy switching with no URL patterns" },
+  "extensionName": { "message": "FoxyProxy Standard" },
+  "extensionDescription": { "message": "Easy to use advanced Proxy Management tool for everyone" },
+  
+  "extensionNameBasic": { "message": "FoxyProxy Basic" },
   
   
   "error": { "message": "Error" },
@@ -14,7 +14,7 @@
   "log": { "message": "Log" },
   "myIP": { "message": "What's My IP?" },
   
-  "exportEnd": { "message": "Export finished" },
+
   
   
   "delete": { "message": "Delete" },
@@ -30,7 +30,8 @@
   "onOff": { "message": "On/Off" },
   "on": { "message": "On" },
   "off": { "message": "Off" },
-  
+  "confirmTransferToLocal": { "message": "Would you like to transfer the synced settings to your local profile?\nExisting Data will be merged." },
+  "confirmTransferToSync": { "message": "Would you like to transfer the local settings to your synced profile?\nExisting Data will be merged." },
   
   "modePatterns": { "message": "Enabled Proxies By Patterns and Priority" },
   "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
@@ -54,10 +55,19 @@
   "errorWas": { "message": "There was an error. Please try again." },
   "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
 
+//  "exportEnd": { "message": "Export finished" },
+  "importEnd": { "message": "Import finished" },
+  "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns to be sure the edits are acceptable." },
+  "importEndSlash": { "message": "Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any." },
+
+  "errorPattern": { "message": "Please enter a pattern" },
+  "importBW": { "message": "Imported $1} white patterns and $2 black patterns." },
+
   "up": { "message": "move up" },
   "down": { "message": "move down" },
 
   "disabled": { "message": "Disabled" },
+  "active": { "message": "Active" },
 
 
   "name": { "message": "Name" },
@@ -97,6 +107,7 @@
   "add": { "message": "Add" },
   "saveAdd": { "message": "Save & Add Another" },
   "saveEditPattern": { "message": "Save & Edit Patterns" },
+  "imported": { "message": "Imported" },
 
 
 
