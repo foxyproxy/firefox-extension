@@ -9,62 +9,43 @@
     <link rel="stylesheet" href="styles/vex-4.1.0.css"/>
     <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
-      .flex { display: flex; }
-      .flex > * { flex: 1; }
       tbody tr:nth-child(even) { background-color: #f5fffa  !important; }
       tbody tr:hover { background-color: #cae1d3 !important; }
       tbody td { padding: 0.2em; }
-      tbody td:nth-of-type(1), tbody td:nth-of-type(2) { max-width: 15em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      tbody td:nth-of-type(1), tbody td:nth-of-type(2) { max-width: 15em; overflow: hidden;
+        text-overflow: ellipsis; white-space: nowrap; }
+      tbody td:nth-of-type(1)::before, tbody td:nth-of-type(2)::before { content: attr(title); }
       th:nth-of-type(1), th:nth-of-type(2) { min-width: 10em; }
       th:nth-of-type(3), th:nth-of-type(4), th:nth-of-type(5) { width: 5em; }
       th:nth-of-type(6) { width: 7em; }
-      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { text-align: center; }
-      .buttonSet button { margin-bottom: 0; }
-      #spinner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.8);
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        z-index: 10000;
-        transition: all 1s ease-in-out;
-        font-size: 20em;
-      }
-      #spinner.on { opacity: 0.5; }
+      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { text-align: center; }}
+      .scroll {  max-height: 40vh; overflow-y: auto; scrollbar-color: #ddd #f5f5f5; scrollbar-width: thin; }
     </style>
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- header -->
-    <div class="callout">
-      <h3 id="header"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> </h3>
-    </div>
+    <div class="prime header" data-i18n="options"></div>
 
     <!-- spinner --> <!-- options, patterns, log -->
     <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
 
     <!-- error -->
-    <div id="error" class="callout hide-unimportant">
-      <h5 data-i18n="errorWas"></h5>
-      <button type="button" class="button" data-i18n="back">&#x25c1; </button>
+    <div id="error" class="prime hide">
+      <h3 data-i18n="errorWas"></h3>
+      <button type="button" data-i18n="back">&#x25c1; </button>
     </div>
 
     <!-- main -->
-    <div class="callout main" style="padding: 1em;">
+    <div class="prime main">
       <p style="text-align: right;">
         <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
         <a href="/pattern-tester.html" target="_blank">Pattern Tester</a>
       </p>
 
-      <h5 data-i18n="whitePatterns"></h5>
+      <h3 data-i18n="whitePatterns"></h3>
       <!-- table template -->
-      <div style="max-height: 40vh; overflow-y: auto; margin-bottom: 2em;">
+      <div class="scroll" style="margin-bottom: 2em;">
         <table style="width: 100%;">
           <thead>
             <tr>
@@ -75,9 +56,9 @@
             <tr class="template">
                <td></td><td></td><td></td><td></td><td></td>
                <td style="text-align: right;">
-                <a id="imported" class="hide-unimportant"><i class="fa fa-1point8x fa-upload fp-orange"></i></a>
-                <a id="edit" ><i class="fa fa-1point8x fa-pencil"></i></a>
-                <a id="delete" ><i class="fa fa-1point8x fa-trash"></i></a>
+                <a class="hide" data-i18n="imported|title"><i class="fa fa-1point8x fa-upload fp-orange"></i></a>
+                <a data-i18n="edit|title" ><i class="fa fa-1point8x fa-pencil"></i></a>
+                <a data-i18n="delete|title" ><i class="fa fa-1point8x fa-trash"></i></a>
                </td>
             </tr>
           </thead>
@@ -87,8 +68,8 @@
       </div>
 
 
-      <h5 data-i18n="blackPatterns"></h5>
-      <div style="max-height: 40vh; overflow-y: auto;">
+      <h3 data-i18n="blackPatterns"></h3>
+      <div class="scroll">
 
         <table style="width: 100%;">
           <thead>
@@ -104,23 +85,24 @@
 
 
     <p style="margin-top: 1em; text-align: center;">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
-      &nbsp;  <span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
-        <button type="button" class="button tiny" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button></p>
+      <span class="has-tip" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
+       <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button></p>
 
-     <div class="buttonSet flex">
-        <div>
-          <button type="button" class="button" data-i18n="importPatterns"></button>
-          <button type="button" class="button" data-i18n="exportPatterns"></button>
-        </div>
-        <div style="text-align: right;">
-          <button type="button" class="button alert" data-i18n="cancel"></button>
-          <button type="button" class="button" data-i18n="newWhite"></button>
-          <button type="button" class="button" data-i18n="newBlack"></button>
-          <button type="button" class="button" style="margin-right: 0;" data-i18n="save"></button>
-        </div>
+    <div class="flex">
+      <div>
+        <button type="button" data-i18n="importPatterns"></button>
+        <button type="button" data-i18n="exportPatterns"></button>
       </div>
-
+      <div style="text-align: right;">
+        <button type="button" class="alert" data-i18n="cancel"></button>
+        <button type="button" data-i18n="newWhite"></button>
+        <button type="button" data-i18n="newBlack"></button>
+        <button type="submit" style="margin-right: 0;" data-i18n="save"></button>
+      </div>
     </div>
+
+
+  </div>
 
 
   <script src="scripts/vex.combined-4.1.0.js"></script>

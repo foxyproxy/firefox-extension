@@ -6,23 +6,23 @@
     <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      td { font-size: 0.9em; }
+    </style>
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- header -->
-    <div class="callout">
-      <h3><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> Pattern Help</h3>
-    </div>
+    <div class="prime header">Pattern Help<</div>
     
     <!-- main -->
-    <div class="callout" style="padding: 2em;">    
+    <div class="prime">    
 
-      <h3>TL;DR</h3>
-      <p><a href="#examples">show me the examples</a></p>
+      <p><h3 style="display: inline-block;">TL;DR</h3>: <a href="#examples">show me the examples</a></p>
       
       <h3>What are they?</h3>
-      <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="callout-tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same group of patterns) match a URL, the proxy is <strong>not</strong> used to load that URL.</p>
-      <div class="callout small warning">Patterns are <strong>ignored</strong> unless FoxyProxy is set to <i>Use Enabled Proxies By Patterns and Priority</i>.</div>
+      <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="prime tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same group of patterns) match a URL, the proxy is <strong>not</strong> used to load that URL.</p>
+      <div class="prime small warning">Patterns are <strong>ignored</strong> unless FoxyProxy is set to <i>Use Enabled Proxies By Patterns and Priority</i>.</div>
       
       <h3>Ordering</h3>
       <p>Every URL is compared with the patterns for each proxy. The white/black patterns for the top-most (first) proxy are checked first, then the next set of white/black patterns are checked, and on down the list of proxies until there is a match. If there is no match, the <i>Default</i> is used to load the URL. <i>Default</i> matches all URLs. You can re-order the proxies using the arrow buttons as you like. You cannot re-order the <i>Default</i> since it acts as a <i>catch-all</i>.</p>
@@ -30,7 +30,7 @@
       <p>The order of white patterns and black patterns within a proxy do not matter.</p>
       
       <h3>Wildcards</h3>
-      <div class="callout alert">
+      <div class="prime alert">
         Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only URL domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
       </div>
       

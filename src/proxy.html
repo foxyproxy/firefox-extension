@@ -7,17 +7,12 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
-      .flex { display: flex; }
-      .flex > * { flex: 1; }
-      input::placeholder { font-style: italic; }
       .main > div:nth-child(1) { flex: 2;  margin-right: 1em; }
       .main > div:nth-child(2) { flex: 3; }
       .main label { display: inline-block; }
 
       .onOff > label { flex: 4;  margin-right: 1em; }
       .onOff > div { flex: 1 !important; }
-      .main button { margin-bottom: 0; }
-      .main button:last-of-type { margin-right: 0; }
       .unsupported { margin-top: 1.5em; }
 
       .onOff, .pac, .unsupported { display: none; }
@@ -51,7 +46,7 @@
 
     </style>
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- Navigation -->
     <input type="radio" name="nav" id="http" checked>
@@ -64,120 +59,132 @@
     <input type="radio" name="nav" id="system">
 
     <!-- header -->
-    <div class="callout">
-      <h3><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> <span></span></h3>
-    </div>
+    <div class="prime header" data-i18n="options"></div>
 
 
     <!-- main -->
-    <div class="callout flex main" style="padding: 2em;">
-
-      <!-- left column -->
-      <div>
-        <label data-i18n="proxyType"></label>
-        <select id="proxyType">
-          <option value="1" selected>HTTP</option>
-          <option value="2">HTTPS/SSL</option>
-          <option value="3">SOCKS5</option>
-          <option value="4">SOCKS4</option>
-          <option value="6">PAC script or PAC URL</option>
-          <option value="7">WPAD</option>
-          <option value="8">Use system settings</option>
-          <option value="5">No Proxy (direct internet connection)</option>
-        </select>
-
-        <label data-i18n="color"></label>
-        <input id="colorChooser" class="button" type="text">
-
-        <div class="flex onOff notForBasic">
-          <label>Add whitelist pattern to match all URLs</label>
-          <div>
-            <input name="onOff" class="switch-input" id="onOffWhiteAll" type="checkbox" checked>
-            <label class="switch-paddle" for="onOffWhiteAll">
-              <span class="show-for-sr">On/Off</span>
-              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-            </label>
+    <div class="prime">  
+      <div class="main flex">
+  
+        <!-- left column -->
+        <div>
+          <label data-i18n="proxyType"></label>
+          <select id="proxyType">
+            <option value="1" selected>HTTP</option>
+            <option value="2">HTTPS/SSL</option>
+            <option value="3">SOCKS5</option>
+            <option value="4">SOCKS4</option>
+            <option value="6">PAC script or PAC URL</option>
+            <option value="7">WPAD</option>
+            <option value="8">Use system settings</option>
+            <option value="5">No Proxy (direct internet connection)</option>
+          </select>
+  
+          <label data-i18n="color"></label>
+          <input id="colorChooser" type="text" style="text-align: center;">
+  
+          <div class="flex onOff">
+            <label data-i18n="active"></label>
+            <div>
+              <input name="onOff" class="switch-input" id="proxyActive" type="checkbox" checked>
+              <label class="switch-paddle" for="proxyActive">
+                <span class="show-for-sr">On/Off</span>
+                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+              </label>
+            </div>
+          </div>
+  
+          <div class="flex onOff notForBasic">
+            <label>Add whitelist pattern to match all URLs</label>
+            <div>
+              <input name="onOff" class="switch-input" id="onOffWhiteAll" type="checkbox" checked>
+              <label class="switch-paddle" for="onOffWhiteAll">
+                <span class="show-for-sr">On/Off</span>
+                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+              </label>
+            </div>
+          </div>
+  
+          <div class="flex onOff notForBasic">
+            <label>Do not use for localhost and intranet/private IP addresses
+            <span class="has-tip" title="Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span></label>
+  
+            <div>
+              <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
+              <label class="switch-paddle" for="onOffBlackAll">
+                <span class="show-for-sr">On/Off</span>
+                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+              </label>
+            </div>
+          </div>
+  
+          <!-- SOCKS5 -->
+          <div class="flex onOff dns">
+            <label>Send DNS through SOCKS5 proxy</label>
+            <div>
+              <input name="proxyDNS" class="switch-input" id="proxyDNS" type="checkbox" checked>
+              <label class="switch-paddle" for="proxyDNS">
+                <span class="show-for-sr">On/Off</span>
+                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
+                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+              </label>
+            </div>
+          </div>
+  
+          <!-- PAC/WPAD -->
+          <div class="pac">
+            <label>URL</label> <i class="fa fa-star fp-orange"></i>
+            <input id="pacURL" type="text">
+          </div>
+  
+  
+        </div>
+  
+        <!-- right column -->
+        <div>
+          <div class="rightData">
+            <label class="supported" data-i18n="title"></label>
+            <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
+  
+            <div class="proxyData">
+              <label data-i18n="ip"></label> <i class="fa fa-star fp-orange"></i>
+              <input id="proxyAddress" type="text" spellcheck="false" placeholder="111.111.111.111, www.example.com">
+  
+              <label data-i18n="port"></label> <i class="fa fa-star fp-orange"></i>
+              <input id="proxyPort" type="text" placeholder="443">
+  
+              <label data-i18n="username"></label>
+              <input id="proxyUsername" type="text" spellcheck="false" placeholder="username">
+  
+              <label data-i18n="password"></label>
+              <button type="button" class="plain" data-i18n="togglePW|title"><i class="fa fa-eye fp-orange"></i></button>
+              <input id="proxyPassword" type="password" spellcheck="false" placeholder="*****">
+            </div>
+          </div>
+  
+          <div class="prime alert small unsupported">
+            <h3>Not supported</h3>
+            <p>Due to several Firefox bugs, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485">PAC</a>, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630">System Settings</a> are not yet supported.</p>
           </div>
         </div>
-
-        <div class="flex onOff notForBasic">
-          <label>Do not use for localhost and intranet/private IP addresses
-            &nbsp;&nbsp;<span class="has-tip" title="Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span></label>
-
-          <div>
-            <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
-            <label class="switch-paddle" for="onOffBlackAll">
-              <span class="show-for-sr">On/Off</span>
-              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- SOCKS5 -->
-        <div class="flex onOff dns">
-          <label>Send DNS through SOCKS5 proxy</label>
-          <div>
-            <input name="proxyDNS" class="switch-input" id="proxyDNS" type="checkbox" checked>
-            <label class="switch-paddle" for="proxyDNS">
-              <span class="show-for-sr">On/Off</span>
-              <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-              <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- PAC/WPAD -->
-        <div class="pac">
-          <label>URL</label> <i class="fa fa-star fp-orange"></i>
-          <input id="pacURL" type="text">
-        </div>
-
-
       </div>
 
-      <!-- right column -->
-      <div>
-        <div class="rightData">
-          <label class="supported" data-i18n="title"></label>
-          <input id="proxyTitle" type="text" placeholder="title">
+      <div style="text-align: right;">
+        <button type="button" class="alert" data-i18n="cancel"></button>
+        <button type="button" data-i18n="saveAdd"></button>
+        <button type="button" class="notForBasic" data-i18n="saveEditPattern"></button>
+        <button type="submit" data-i18n="save"></button>
+      </div>      
 
-          <div class="proxyData">
-            <label data-i18n="ip"></label> <i class="fa fa-star fp-orange"></i>
-            <input id="proxyAddress" type="text" placeholder="111.111.111.111, www.example.com">
-
-            <label data-i18n="port"></label> <i class="fa fa-star fp-orange"></i>
-            <input id="proxyPort" type="text" placeholder="443">
-
-            <label data-i18n="username"></label>
-            <input id="proxyUsername" type="text" placeholder="username">
-
-            <label data-i18n="password"></label>
-            <button type="button" data-i18n="togglePW|title"><i class="fa fa-eye fp-orange"></i></button>
-            <input id="proxyPassword" type="password" placeholder="*****">
-          </div>
-        </div>
-
-        <div class="callout alert unsupported">
-          <h5>Not supported</h5>
-          <p>Due to several Firefox bugs, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485">PAC</a>, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630">System Settings</a> are not yet supported.</p>
-       </div>
-
-        <div class="buttons" style="text-align: right;">
-          <button type="button" class="button alert" data-i18n="cancel"></button>
-          <button type="button" class="button" data-i18n="saveAdd"></button>
-          <button type="button" class="button notForBasic" data-i18n="saveEditPattern"></button>
-          <button type="button" class="button" data-i18n="save"></button>
-        </div>
-
-      </div>
-    </div>
+  </div>
 
   <script src="scripts/const.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>
   <script src="scripts/jscolor-2.0.5.js"></script><!-- only used here -->
-  <script src="scripts/add-edit-proxy.js"></script>
+  <script src="scripts/proxy.js"></script>
   </body>
 </html>

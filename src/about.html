@@ -6,33 +6,28 @@
     <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
-    <style>
-      .button { margin-bottom: 0; }
-    </style>
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- header -->
-    <div class="callout">
-      <h3 data-i18n="options"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> FoxyProxy </h3>
-    </div>
+    <div class="prime header" data-i18n="about"></div>
 
     <!-- main -->
-    <div class="callout" style="padding: 2em;">
+    <div class="prime">
 
       <!-- welcome on install/update -->
-      <div class="welcome hide-unimportant">
-        <h4>Welcome!</h4>
+      <div class="welcome hide">
+        <h3>Welcome!</h3>
         <p>FoxyProxy has been the around for almost 15 years. So if you're upgrading from a legacy version, and your proxy settings are missing, please <a href="/import.html">import</a> them.<br>
         <i>(This message only appears after FoxyProxy has upgraded or is first installed.)</i></p>
       </div>
 
-      <h4>Info</h4>
+      <h3>Info</h3>
       <p><strong>Edition:</strong> <span id="edition"></span><br>
       <strong>Version:</strong> <span id="version"></span><br>
       <strong>Source Code:</strong> <a target="_blank" href="https://github.com/foxyproxy/firefox-extension">Code</a></p>
 
-      <h4>Help</h4>
+      <h3>Help</h3>
       <p>
         <a target="_blank" href="https://support.getfoxyproxy.org/"><i class="fa fa-question fp-orange"></i> Open a Support Ticket (no registration required)</a><br>
         <a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o fp-orange"></i> Email Support</a><br>
@@ -41,16 +36,16 @@
         <a id="whereamiButton" target="_blank" href="https://getfoxyproxy.org/geoip/"><i class="fa fa-globe fp-orange"></i> What's my IP Address?</a>
       </p>
 
-      <h4>Support Me</h4>
+      <h3>Support Me</h3>
       <p>Please <ahref="https://www.paypal.me/ericjung2/9.99" target="_blank" >donate</a> or <a href="https://getfoxyproxy.org/order/" target="_blank">buy dedicated VPN/Proxy Servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
       <p><strong>Thank you for using FoxyProxy!</strong></p>
       <img src="/images/ericjung.png" a;t="">
       <p>-- <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
 
 
-      <h4>Release Notes for Recent Releases</h4>
+      <h3>Release Notes for Recent Releases</h3>
       
-      <h6>Versions 6.4, 6.5, 6.6, 6.6.1, 6.6.2 (some versions unreleased)</h6>
+      <h4>Versions 6.4, 6.5, 6.6, 6.6.1, 6.6.2 (some versions unreleased)</h4>
       <ul>
         <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
         <li>Import/Export patterns to and from files (previously you could only import/export all settings, including patterns)</li>
@@ -67,14 +62,14 @@
         <li>Added link on About Page to the now public github repository for source code</li>
       </ul>
 
-      <h6>Version 6.3</h6>
+      <h4>Version 6.3</h4>
 
       <ul>
         <li>Turn Firefox Sync on/off - much requested feature.</li>
         <li>Some further input validation</li>
       </ul>
 
-      <h6>Version 6.2</h6>
+      <h4>Version 6.2</h4>
 
       <ul>
         <li>Ability to turn logging on/off -- much requested feature that was in legacy FoxyProxy</li>

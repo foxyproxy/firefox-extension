@@ -9,17 +9,13 @@
     <link rel="stylesheet" href="styles/vex-4.1.0.css"/>
     <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
-      .flex { display: flex; }
-      .flex > * { flex: 1; }
       nav { width: 14em; margin-right: 0.5em; }
       nav a { display: block; padding: 0.2em 0.5em; border-radius: 0 50px 50px 0; transition: all 0.5s ease-in-out; }
       nav a:hover { background-color: #ffebcd; }
       select { max-width: 25em; }
-      button.button { font-size: 0.8em; padding: 0.4em; margin: 0.1em;  vertical-align: top; }
-      .fp-color-blob ~ span { vertical-align: text-bottom; }
-      .default :not([data-i18n="edit"]) { visibility: hidden; }
-      button.up i { vertical-align: top; }
-      .pxy { opacity: 1; transition: all 0.5s ease-in-out; }
+      .rightColumn { padding: 1em; flex-grow: 1; border: 1px solid #ccc; border-radius: 5px; }
+      .pxy { opacity: 1; transition: all 0.5s ease-in-out; 
+          margin: 0 0 1em 0; padding: 0.5em 1em 0 1em; border: 1px solid #ccc; border-radius: 5px; }
       .pxy.off { opacity: 0.5; }
       .pxy.on { box-shadow: 0px 3px 6px rgba(0,0,0,0.6); }
       .pxy:first-of-type button.up,
@@ -29,102 +25,92 @@
       .title, .address { display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .title { width: 6em; margin: 0 0.5em; }
       .address { max-width: 10em; }
-      .has-tip { margin: 0 0.3em; }
-      #spinner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.8);
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        z-index: 10000;
-        transition: all 1s ease-in-out;
-        font-size: 20em;
-      }
-      #spinner.on { opacity: 0.5; }
+      #accounts button.small { margin-left: 0.2em; }
+      .default :not([data-i18n="edit"]) { visibility: hidden; }
     </style>
 
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- header -->
-    <div class="callout">
-      <h3 data-i18n="options"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> </h3>
-    </div>
+    <div class="prime header" data-i18n="options"></div>
+
 
     <!-- spinner --> <!-- options, patterns, log -->
     <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
 
     <!-- error -->
-    <div id="error" class="callout hide-unimportant"><h5 data-i18n="erroNoSettings"></h5></div>
+    <div id="error" class="prime hide"><h5 data-i18n="erroNoSettings"></h5></div>
 
 
     <!-- main -->
-    <div class="callout" style="display: flex;">
+    <div class="prime">
+      <div style="display: flex;">
 
-      <nav>
-        <a data-i18n="add"><i class="fa fa-1point8x fa-plus-circle fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="deleteAll"><i class="fa fa-1point8x fa-trash fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="export"><i class="fa fa-1point8x fa-download fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="import"><i class="fa fa-1point8x fa-upload fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="log"><i class="fa fa-1point8x fa-file-text fp-fontawsome-border-for-text"></i></a>
-        <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-1point8x fa-globe fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="deleteBrowserData"><i class="fa fa-1point8x fa-eraser fp-fontawsome-border-for-text"></i></a>
-        <a data-i18n="about"><i class="fa fa-1point8x fa-question fp-fontawsome-border-for-text"></i></a>
-      </nav>
+        <nav>
+          <a data-i18n="add"><i class="fa fa-1point8x fa-plus-circle fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="deleteAll"><i class="fa fa-1point8x fa-trash fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="export"><i class="fa fa-1point8x fa-download fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="import"><i class="fa fa-1point8x fa-upload fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="log"><i class="fa fa-1point8x fa-file-text fp-fontawsome-border-for-text"></i></a>
+          <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-1point8x fa-globe fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="deleteBrowserData"><i class="fa fa-1point8x fa-eraser fp-fontawsome-border-for-text"></i></a>
+          <a data-i18n="about"><i class="fa fa-1point8x fa-question fp-fontawsome-border-for-text"></i></a>
+        </nav>
 
-      <div id="accountsRow" class="callout" style="flex-grow: 1;">
+        <div class="rightColumn">
 
-        <!-- select & sync -->
-        <div class="flex">
-          <select id="mode">
-            <option value="patterns" style="color: #f7941e;" data-i18n="modePatterns"></option>
-            <option value="disabled" style="color: red;" data-i18n="modeDisabled"></option>
-          </select>
+          <!-- select & sync -->
+          <div class="flex">
+            <select id="mode">
+              <option value="patterns" style="color: #f7941e;" data-i18n="modePatterns"></option>
+              <option value="disabled" style="color: red;" data-i18n="modeDisabled"></option>
+            </select>
 
-          <div style="text-align: right;">
-              <span data-i18n="syncSettings"></span>
-              <button type="button" class="has-tip" data-i18n="help|title">?</button>
-              <input id="syncOnOff" type="checkbox" name="syncOnOff" class="switch-input" checked>
-              <label class="switch-paddle" for="syncOnOff" style="vertical-align: middle;">
-                <span class="show-for-sr" data-i18n="onOff"></span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white" data-i18n="on"></span>
+            <div style="text-align: right;">
+                <span data-i18n="syncSettings"></span>
+                <button type="button" class="plain has-tip" data-i18n="help|title">?</button>
+                <input id="syncOnOff" type="checkbox" name="syncOnOff" class="switch-input" checked>
+                <label class="switch-paddle" for="syncOnOff" style="vertical-align: middle;">
+                  <span class="show-for-sr" data-i18n="onOff"></span>
+                  <span class="switch-active bold" aria-hidden="true" style="color: white" data-i18n="on"></span>
+                  <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
+                </label>
+            </div>
+          </div>
+
+          <!-- proxy list -->
+          <div id="accounts"></div>
+
+          <!-- template -->
+          <div class="pxy flex template">
+            <div>
+              <span class="fp-color-blob"></span>
+              <span class="title"></span>
+              <span class="address"></span>
+            </div>
+            <div style="text-align: right;">
+              <input type="checkbox" name="onOff" class="switch-input" id="">
+              <label style="vertical-align: text-bottom" class="switch-paddle" for="">
+                <span class="switch-active" aria-hidden="true" style="color: white" data-i18n="on"></span>
                 <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
               </label>
+
+              <button type="button" class="small" data-i18n="edit"></button>
+              <button type="button" class="small" data-i18n="patterns"></button>
+              <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-1point8x fa-trash fp-orange"></i></button>
+              <button type="button" class="plain up" data-i18n="up|title"><i class="fa fa-1point8x fa-caret-up fp-orange"></i></button>
+              <button type="button" class="plain down" data-i18n="down|title"><i class="fa fa-1point8x fa-sort-desc fp-orange"></i></button>
+            </div>
           </div>
+
         </div>
-
-        <!-- proxy list -->
-        <div id="accounts"></div>
-
-        <!-- template -->
-        <div class="callout flex template pxy" style="padding: 0.5em 1em 0 1em;">
-          <div>
-            <span class="fp-color-blob"></span>
-            <span class="title"></span>
-            <span class="address"></span>
-          </div>
-          <div style="text-align: right;">
-            <input type="checkbox" name="onOff" class="tiny switch-input" id="">
-            <label style="vertical-align: text-bottom" class="switch-paddle" for="">
-              <span class="switch-active" aria-hidden="true" style="color: white" data-i18n="on"></span>
-              <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
-            </label>
-
-            <button type="button" class="button" data-i18n="edit"></button>
-            <button type="button" class="button" data-i18n="patterns"></button>
-            <button type="button" data-i18n="delete|title"><i class="fa fa-1point8x fp-orange fa-trash"></i></button>
-            <button type="button" class="up" data-i18n="up|title"><i class="fa fa-1point8x fa-sort-asc fp-orange"></i></button>
-            <button type="button" class="down" data-i18n="down|title"><i class="fa fa-1point8x fa-sort-desc fp-orange"></i></button>
-          </div>
-        </div>
-
       </div>
+<!--
+      <div style="text-align: right;">
+          <button type="submit" data-i18n="save"></button>
+      </div>
+-->
     </div>
 
   <script src="scripts/const.js"></script>

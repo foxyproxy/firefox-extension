@@ -7,35 +7,38 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
-      .flex { display: flex; }
-      .flex > * { flex: 1; }
-      .button { margin-bottom: 0; }
+      h3 { margin-bottom: 0; }
+      .prime > h3:first-of-type { margin-top: 0; }
+      p { margin-top: 0; }
+      #result { margin: 1em 0 0; }
     </style>
   </head>
-  <body style="padding: 1em;">
+  <body>
 
     <!-- header -->
-    <div class="callout">
-      <h3 data-i18n="patternTester"><img src="/images/icon.svg" style="vertical-align: middle;" alt=""> </h3>
-    </div>
+    <div class="prime header" data-i18n="patternTester"></div>
 
     <!-- main -->
-    <div class="callout" style="padding: 2em;">
+    <div class="prime">
 
-      <h4>Step 1</h4>
+      <div style="text-align: right;">
+        <a href="/pattern-help.html" target="_blank">Pattern Help</a>
+      </div>
+
+      <h3>Step 1</h3>
       <label>Enter URL to test <span style="color:red">(paths and query parameters are ignored)</span></label>
       <input id="url" type="text" value="https://getfoxyproxy.org">
 
 
-      <h4>Step 2</h4>
+      <h3>Step 2</h3>
       <p>Enter pattern details.</p>
       <div class="flex">
-        <div>
+        <div style="flex: 3;">
           <label>Pattern <span style="color:red">(no paths, no query parameters)</span></label>
-          <input id="pattern" name="pattern" type="text">
+          <input id="pattern" name="pattern" type="text">   
         </div>
 
-        <div style="margin-left: 1em;"">
+        <div style="margin-left: 1em;">
           <label>Type</label>
           <select id="type" name="type">
             <option value="1">Wildcard</option>
@@ -54,18 +57,10 @@
 
       </div>
 
-      <h4>Step 3</h4>
+      <h3>Step 3</h3>
       <p>Click 'Test' when ready</p>
-      <div class="flex">
-        <div>
-          <button type="button" class="button" data-i18n="test"></button>
-        </div>
-        <div style="text-align: right;">
-          <button type="button" class="button" style="margin-right: 0;" data-i18n="help"></button>
-        </div>
-      </div>
-
-      <p id="result" class="hide-unimportant callout small"></p>
+      <div style="text-align: right;"><button type="button" data-i18n="test"></button></div>
+      <p id="result" class="prime small hide"></p>
     </div>
 
   <script src="scripts/const.js"></script>

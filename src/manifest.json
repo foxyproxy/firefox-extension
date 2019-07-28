@@ -1,9 +1,12 @@
 {
-  "name": "__MSG_app_name_foxyproxy_standard__",
-  "short_name": "__MSG_app_name_foxyproxy_standard__",
-  "description": "__MSG_app_description_foxyproxy_standard__",
-  "version": "6.6.2",
   "manifest_version": 2,
+
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "7.0",
+  "default_locale": "en",
+  "homepage_url": "https://getfoxyproxy.org/",
+  "author": "Eric Jung",
 
   "icons": {
     "16": "images/icon.svg",
@@ -12,7 +15,7 @@
     "64": "images/icon.svg",
     "128": "images/icon.svg"
   },
-  "default_locale": "en",
+
   "background": {
     "scripts": ["scripts/utils.js", "scripts/const.js", 
                 "scripts/storage.js", "scripts/log-entries.js", "scripts/background.js"]
@@ -30,12 +33,7 @@
     "default_popup": "popup.html",
     "browser_style": true
   },
-  "applications": {
-    "gecko": {
-      "id": "foxyproxy@eric.h.jung",
-      "strict_min_version": "57.0"
-    }
-  },
+
   "permissions": [
     "proxy",
     "storage",
@@ -45,5 +43,12 @@
     "downloads",
     "notifications",
     "<all_urls>"
-  ]
+  ],
+
+  "applications": {
+    "gecko": {
+      "id": "foxyproxy@eric.h.jung",
+      "strict_min_version": "57.0"
+    }
+  }
 }

@@ -5,8 +5,9 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
-      h6 { border-bottom: 1px solid #ccc; }
-      ul { max-height: 25em; overflow-y: auto; 
+      body { font-size: 1.1em; padding: 0.4em; }
+      h4 { margin: 0 0 0.5em; border-bottom: 1px solid #ccc; }
+      ul { margin: 0; padding: 0;  max-height: 25em; overflow-y: auto; 
         scrollbar-color: #ddd #f5f5f5; scrollbar-width: thin; }
       li { cursor: pointer; line-height: normal; overflow: hidden;
             text-overflow: ellipsis; white-space: nowrap; }
@@ -16,30 +17,27 @@
       li:nth-last-child(2) { color: orange; }
       li:nth-last-child(2) span, li:last-of-type span { margin-left: 0; }
       li:last-of-type { color: red; }
-            .button { margin-bottom: 0; padding: 0.5em 1em; }
+      .button { margin-bottom: 0; padding: 0.5em 1em; }
     </style>
-  </head>
-  <body style="padding: 0.4em;">
+  </head>    
+  <body>
 
     <!-- header -->
-    <div class="callout" style="padding: 0.5em; margin: 0 0 0.4em 0;">
-      <h3><img src="/images/icon.svg" style="vertical-align: middle; width: 36px" alt=""> FoxyProxy </h3>
-    </div>
-    
-    <!-- spinner --><!-- 
-    <div id="spinner" class="callout hide-unimportant">
-      <span class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></span>
+<!--    <div class="prime header">
+      <h2><img src="/images/icon.svg" style="width: 36px" alt="">FoxyProxy</h2>
     </div> -->
 
+    <!-- header -->
+    <div class="prime header popup">FoxyProxy</div>
+
     <!-- error -->
-    <div id="error" class="callout hide-unimportant"><h5 data-i18n="errorWas"></h5></div>
+    <div id="error" class="prime hide"><h5 data-i18n="errorWas"></h5></div>
 
 
     <!-- main -->
-    <div id="optionsRow" class="callout hide-unimportant" style="margin: 0;">
-        <h6 data-i18n="modeSelection"></h6>
-        <ul class="vertical menu">
-  
+    <div id="optionsRow" class="prime hide" style="margin: 0;">
+        <h4 data-i18n="modeSelection"></h4>
+        <ul>
           <!-- template -->
           <li class="template"><span class="fa fa-check"></span></li>
 
@@ -47,9 +45,9 @@
           <li id="disabled" data-i18n="modeDisabled"><span class="fa fa-check"></span></li>
         </ul>
         <div style="margin-top: 1em; text-align: center;">
-          <button type="button" class="button" data-i18n="options"></button>
-          <button type="button" class="button" data-i18n="myIP"></button>
-          <button type="button" class="button" data-i18n="log"></button>
+          <button type="button" data-i18n="options"></button>
+          <button type="button" data-i18n="myIP"></button>
+          <button type="button" data-i18n="log"></button>
         </div>
     </div>
 
