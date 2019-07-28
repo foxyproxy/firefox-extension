@@ -11,23 +11,33 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // --- global
 const result = document.querySelector('#result');
 
-document.querySelector('button[data-i18n="test"]').addEventListener('click', testPattern);
-document.querySelector('button[data-i18n="help"]').addEventListener('click', () => browser.tabs.create({url: '/pattern-help.html'}));
+  
+const pattern = document.querySelector('#pattern');
+const protocols = document.querySelector('#protocols');
+const type = document.querySelector('#type');
+const urlInput = document.querySelector('#url');
 
-const patternObj = Utils.urlParamsToJsonMap().patternObj;
-if (patternObj) {
-  document.querySelector('#pattern').value = patternObj.pattern;
-  document.querySelector('#protocols').value = patternObj.protocols;
-  document.querySelector('#type').value = patternObj.type;
-  document.querySelector('#url').value = '';
+document.querySelector('button[data-i18n="test"]').addEventListener('click', testPattern);
+
+
+// ----- check for Edit
+const pat = localStorage.getItem('pattern');
+if (pat) {
+
+  pattern.value = pat;
+  type.value = localStorage.getItem('type');
+  protocols.value = localStorage.getItem('protocols');
+  
+  localStorage.removeItem('pattern');
+  localStorage.removeItem('type');
+  localStorage.removeItem('protocols');  
 }
 
 
 function testPattern() {
 
-  const urlInput = document.querySelector('#url');
   // --- reset
-  urlInput.classList.remove('is-invalid-input');
+  urlInput.classList.remove('invalid');
   result.classList.remove('success', 'alert');
   
   let parsedURL;
@@ -35,7 +45,7 @@ function testPattern() {
   try { parsedURL = new URL(urlInput.value); }
   catch (e) {
     console.error(e);
-    urlInput.classList.add('is-invalid-input');
+    urlInput.classList.add('invalid');
     return false;
   }
 
@@ -53,26 +63,26 @@ function testPattern() {
 
   
 
-  const pattern = document.querySelector('#pattern').value;
-  const type = parseInt(document.querySelector('#type').value);
-  const protocols = parseInt(document.querySelector('#protocols').value);
+  const patternTest = pattern.value;
+  const typeTest = parseInt(type.value);
+  const protocolsTest = parseInt(protocols.value);
   let schemeNum;
-  console.log(pattern, type, protocols);
+  console.log(patternTest, typeTest, protocolsTest);
 
   // Check protocol first
   if (parsedURL.protocol === 'https:') { schemeNum = PROTOCOL_HTTPS; }
   else if (parsedURL.protocol === 'http:') { schemeNum = PROTOCOL_HTTP; }
 
 
-  if (protocols !== PROTOCOL_ALL && protocols !== schemeNum) {
+  if (protocolsTest !== PROTOCOL_ALL && protocolsTest !== schemeNum) {
     result.classList.add('alert');
     result.textContent = 'Protocols do not match.';
-    result.classList.remove('hide-unimportant');
+    result.classList.remove('hide');
     return;
   }
 
-  const regExp = type === PATTERN_TYPE_WILDCARD ?
-    Utils.safeRegExp(Utils.wildcardStringToRegExpString(pattern)) :
+  const regExp = typeTest === PATTERN_TYPE_WILDCARD ?
+    Utils.safeRegExp(Utils.wildcardStringToRegExpString(patternTest)) :
     Utils.safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
 
   if (regExp.test(parsedURL.host)) {
@@ -84,5 +94,5 @@ function testPattern() {
     result.textContent = 'Pattern does not match URL.';
   }
 
-  result.classList.remove('hide-unimportant');
+  result.classList.remove('hide');
 }

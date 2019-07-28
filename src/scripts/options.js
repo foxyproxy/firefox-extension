@@ -12,21 +12,11 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 const accounts = document.querySelector('#accounts');
 const mode = document.querySelector('#mode');
 const syncOnOff = document.querySelector('input[name="syncOnOff"]');
+const spinner = document.querySelector('#spinner');
 
 vex.defaultOptions.className = 'vex-theme-default';
 vex.dialog.buttons.YES.className = 'button';
 let noRefresh = false;
-
-
-// ----- add Listeners for proxy section
-mode.addEventListener('change', () => setMode(mode.value));
-
-syncOnOff.addEventListener('click', function() {
-  const useSync = this.checked;console.log(useSync);
-  setStorageSync(useSync).then(() => console.log('sync value changed to ' + useSync));
-});
-
-
 
 
 // ----- add Listeners for menu
@@ -35,7 +25,7 @@ function process() {
 
   switch (this.dataset.i18n) {
 
-    case 'add': location.href = '/add-edit-proxy.html'; break;
+    case 'add': location.href = '/proxy.html'; break;
     case 'export': Utils.exportFile(); break;
     case 'import': location.href = '/import.html'; break;
     case 'log': location.href = '/log.html'; break;
@@ -47,16 +37,16 @@ function process() {
 
     case 'deleteBrowserData':
       vex.dialog.confirm({
-        message: `${chrome.i18n.getMessage('delete_browser_data')}`,
+        message: `${chrome.i18n.getMessage('deleteBrowserData')}`,
         input: `
-        <h5>${chrome.i18n.getMessage('deleteNot')}</h5>
+        <h3>${chrome.i18n.getMessage('deleteNot')}</h3>
         <p>${chrome.i18n.getMessage('deleteBrowserDataNotDescription')}</p>
-        <h5>${chrome.i18n.getMessage('delete')}</h5>
+        <h3>${chrome.i18n.getMessage('delete')}</h3>
         <p>${chrome.i18n.getMessage('deleteBrowserDataDescription')}</p>`,
         callback: function(data) {
           if (data) {
             // Not cancelled
-            browser.browsingData.remove({}, {
+            chrome.browsingData.remove({}, {
               //appcache: true,
               cache: true,
               cookies: true,
@@ -71,81 +61,105 @@ function process() {
               //webSQL: true,
               //serverBoundCertificates: true,
               serviceWorkers: true
-            }).then(() => Utils.displayNotification(chrome.i18n.getMessage('done')));
+            }, () => Utils.displayNotification(chrome.i18n.getMessage('done')));
           }
         }
       });
       break;
-
-
   }
 }
 
-
-
-
-
-
-
-start();
-function start() {
-
-  getAllSettings().then((settings) => storageRetrievalSuccess(settings))
-    .catch((e) => storageRetrievalError(e));
-
-  usingSync().then((useSync) => syncOnOff.checked = useSync)
-    .catch((e) => { console.error(`usingSync() error: ${e}`); reject(e); });
-}
-
-// Update the UI whenever stored settings change and we are open.
-// one example is user deleting a proxy setting that is the current mode.
-// another: user changes mode from popup.html
-browser.storage.onChanged.addListener((oldAndNewSettings) => {
-  //console.log('proxies.js: settings changed on disk');
-  if (noRefresh) { noRefresh = false; } // We made the change ourselves
-  //else location.reload();
-  else { start(); }
-});
-
-
-
-browser.runtime.onMessage.addListener((messageObj, sender) => {
-  //console.log("browser.runtime.onMessage listener: ", messageObj);
-  if (messageObj === MESSAGE_TYPE_DISABLED) { mode.value = DISABLED; }
-});
-
-function storageRetrievalSuccess(settings) {
-
-  if (!settings.proxySettings || !settings.proxySettings.length) {
-
-    // using hide-unimportant class app.css#4575 to show/hide
-    // note: all elements are hidden, only need to unhide
-    hideSpinner();
-    document.querySelector('#error').classList.remove('hide-unimportant');
-    return;
-  }
-
-  console.log('Proxies found in storage.');
-  renderProxies(settings);
-  hideSpinner();
-}
-
-function hideSpinner() {
+// ----- add Listeners for initial elements
+mode.addEventListener('change', selectMode); 
+function selectMode() {
   
-  const spinner = document.querySelector('#spinner');
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+ console.log('selectMode', this);
+  // set color
+  mode.style.color = mode.children[mode.selectedIndex].style.color; 
+  
+  // we laready know the state of sync | this is set when manually changing the select
+  this && (!syncOnOff.checked ? chrome.storage.local.set({mode: mode.value}) : chrome.storage.sync.set({mode: mode.value}));
+  // change the state of success/secondary 
+  const last = document.querySelector('.success');
+  if (last) {
+    last.classList.remove('success') ;
+    last.classList.add('secondary');
+  }
+  const next = document.querySelector('#' + mode.value);
+  if (next) {
+    next.classList.remove('secondary') ;
+    next.classList.add('success'); 
+  }
 }
 
-function storageRetrievalError(error) {
 
-  console.log(`storageRetrievalError(): ${error}`);
-  document.querySelector('#error').classList.remove('hide-unimportant');
+
+
+syncOnOff.addEventListener('change', function() {
+  const useSync = this.checked;
+  // always stored locally
+  //chrome.storage.local.set({'sync': useSync}, () => console.log('sync value changed to ' + useSync));
+  if (useSync && confirm(chrome.i18n.getMessage('confirmTransferToSync'))) {
+    showSpinner();
+    chrome.storage.local.get(null, result => {              // get source
+      result.sync = useSync;                                // save sync state
+      chrome.storage.sync.get(null, res => {                // get target
+        res.mode = result.mode;
+        res.logging = result.logging;
+        res.proxySettings = [...new Set([...res.proxySettings, ...result.proxySettings])]; // ES6 new Set() to create unique array
+        chrome.storage.sync.set(res, () => processOptions(res)); // save to target
+      });
+    });
+  }
+  else if (!useSync && confirm(chrome.i18n.getMessage('confirmTransferToLocal'))) {
+    showSpinner();
+    chrome.storage.sync.get(null, result => {               // get source
+      chrome.storage.local.get(null, res => {               // get target
+        res.sync = useSync;                                 // save sync state
+        res.mode = result.mode;
+        res.logging = result.logging;
+        res.proxySettings = [...new Set([...res.proxySettings, ...result.proxySettings])]; // ES6 new Set() to create unique array
+        chrome.storage.local.set(res, () => processOptions(res)); // save to target
+      });
+    });
+  }
+});
+
+
+chrome.runtime.onMessage.addListener((message, sender) => { // from popup or bg
+  console.log(message);
+  if(!message.mode) { return; }
+  mode.value = message.mode;
+  selectMode();
+});
+
+// ----- get storage and populate
+init();
+function init() {
+
+  // ----------------- User Preference -----------------------
+  chrome.storage.local.get(null, result => {
+    // sync is NOT set or it is false, use this result
+    if (!result.sync) {
+      syncOnOff.checked = false;
+      //processOptions(prepareForSettings(result));
+      processOptions(result);
+      return;
+    }
+    // sync is set
+    syncOnOff.checked = true;
+    chrome.storage.sync.get(null, result => {
+     // processOptions(prepareForSettings(result));
+      processOptions(result);
+    });
+  });
+  // ----------------- /User Preference ----------------------
 }
 
-function renderProxies(settings) {
+function processOptions(pref) {
 
-  accounts.textContent = ''; // clearing the content
+  // --- reset
+  accounts.textContent = '';
   [...mode.children].forEach(item => mode.children.length > 2 && item.remove());
 
   // ----- templates & containers
@@ -153,20 +167,33 @@ function renderProxies(settings) {
   const docfrag2 = document.createDocumentFragment();
   const temp = document.querySelector('.template');
 
-  settings.mode = settings.mode || 'patterns'; // defaults to patterns
+  // --- working directly with DB format
+  
+  // add default lastresort if not there
+  pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
-  settings.proxySettings.forEach((item, index) => {
+  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
+  prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
+
+  pref.mode = pref.mode || 'patterns';                      // defaults to patterns
+
+  prefKeys.forEach(id => {
+
+    // note item is the id
+    const item = pref[id];
+console.log(item);
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
     div.classList.remove('template');
-    item.id == LASTRESORT && div.children[1].classList.add('default');
+    item === LASTRESORT && div.children[1].classList.add('default');
 
-    div.id = item.id;
+
+    div.id = id;
     node[0].style.backgroundColor = item.color;
     node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
     node[2].textContent = item.address; // ellipsis is handled by CSS
-    node[3].id = item.id + '-onoff';
+    node[3].id = id + '-onoff';
     node[3].checked = item.active;
     node[4].setAttribute('for', node[3].id);
 
@@ -179,23 +206,22 @@ function renderProxies(settings) {
         div.classList.add('unsupported-color');
         break;
 
-      case settings.mode === 'patterns':
-      case settings.mode === 'random':
-      case settings.mode === 'roundrobin':
+      case pref.mode === 'patterns':
+      case pref.mode === 'random':
+      case pref.mode === 'roundrobin':
         div.classList.add(item.active ? 'success' : 'secondary');
 
-      case settings.mode === 'disabled':
+      case pref.mode === 'disabled':
         div.classList.add('secondary');
 
       default:
-        div.classList.add(settings.mode == item.id ? 'success' : 'secondary');
+        div.classList.add(pref.mode == id ? 'success' : 'secondary');
     }
-
 
     docfrag.appendChild(div);
 
     // add to select
-    const opt = new Option(node[1].textContent, item.id);
+    const opt = new Option(node[1].textContent, id);
     opt.style.color = item.color;
     docfrag2.appendChild(opt);
   });
@@ -203,7 +229,7 @@ function renderProxies(settings) {
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild.previousElementSibling);
 
-  const opt = mode.querySelector(`option[value="${settings.mode}"]`);
+  const opt = mode.querySelector(`option[value="${pref.mode}"]`);
   if (opt) {
     opt.selected = true;
     mode.style.color = opt.style.color;
@@ -216,8 +242,10 @@ function renderProxies(settings) {
     const id = this.parentNode.parentNode.id;
     //console.log('toggle on/off', id);
     noRefresh = true;
-    toggleActiveProxySetting(id).then(() => console.log('toggle done'))
+    toggleActiveProxySetting(id).then(() => console.log('toggle done'));
   }));
+
+  hideSpinner();
 }
 
 function processButton() {
@@ -237,7 +265,7 @@ function processButton() {
     case 'edit':
       localStorage.setItem('id', id);
       localStorage.setItem('sync', syncOnOff.checked);
-      location.href = '/add-edit-proxy.html';
+      location.href = '/proxy.html';
       break;
 
     case 'patterns':
@@ -259,12 +287,66 @@ function processButton() {
       parent.parentNode.insertBefore(parent, insert);
       target.classList.add('off');
       parent.classList.add('on');
-      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 500);
+      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 600);
       noRefresh = true;
       swapProxySettingWithNeighbor(id, target.id).then((settings) => {
         //console.log('swapProxySettingWithNeighbor() succeeded');
-        renderProxies(settings);
+        processOptions(settings);
       }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));
       break;
   }
 }
+
+/*
+// ----  update UI manaully
+
+// Update the UI whenever stored settings change and we are open.
+// one example is user deleting a proxy setting that is the current mode.
+// another: user changes mode from popup.html
+chrome.storage.onChanged.addListener((oldAndNewSettings) => {
+  //console.log('proxies.js: settings changed on disk');
+  if (noRefresh) { noRefresh = false; } // We made the change ourselves
+  //else location.reload();
+  //else { init(); }
+});
+
+function storageRetrievalSuccess(settings) {
+
+  if (!settings.proxySettings || !settings.proxySettings.length) {
+
+    // using hide class app.css#4575 to show/hide
+    // note: all elements are hidden, only need to unhide
+    hideSpinner();
+    document.querySelector('#error').classList.remove('hide');
+    return;
+  }
+
+  console.log('Proxies found in storage.');
+  processOptions(settings);
+  hideSpinner();
+}
+
+
+
+
+function storageRetrievalError(error) {
+
+  console.log(`storageRetrievalError(): ${error}`);
+  document.querySelector('#error').classList.remove('hide');
+}
+
+*/
+
+// ----------------- Helper functions ----------------------
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flax';
+  spinner.classList.add('on');
+}
+// ----------------- /Helper functions ---------------------

@@ -8,7 +8,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-const manifest = browser.runtime.getManifest();
+const manifest = chrome.runtime.getManifest();
 
 document.querySelector('#version').textContent = manifest.version;
 document.querySelector('#edition').textContent = FOXYPROXY_BASIC ? 'FoxyProxy Basic' : 'FoxyProxy Standard';
@@ -16,4 +16,4 @@ document.querySelector('button').addEventListener('click', () => location.href =
 
 
 // --- welcome on install/update
-location.search === '?welcome' && document.querySelector('.welcome').classList.remove('hide-unimportant');
+location.search === '?welcome' && document.querySelector('.welcome').classList.remove('hide');

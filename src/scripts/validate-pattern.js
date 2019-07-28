@@ -10,11 +10,11 @@ function validateInput() {
 function markInputErrors() {
 
   const patInput = document.querySelector('#pattern');
-  patInput.classList.remove('is-invalid-input'); // reset
+  patInput.classList.remove('invalid'); // reset
   const pat = patInput.value;
 
   if (!pat) {
-    patInput.classList.add('is-invalid-input');
+    patInput.classList.add('invalid');
     return false;
   }
 
@@ -23,14 +23,14 @@ function markInputErrors() {
 
     case type === PATTERN_TYPE_WILDCARD && pat.includes('/'):
       alert(chrome.i18n.getMessage('errorSlash'));
-      patInput.classList.add('is-invalid-input');
+      patInput.classList.add('invalid');
       return false;
 
     case type === PATTERN_TYPE_REGEXP:
       try { new RegExp(pat); }
       catch (e) {
         console.error(e);
-        patInput.classList.add('is-invalid-input');
+        patInput.classList.add('invalid');
         return false;
       }
       break;
@@ -39,7 +39,7 @@ function markInputErrors() {
       try { new RegExp(Utils.wildcardStringToRegExpString(pat)); }
       catch (e) {
         console.error(e);
-        patInput.classList.add('is-invalid-input');
+        patInput.classList.add('invalid');
         return false;
       }
   }

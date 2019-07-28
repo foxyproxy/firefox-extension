@@ -1051,7 +1051,7 @@ var buildDialogForm = function buildDialogForm (options) {
   var form = document.createElement('form')
   form.classList.add('vex-dialog-form')
 
-  var message = document.createElement('h4')
+  var message = document.createElement('div')
   message.classList.add('vex-dialog-message')
   message.appendChild(options.message instanceof window.Node ? options.message : domify(options.message))
 

@@ -8,10 +8,11 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-let logg;
+let logg, bg;
 const onOff = document.querySelector('#onOff'); // cache for later
 
-browser.runtime.getBackgroundPage().then((bg) => {
+chrome.runtime.getBackgroundPage((bgPage) => {
+  bg = bgPage;
   logg = bg.getLogg();
   //console.log("logg active is " + logg.active);
   onOff.checked = logg.active;
@@ -27,17 +28,16 @@ function hideSpinner() {
 }
 
 
-onOff.addEventListener('click', async (e) => {
+onOff.addEventListener('click', (e) => {
 
   const isON = onOff.checked;
   //console.log("user changed logging to " + isON);
-  const bg = await browser.runtime.getBackgroundPage();
   bg.ignoreNextWrite(); // Don't propagate changes the PAC script
-  await setLogging(500, isON);
-  logg.active = isON;
-  isON && renderLog(); // redisplay log when clicking ON
-  //logg.clear(); // maybe it is better not clearing the log, user might temporary want to diable, use clear button
-  getAllSettings().then(console.log);
+  setLogging(500, isON).then(() => {
+    logg.active = isON;
+    isON && renderLog(); // redisplay log when clicking ON
+    //logg.clear(); // better not clearing the log, user might temporary want to diable, use clear button to clear
+  });
 });
 
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
@@ -63,9 +63,9 @@ function renderLog() {
   const tbody = tr.parentNode.nextElementSibling;
   tbody.textContent = ''; // clearing the content
 
-  for (let i = 0, len = logg.length; i < len; i++) {
+//  for (let i = 0, len = logg.length; i < len; i++) {
+  logg.elements.forEach(item => {
 
-    const item = logg.item(i);
     const pattern = item.matchedPattern ?
       (item.matchedPattern === USE_PROXY_FOR_ALL_URLS ? 'Use proxy for all URLs' : item.matchedPattern.pattern) : 'No matches';
 
@@ -97,13 +97,13 @@ function renderLog() {
     td[5].textContent = formatInt(item.timestamp);
 
     docfrag.appendChild(row);
-  }
+  });
 
   tbody.appendChild(docfrag);
 
-  // using hide-unimportant class app.css#4575 to show/hide
-  //document.querySelector('#spinner').classList.add('hide-unimportant'); // unless there is an error, the spinner never really shows
-  //document.querySelector('#logRow').classList.remove('hide-unimportant');
+  // using hide class app.css#4575 to show/hide
+  //document.querySelector('#spinner').classList.add('hide'); // unless there is an error, the spinner never really shows
+  //document.querySelector('#logRow').classList.remove('hide');
 }
 
 function formatInt(d) {

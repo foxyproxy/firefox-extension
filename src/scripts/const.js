@@ -31,7 +31,7 @@ const DISABLED = "disabled";
 
 // PATTERN_NEW only used in patterns.js
 const PATTERN_NEW = {
-  title: "",
+  title: '',
   active: true,
   pattern: "",
   type: PATTERN_TYPE_WILDCARD,
@@ -40,9 +40,9 @@ const PATTERN_NEW = {
 
 // only used in add-edit-proxy.js
 const PATTERN_ALL_WHITE = {
-  title: "all URLs",
+  title: 'all URLs',
   active: true,
-  pattern: "*",
+  pattern: '*',
   type: PATTERN_TYPE_WILDCARD,
   protocols: PROTOCOL_ALL
 };
@@ -71,15 +71,15 @@ const PATTERN_LOCALHOSTNAMES_BLACK = {
   protocols: PROTOCOL_ALL
 };
 
-const LASTRESORT = "k20d21508277536715";
+const LASTRESORT = 'k20d21508277536715';
 const DEFAULT_PROXY_SETTING = {
   //id: Number.MAX_SAFE_INTEGER, // Not here so we dont save it to disk as an object property but instead as a key
   index: Number.MAX_SAFE_INTEGER,
   id: LASTRESORT,
   active: true,
-  title: "Default",
+  title: 'Default',
   notes: "These are the settings that are used when no patterns match a URL.",
-  color: "#0055E5",
+  color: '#0055E5',
   type: PROXY_TYPE_NONE,
   whitePatterns: [PATTERN_ALL_WHITE],
   blackPatterns: []

@@ -32,7 +32,7 @@ const DIRECT = "direct";
 let settings = {};
 
 function console(str) {
-  //browser.runtime.sendMessage({type: MESSAGE_TYPE_CONSOLE, message: str});
+  //chrome.runtime.sendMessage({type: MESSAGE_TYPE_CONSOLE, message: str});
 }
 
 function logToUI(o) {

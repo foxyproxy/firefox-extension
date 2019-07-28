@@ -1,3 +1,6 @@
+'use strict';
+
+
 /**
  *
 REMEMBER, EACH KEY ONLY HAS 1 MB MAX STORAGE!!
@@ -79,19 +82,19 @@ storage looks:
 }
 
 */
-const PROXY_SETTINGS = "proxySettings";
-const MODE = "mode";
-const LOGGING = "logging";
-const SYNC = "sync";
+const PROXY_SETTINGS = 'proxySettings';
+const MODE = 'mode';
+const LOGGING = 'logging';
+const SYNC = 'sync';
 
 function _initializeStorage() {
   return new Promise((resolve, reject) => {
     // SYNC Always stored locally
     browser.storage.local.get([SYNC]).then((tmp) => {
       if (!(SYNC in tmp) || typeof(tmp[SYNC]) != "boolean") tmp[SYNC] = true; // true by default
-      useSync = tmp[SYNC]; // unwrap from the object we're passed in |tmp|
+      const useSync = tmp[SYNC]; // unwrap from the object we're passed in |tmp|
       //console.log("storage init(): useSync is " + JSON.stringify(useSync));
-      storage = useSync ? browser.storage.sync : browser.storage.local;
+      const storage = useSync ? browser.storage.sync : browser.storage.local;
       resolve(storage);
     });
   });
@@ -102,7 +105,7 @@ function _initializeStorage() {
 function setStorageSync(useSync) {
   return browser.storage.local.set({[SYNC]: useSync});
 }
-
+/*
 // True/false if we're using remote (sycn) storage.
 function usingSync() {
   return new Promise((resolve, reject) => {
@@ -111,6 +114,7 @@ function usingSync() {
     }).catch(e => {console.error(`_initializeStorage() error: ${e}`);reject(e)});
   });
 }
+*/
 
 // Returns native object
 function _getAllSettingsNative() {
@@ -119,7 +123,7 @@ function _getAllSettingsNative() {
   }).catch(e => {console.error(`_initializeStorage() error: ${e}`);reject(e)});
 }
 
-function setLogging(sz, a) {
+function setLogging(sz, a) { // log.js only
   return _initializeStorage().then((storage) => {
     return storage.set({[LOGGING]: {size: sz, active: a}});
   }).catch(e => {console.error(`_initializeStorage() error: ${e}`);reject(e)});
@@ -133,6 +137,9 @@ function getAllSettings() {
   });
 }
 
+
+
+// not used anymore
 function getProxySettingById(id) {
   return _initializeStorage().then((storage) => {
     return new Promise((resolve, reject) => {
@@ -205,7 +212,7 @@ function writeAllSettings(settings, convert = true) {
   // 2018-05-03 Eri Jung: I've confirmed that _initializeStorage() is called before this function is called.
   // If you use this again, make sure that precondition is still true.
   if (settings.length === 0) return deleteAllSettings();
-  if (storage == browser.storage.local)
+  if (storage == chrome.storage.local)
     settings[SYNC] = false; // restore this value that was possibly deleted
   return storage.set(convert ? addonStructToStorageObject(settings) : settings);
 }
@@ -293,10 +300,18 @@ function enableDisableAllProxySettings(active) {
   });
 }
 
-function setMode(mode) {
+function setMode1(mode) {
   return _initializeStorage().then((storage) => {
     return storage.set({[MODE]: mode});
   }).catch(e => {console.error(`_initializeStorage() error: ${e}`);reject(e)});
+}
+
+function setMode(mode) {
+
+  chrome.storage.local.get(null, result => {
+    // sync is NOT set or it is false, use this result ELSE get it from storage.sync
+    !result.sync ? chrome.storage.local.set({mode}) : chrome.storage.sync.set({mode});
+  });
 }
 
 
@@ -444,7 +459,7 @@ function storageObjectToAddonStruct(settings) {
     // 5.0 settings
   }
   let ret = {mode: DISABLED, "proxySettings": [], logging: {active: true, maxSize: 500}}, lastResortFound = false;
-  if (!settings) {
+  if (!settings) { // unreliable !{} is false
      _insertLastResort(ret.proxySettings);
     console.log("in storageObjectToAddonStruct(): " + JSON.stringify(ret));
     return ret;
@@ -505,7 +520,7 @@ function storageObjectToAddonStruct(settings) {
  *
  * See comments at top of file.
  */
-function addonStructToStorageObject(settings) {
+function addonStructToStorageObject(settings) {  
   //console.log("addonStructToStorageObject() 1: " + JSON.stringify(settings, null, 2));
   let ret = {}, lastResortFound = false;
   if (!settings || !PROXY_SETTINGS in settings) return ret;
@@ -526,6 +541,8 @@ function addonStructToStorageObject(settings) {
       else proxySetting.index = idx++;
       delete proxySetting.id; // Don't need to write this to disk for this object
       ret[id] = proxySetting;
+      
+      
     }
   }
   if (!lastResortFound) {
@@ -536,3 +553,124 @@ function addonStructToStorageObject(settings) {
   //console.log("addonStructToStorageObject() 2:" + JSON.stringify(settings, null, 2));
   return ret;
 }
+
+
+
+
+
+
+
+/* ---------- experimental ---------- */
+
+function prepareForSettings(settings) {
+
+  //if (settings && !settings.mode) { }// 5.0 settings
+
+  let lastResortFound = false;
+  const keys = Object.keys(settings);
+
+  const def = {
+    id: LASTRESORT,
+    active: true,
+    title: 'Default',
+    notes: 'These are the settings that are used when no patterns match a URL.',
+    color: '#0055E5',
+    type: PROXY_TYPE_NONE,
+    whitePatterns: [PATTERN_ALL_WHITE],
+    blackPatterns: []
+  };
+
+  // base format
+  const ret = {
+    mode: 'disabled',
+    proxySettings: [],
+    logging: {
+      size: 500,
+      active: true
+    }
+  };
+
+  if (!keys.length) { // settings is {}
+    ret.proxySettings = [def];
+    return ret;
+  }
+
+  console.log('Proxies found in storage.');
+
+  keys.forEach(key => {
+
+    switch (key) {
+
+      case MODE:
+      case LOGGING:
+        ret[key] = settings[key];
+        break;
+
+      case SYNC: break; // do nothing
+
+      default:
+        const temp = settings[key];
+        temp.id = key; // Copy the id into the object because we are not using it as a key in the array
+        temp.id === LASTRESORT && (lastResortFound = true);
+        ret.proxySettings.push(temp);
+    }
+  });
+
+  ret.proxySettings.sort((a, b) => a.index - b.index);
+  ret.proxySettings.forEach(item => delete item.index); // Re-calculated when/if this object is written to disk again (user may move proxySetting up/down)
+
+  !lastResortFound && ret.proxySettings.push(def); // add default lastresort
+
+  return ret;
+}
+
+function prepareForStorage(settings) {
+
+
+  if (!settings.hasOwnProperty('proxySettings') || !settings.proxySettings[0]) {
+    alert('Imported file doesn not have any proxies.');
+    return null;
+  }
+
+  let lastResortFound = false;
+
+  const def = {
+    active: true,
+    title: 'Default',
+    notes: 'These are the settings that are used when no patterns match a URL.',
+    color: '#0055E5',
+    type: PROXY_TYPE_NONE,
+    whitePatterns: [PATTERN_ALL_WHITE],
+    blackPatterns: []
+  }
+
+  // base format
+  const ret = {
+    mode: 'disabled',
+    logging: {
+      size: 500,
+      active: true
+    }
+  };
+
+  settings.mode && (ret.mode = settings.mode);
+  settings.logging && (ret.logging = settings.logging);
+
+  let idx = 0;
+//  for (let i in settings.proxySettings) {
+  settings.proxySettings.forEach((item, n) => {
+
+    const id = item.id;
+    if (id === LASTRESORT) {
+      lastResortFound = true;
+      item.index = Number.MAX_SAFE_INTEGER;
+    }
+    else { item.index = idx++; }
+    delete item.id;                                         // Don't need id
+    ret[id] = item;
+
+  });
+  if (!lastResortFound) { ret[LASTRESORT] = def; }          // Fix data integrity, Copy but without id
+ 
+  return ret;
+} 

@@ -8,31 +8,31 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-getAllSettings().then(popupSuccess, popupError).catch((e) => console.log('exception: ' + e));
+//getAllSettings().then(popupSuccess, popupError).catch((e) => console.log('exception: ' + e));
+
+// ----------------- User Preference -----------------------
+chrome.storage.local.get(null, result => {
+  if (!result.sync) { // sync is NOT set or it is false, use this result
+    renderOptions(prepareForSettings(result)); 
+    return;
+  }
+  chrome.storage.sync.get(null, result => { // sync is set
+    renderOptions(prepareForSettings(result));;       
+  });
+});
+// ----------------- /User Preference ---------------------- 
 
 function popupSuccess(settings) {
 
   renderOptions(settings);
-/*
-  if (!proxySettings.length) {
-    // Display defaults
-    console.log("No proxies found in storage.");
-    $("#spinner").hide();
-    $("#optionsRow").show();
-  }
-  else {
-    console.log("Proxies found in storage.");
-    renderOptions(settings);
-  }
-*/
 }
 
 function popupError(error) {
 
   console.log(`popupError(): ${error}`);
-  // using hide-unimportant class app.css#4575 to show/hide
+  // using hide class app.css#4575 to show/hide
   // note: all elements are hidden, only need to unhide
-  document.querySelector('#error').classList.remove('hide-unimportant');
+  document.querySelector('#error').classList.remove('hide');
 }
 
 function renderOptions(settings) {
@@ -74,38 +74,39 @@ function renderOptions(settings) {
   // add Listeners
   document.querySelectorAll('li, button').forEach(item => item.addEventListener('click', process));
 
-  // using hide-unimportant class app.css#4575 to show/hide
-  document.querySelector('#optionsRow').classList.remove('hide-unimportant');
+  // using hide class app.css#4575 to show/hide
+  document.querySelector('#optionsRow').classList.remove('hide');
 }
 
-async function process() {
+function process() {
 
   let tabs;
   switch (this.dataset.i18n) {
 
     case 'myIP':
-      browser.tabs.create({url: 'https://getfoxyproxy.org/geoip/'}); // no need to wait for it
+      chrome.tabs.create({url: 'https://getfoxyproxy.org/geoip/'}); // no need to wait for it
       window.close();
       break;
 
     case 'log':
-      const url = browser.runtime.getURL('log.html');
-      tabs = await browser.tabs.query({url}); // find a log tab
-      tabs[0] ? browser.tabs.update(tabs[0].id, {active: true}) : browser.tabs.create({url}); // active existing tab OR open new tab
-      window.close();
+      const url = chrome.runtime.getURL('log.html');
+      chrome.tabs.query({url}, tabs => { // find a log tab
+        tabs[0] ? chrome.tabs.update(tabs[0].id, {active: true}) : chrome.tabs.create({url}); // active existing tab OR open new tab
+        window.close();
+      });
       break;
       
     case 'options':
-      tabs = await browser.tabs.query({url: browser.runtime.getURL('') + '*'});
-      if (!tabs[0]) { 
-        browser.runtime.openOptionsPage();
+      chrome.tabs.query({url: chrome.runtime.getURL('') + '*'}, tabs => {
+        if (!tabs[0]) { 
+          chrome.runtime.openOptionsPage();
+          window.close();
+          return;
+        }
+        const tab = tabs.find(item => /(proxy|options|patterns)\.html/.test(item.url));  // find a option tab
+        tab ? chrome.tabs.update(tab.id, {active: true}) : chrome.tabs.update(tabs[0].id, {active: true, url: '/options.html'});
         window.close();
-        break;
-      }
-      
-      const tab = tabs.find(item => /(add-edit-proxy|options|patterns)\.html/.test(item.url));  // find a option tab
-      tab ? browser.tabs.update(tab.id, {active: true}) : browser.tabs.update(tabs[0].id, {active: true, url: '/options.html'});
-      window.close();
+      });
       break;
 
     default:
@@ -115,5 +116,9 @@ async function process() {
       const old = document.querySelector('.on');      
       old &&  old.classList.remove('on');
       this.classList.add('on');
+      
+      // popup & options are the only place that can set mode
+      // sneding message to option, if it is open
+      chrome.runtime.sendMessage({mode: this.id});
   }
 }

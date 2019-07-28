@@ -85,7 +85,7 @@ class Utils {
 */
   static displayNotification(message, title = 'FoxyProxy') {
     // the id is not used anywhere and can be omitted, it is only useful if you want to manually close the notification early
-    browser.notifications.create('foxyproxy-notification', {
+    chrome.notifications.create('foxyproxy-notification', {
       type: 'basic',
       iconUrl: '/images/icon.svg',
       title,
@@ -159,7 +159,7 @@ class Utils {
 
   static trimAllInputs() { // it is all Input so the selector is fixed
 
-    document.querySelectorAll('input').forEach(item => item.value = item.value.trim());
+    document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
   }
 /*
   static trimAllInputs(selector = ':input') {
@@ -343,19 +343,19 @@ class Utils {
 /*  
   static showInternalPage(logOrProxies) {
     let internalUrls = [
-        browser.runtime.getURL('log.html'),
-        browser.runtime.getURL('options.html'),
-        browser.runtime.getURL('add-edit-proxy.html'),
-        browser.runtime.getURL('add-edit-patterns.html'),
-        browser.runtime.getURL('patterns.html'),
-        browser.runtime.getURL('import.html'),
-        browser.runtime.getURL('about.html'),
-        browser.runtime.getURL('first-install.html')
-        //browser.runtime.getURL('pattern-help.html')
+        chrome.runtime.getURL('log.html'),
+        chrome.runtime.getURL('options.html'),
+        chrome.runtime.getURL('add-edit-proxy.html'),
+        chrome.runtime.getURL('add-edit-patterns.html'),
+        chrome.runtime.getURL('patterns.html'),
+        chrome.runtime.getURL('import.html'),
+        chrome.runtime.getURL('about.html'),
+        chrome.runtime.getURL('first-install.html')
+        //chrome.runtime.getURL('pattern-help.html')
       ],
       url = logOrProxies === 'log' ? internalUrls[0]: internalUrls[1];
 
-    return browser.windows.getAll({
+    return chrome.windows.getAll({
         populate: true,
         windowTypes: ['normal']
       }).then((windowInfoArray) => {
@@ -366,12 +366,12 @@ class Utils {
             urlNoParams = u.origin + u.pathname;
             if (internalUrls.includes(urlNoParams)) { // Some of our pages have URL params. Ignore the params.
               found = true;
-              browser.windows.update(windowInfo.id, {focused: true});
-              return browser.tabs.update(tab.id, {active: true, url: url});
+              chrome.windows.update(windowInfo.id, {focused: true});
+              return chrome.tabs.update(tab.id, {active: true, url: url});
             }
           }
         }
-        if (!found) { return browser.tabs.create({url: url, active: true}); }
+        if (!found) { return chrome.tabs.create({url: url, active: true}); }
       });
   }
 */
@@ -421,11 +421,17 @@ class Utils {
     getAllSettings().then((settings) => {
       const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain'});
       const filename = 'foxyproxy.json';
-      browser.downloads.download({
+      chrome.downloads.download({
         url: URL.createObjectURL(blob),
         filename,
         saveAs: true
-      }).then(() => Utils.displayNotification(chrome.i18n.getMessage('exportEnd'))); // wait for it to complete before returning
+      });
+      
+      // .then(() => Utils.displayNotification(chrome.i18n.getMessage('exportEnd'))); // wait for it to complete before returning
+      // above not really needed, saveAs: true tells the user the start 
+      // (which user can cancel ... Unchecked lastError value: Error: Download canceled by the user) 
+      // and then thhe rest is with browser Download interface
+      // if needed , it can be done via the callback
     });
   }
 }

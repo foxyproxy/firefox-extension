@@ -1,20 +1,14 @@
 'use strict';
 
 const pacURL = 'scripts/pac.js';
-let proxyScriptLoaded = false, activeSettings,browserVersion;
+let proxyScriptLoaded = false, activeSettings, browserVersion;
 
-// BEGIN: used in log.js
-// Use |var| not |let| so it's accessible from log.js
-let logg; // no need for var.. it doesn't affect log.js
-function getLogg() {
-  return logg;
-}
+// global
+let logg; // used in log.js
+function getLogg() { return logg; }
 
-// Use |var| not |let| so it's accessible from log.js
-var ignoreWrite = false;
-function ignoreNextWrite() {
-  ignoreWrite = true;
-}
+let ignoreWrite = false; // used in log.js
+function ignoreNextWrite() { ignoreWrite = true; }
 // END: used in log.js
 
 
@@ -23,46 +17,48 @@ function ignoreNextWrite() {
 const API = 'onProxyError' in browser.proxy ? browser.proxy.onProxyError : browser.proxy.onerror;
 API.addListener(e => console.error(`pac.js error: ${e.message}`));
 
-browser.runtime.onMessage.addListener((messageObj, sender) => {
+chrome.runtime.onMessage.addListener((messageObj, sender) => {
   if (messageObj === MESSAGE_TYPE_DELETING_ALL_SETTINGS) {
     ignoreWrite = true;
     return;
   }
 
   // Only handle our messages
-  if (sender.url !== browser.extension.getURL(pacURL)) {
+  if (sender.url !== chrome.runtime.getURL(pacURL)) {
     console.log('IGNORING MESSAGE');
     return;
   }
   if (messageObj.type === MESSAGE_TYPE_CONSOLE) {
-    // browser.runtime.sendMessage({type: MESSAGE_TYPE_CONSOLE, message: str});
+    // chrome.runtime.sendMessage({type: MESSAGE_TYPE_CONSOLE, message: str});
     console.log('Message from PAC: ' + messageObj.message);
   }
   else if (messageObj.type == MESSAGE_TYPE_LOG) {
     //console.log('Got log message from PAC: ' + JSON.stringify(messageObj));
-    // browser.runtime.sendMessage({type: MESSAGE_TYPE_LOG, url: url, matchedPattern: patternObj, proxySetting: proxySetting, error: true});
-    if (logg) logg.add(messageObj);
+    // chrome.runtime.sendMessage({type: MESSAGE_TYPE_LOG, url: url, matchedPattern: patternObj, proxySetting: proxySetting, error: true});
+    if (logg) { logg.add(messageObj);  }
     // badge only shows 4 characters, no need to process it
     const title = proxySetting.title || `${proxySetting.address}:${proxySetting.port}`;
-    browser.browserAction.setTitle({title}); 
-    browser.browserAction.setBadgeText({text: title});
-    browser.browserAction.setBadgeBackgroundColor({color: messageObj.proxySetting.color});
+    chrome.browserAction.setTitle({title}); 
+    chrome.browserAction.setBadgeText({text: title});
+    chrome.browserAction.setBadgeBackgroundColor({color: messageObj.proxySetting.color});
   }
 });
 
-function provideCredentialsAsync(details) {
+
+
+function sendAuth(details) {
   // details.url is scheme + url without path and query info; e.g. https://www.google.com/
   // note ending slash. details.host is www.google.com
   if (!details.isProxy || !activeSettings) { return; }
-  //console.log('provideCredentialsAsync(): ' + JSON.stringify(activeSettings));
+  //console.log('sendAuth(): ' + JSON.stringify(activeSettings));
   let ps;
   if (activeSettings.mode == PATTERNS || activeSettings.mode == RANDOM || activeSettings.mode == ROUND_ROBIN) {
     ps = Utils.findMatchingProxySetting(details.url, new URL(details.url).host, activeSettings.proxySettings); // return {proxySetting: proxySetting, patternObj: patternObj};
     /*if (ps) {
-      console.log('provideCredentialsAsync(): returning ' + JSON.stringify(ps));
+      console.log('sendAuth(): returning ' + JSON.stringify(ps));
     }
     else
-      console.log('provideCredentialsAsync(): returning null');*/
+      console.log('sendAuth(): returning null');*/
   }
   else {
     // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
@@ -71,7 +67,7 @@ function provideCredentialsAsync(details) {
     ps = {proxySetting: activeSettings.proxySettings[0], matchedPattern: USE_PROXY_FOR_ALL_URLS};
   }
   
-  console.log(ps ? 'provideCredentialsAsync(): returning ' + ps.proxySetting.username : 'provideCredentialsAsync(): returning null');
+  console.log(ps ? 'sendAuth(): returning ' + ps.proxySetting.username : 'sendAuth(): returning null');
 
   return ps ? {authCredentials: {username: ps.proxySetting.username, password: ps.proxySetting.password}} : null;
 }
@@ -139,9 +135,9 @@ function sendSettingsToProxyScript(settings) {
     registerProxyScript().then(() => {
       proxyScriptLoaded = true;
       // Right now we only support PATTERNS
-      browser.browserAction.setIcon({path: '/images/icon.svg'});
-      browser.browserAction.setTitle({title: chrome.i18n.getMessage('Patterns')});
-      browser.browserAction.setBadgeText({text: ''});
+      chrome.browserAction.setIcon({path: '/images/icon.svg'});
+      chrome.browserAction.setTitle({title: chrome.i18n.getMessage('Patterns')});
+      chrome.browserAction.setBadgeText({text: ''});
       // Remove inactive proxySetting objects and patterns. We also create empty arrays when necessary, never nulls.
       if (settings.proxySettings && Array.isArray(settings.proxySettings)) {
         settings.proxySettings = settings.proxySettings.filter(x => x.active);
@@ -153,10 +149,10 @@ function sendSettingsToProxyScript(settings) {
           ps.whitePatterns = filterAndValidatePatterns(ps.whitePatterns);
           ps.blackPatterns = filterAndValidatePatterns(ps.blackPatterns);
         });
-        activeSettings = settings; // For provideCredentialsAsync()
+        activeSettings = settings; // For sendAuth()
         //console.log('sorted, active proxy settings:');
         //console.log(JSON.stringify(settings, null, 2));
-        browser.runtime.sendMessage(settings, {toProxyScript: true});
+        chrome.runtime.sendMessage(settings, {toProxyScript: true});
       }
       else {
         setDisabled(true);
@@ -170,16 +166,16 @@ function sendSettingsToProxyScript(settings) {
     // Find it and pass to the PAC as the only proxySetting.
     registerProxyScript().then(() => {
       proxyScriptLoaded = true;
-      let tmp = settings.proxySettings.find(e => e.id === settings.mode);
+      const tmp = settings.proxySettings.find(e => e.id === settings.mode);
       if (tmp) {
-        //browser.browserAction.setIcon({imageData: getColoredImage(tmp.color)});
-        const title = temp.title || `${temp.address}:${temp.port}`;
-        browser.browserAction.setIcon({path: '/images/icon.svg'});
-        browser.browserAction.setTitle({title});
-        browser.browserAction.setBadgeText({text: title});
-        browser.browserAction.setBadgeBackgroundColor({color: tmp.color});
-        activeSettings = {mode: settings.mode, proxySettings: [tmp]}; // For provideCredentialsAsync()
-        browser.runtime.sendMessage(activeSettings, {toProxyScript: true});
+        //chrome.browserAction.setIcon({imageData: getColoredImage(tmp.color)});
+        const title = tmp.title || `${temp.address}:${tmp.port}`;
+        chrome.browserAction.setIcon({path: '/images/icon.svg'});
+        chrome.browserAction.setTitle({title});
+        chrome.browserAction.setBadgeText({text: title});
+        chrome.browserAction.setBadgeBackgroundColor({color: tmp.color});
+        activeSettings = {mode: settings.mode, proxySettings: [tmp]}; // For sendAuth()
+        chrome.runtime.sendMessage(activeSettings, {toProxyScript: true});
       }
       else {
         setDisabled(true);
@@ -194,57 +190,39 @@ function setDisabled(isError) {
   
   unregisterProxyScript().then(() => {
     proxyScriptLoaded = false;
-    activeSettings = null; // For provideCredentialsAsync()
-    browser.browserAction.setIcon({path: 'images/icon-off.svg'});
-    browser.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
-    browser.browserAction.setBadgeText({text: ''});
-    browser.runtime.sendMessage(DISABLED_SETTINGS_OBJ, {toProxyScript: true}); // Is this needed? We're unregistered.
+    activeSettings = null; // For sendAuth()
+    chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
+    chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
+    chrome.browserAction.setBadgeText({text: ''});
+    chrome.runtime.sendMessage(DISABLED_SETTINGS_OBJ, {toProxyScript: true}); // Is this needed? We're unregistered.
     if (isError) {
       console.log('DISABLING DUE TO ERROR!');
       //Utils.displayNotification('There was an unspecified error. FoxyProxy is now disabled.');
     }
     // Update the options.html UI if it's open
-    browser.runtime.sendMessage(MESSAGE_TYPE_DISABLED);
+    //chrome.runtime.sendMessage(MESSAGE_TYPE_DISABLED);
+    chrome.runtime.sendMessage({mode: 'disabled'});
     ignoreWrite = true; // prevent infinite loop; next line writes to storage and we're already in storate write callback
     console.log('******* disabled mode');
-    setMode(DISABLED);
+    //setMode(DISABLED);
+    setMode('disabled');
   });
 }
 
 
-// getColoredImage is only used in background.js and it is commented oout so not used at all
-// getColoredImage also is the only part that uses JQuery in background.js
-// only utils.js uses JQuery ... removed from utils.js as well
-/*
-function getColoredImage(color) {
-  // Modified from https://stackoverflow.com/a/30140386/3646737
 
-  // Update color
-  $('#stop2863,#stop2865,#stop2955,#stop2957,#stop2863,#stop2865,#stop2955,#stop2957,#stop2863,#stop2865,#stop2955,#stop2957').
-    css('stop-color', color);
 
-  // Update color
-  $('#path2907,#path2935,#path2939').css('fill', color);
+// After https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 is fixed, onAuthRequired() not needed. ...Resolution: --- ? WONTFIX
+// --- registering persistent listener
+chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['*://*/*']}, ['blocking']);
+// auth can only be sent for HTTP requests so '<all_urls>' not needed
 
-  // Get the image, prepend header
-  let image64 = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(document.getElementById('fox')));
-
-  // Set it as the source of the img element
-  $('#img').attr('src', image64);
-  let ctx = document.getElementById('canvas').getContext('2d');
-  ctx.drawImage(img, 0, 0);
-  return ctx.getImageData(0, 0, 48, 48);
-}
-*/
-/**
- * After https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 is fixed, onAuthRequired() not needed.
- */
-browser.webRequest.onAuthRequired.addListener(provideCredentialsAsync,
-  {urls: ['<all_urls>']},
-  ['blocking']);
 
 // Update the PAC script whenever stored settings change
-browser.storage.onChanged.addListener((oldAndNewSettings) => {
+//chrome.storage.onChanged.addListener((oldAndNewSettings) => {
+chrome.storage.onChanged.addListener((changes, area) => {   // Change Listener
+console.log(changes);
+  if (changes.mode && changes.mode
   if (ignoreWrite) {
     // Ignore this change to storage
     ignoreWrite = false;
@@ -252,15 +230,19 @@ browser.storage.onChanged.addListener((oldAndNewSettings) => {
   }
 
   // Re-read them because oldAndNewSettings just gives us the deltas, not complete settings
+  
+  init();
+/*
   getAllSettings().then((settings) => {
       console.log('background.js: Re-read settings');
       sendSettingsToProxyScript(settings)})
     .catch(e => console.error(`getAllSettings() Error: ${e}`));
+  */
 });
 
 // Watch for new installs and updates to our addon
-browser.runtime.onInstalled.addListener((details) => {
-  // console.log('browser.runtime.onInstalled.addListener(): ' + JSON.stringify(details));
+chrome.runtime.onInstalled.addListener((details) => {
+  // console.log('chrome.runtime.onInstalled.addListener(): ' + JSON.stringify(details));
   
   // simplified logic
   // reason: install | update | browser_update | shared_module_update
@@ -268,42 +250,31 @@ browser.runtime.onInstalled.addListener((details) => {
   
     case details.reason === 'install':
     case details.reason === 'update' && /^(3\.|4\.|5\.5|5\.6)/.test(details.previousVersion):
-      browser.tabs.create({url: '/about.html?welcome'});
+      chrome.tabs.create({url: '/about.html?welcome'});
       break;
 
     case details.reason === 'update' && details.previousVersion === '5.0':
       updateSettingsFrom50().then(() => console.log('finished updateSettingsFrom50()'));
       break;
-  }  
-/*  
-  if (details.reason === 'install') {
-    browser.tabs.create({url: '/first-install.html'});
-  }
-  else if (details.reason === 'update') {
-    if (details.previousVersion === '5.0') {
-      // The initial WebExtension version, which was disabled after a couple of days, was called 5.0
-      // for both Standard and Basic. Update settings format.
-      updateSettingsFrom50().then(() => console.log('finished updateSettingsFrom50()'));
-    }
-    else if (details.previousVersion.startsWith('3.') || // FP Basic was 3.x
-        details.previousVersion.startsWith('4.') || // FP Standard was 4.x.
-        details.previousVersion.startsWith('5.5') || // To distinguish from the 5.0 above
-        details.previousVersion.startsWith('5.6')) { // I don't think there was a 5.6 but for a couple of users
-      browser.tabs.create({url: '/first-install.html'});
-    }
-    //else browser.tabs.create({url: '/first-install.html'});
-  }
-*/  
+  }    
 });
 
-// Get the current settings, then...
-getAllSettings().then((settings) => {
-  //console.log(settings);
-  logg = new Logg(settings.logging.maxSize, settings.logging.active);
-  browser.runtime.getBrowserInfo().then((info) => {
-    browserVersion = parseFloat(info.version);
-    console.log(`background.js: loaded proxy settings from disk. browserVersion is ${browserVersion}`);
-    sendSettingsToProxyScript(settings);
-  })
-  .catch(e => console.error(`background.js: Error retrieving sendSettingsToProxyScript() or getBrowserInfo(): ${e}`))})
-.catch(e => console.error(`background.js: Error retrieving stored settings: ${e}`));
+// start
+init();
+function init() {
+  
+  chrome.storage.local.get(null, result => {
+    // browserVersion is not used & runtime.getBrowserInfo() is not supported on Chrome
+    // sync is NOT set or it is false, use this result ELSE get it from storage.sync
+    !result.sync ? process(result) : chrome.storage.sync.get(null, process);
+  });
+}
+
+function process(settings) {
+ 
+  const size = settings.logging ? settings.logging.size : 500; // default 500
+  const active = settings.logging ? settings.logging.active : true; // default true
+  logg = new Logg(size, active);
+  sendSettingsToProxyScript(prepareForSettings(settings));
+  console.log(`background.js: loaded proxy settings from disk.`);
+}

@@ -17,13 +17,13 @@ class Logg {
   }
 
   get length() {
-    var size = 0;
+    let size = 0;
     if (this.end < this.start) {
-        size = this.maxSize - this.start + this.end;
-    } else if (this.end == this.start) {
-       size = (this.full ? this.maxSize : 0);
+      size = this.maxSize - this.start + this.end;
+    } else if (this.end === this.start) {
+      size = (this.full ? this.maxSize : 0);
     } else {
-        size = this.end - this.start;
+      size = this.end - this.start;
     }
     return size;
   }
@@ -45,10 +45,10 @@ class Logg {
 
   add(o) {
     if (this._active) {
-      this.length == this.maxSize && this.remove();
+      this.length === this.maxSize && this.remove();
       this.elements[this.end++] = o;
       this.end >= this.maxSize && (this.end = 0);
-      this.end == this.start && (this.full = true);
+      this.end === this.start && (this.full = true);
     }
   }
 
@@ -60,7 +60,7 @@ class Logg {
    * Removes the first item from the array; like pop but doesn't return the popped value.
    */
   remove() {
-    if (this.length == 0) return;
+    if (this.length === 0) { return; }
     let element = this.elements[this.start];
     if (element) {
       this.elements[this.start++] = null; // Delete instead?
@@ -73,10 +73,10 @@ class Logg {
    * |indices| should be an array of 0-indexed indices to remove
    */
   del(indices) {
-    for (let i=0; i<indices.length; i++) {
+    for (let i=0, len = indices.length; i < len; i++) {
       let idx = indices[i];
       // Is index out-of-bounds?
-      if (idx < 0 || idx >= this.length) continue;
+      if (idx < 0 || idx >= this.length) { continue; }
       this.elements.splice(idx, 1);
       this.end--;
       this.full = false

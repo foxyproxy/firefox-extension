@@ -10,38 +10,73 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 
 const upgraded = Utils.urlParamsToJsonMap().upgraded;
 //console.log('is upgraded? ' + upgraded);
-// .hide-unimportant in app.css#4575 already has display: none;
-// we only need to remove .hide-unimportant to show the item
-document.querySelector(upgraded ? '.hide-if-not-upgrade' : '.hide-if-upgrade').classList.remove('hide-unimportant');
+// .hide in app.css#4575 already has display: none;
+// we only need to remove .hide to show the item
+document.querySelector(upgraded ? '.hide-if-not-upgrade' : '.hide-if-upgrade').classList.remove('hide');
 
 
 // addEventListener for all buttons & handle together
-document.querySelectorAll('#cancelBtn, #export').forEach(item => item.addEventListener('click', process));
-document.querySelectorAll('#importJson, #importXml1,#importXml2').forEach(item => item.addEventListener('change', process));
+document.querySelectorAll('#cancel, #export').forEach(item => item.addEventListener('click', process));
+document.querySelectorAll('#importJson, #importXml1, #importXml2').forEach(item => item.addEventListener('change', process));
 
-function process() {
+function process(e) {
 
   switch (this.id) {
     // click
-    case 'cancelBtn': location.href = '/options.html'; break;
+    case 'cancel': location.href = '/options.html'; break;
     case 'export': Utils.exportFile(); break;
-    
+
     // change
     case 'importJson':
-      Utils.importFile(evt.target.files[0], ['text/plain', 'application/json'], 1024*1024*50 /* 50 MB */, 'json', importJson);
+      Utils.importFile(e.target.files[0], ['text/plain', 'application/json'], 1024*1024*50 /* 50 MB */, 'json', importJson);
       break;
     case 'importXml1':
     case 'importXml2':
-      Utils.importFile(evt.target.files[0], ['text/plain', 'application/xml', 'text/xml'], 1024*1024*50 /* 50 MB */, 'xml', importXml);
-      break;    
+      Utils.importFile(e.target.files[0], ['text/plain', 'application/xml', 'text/xml'], 1024*1024*50 /* 50 MB */, 'xml', importXml);
+      break;
   }
 }
 
-function importJson(settings) {
+function importJson(data) {
+
+//    console.log(settings);
+//  console.log(addonStructToStorageObject(data));
+//  console.log(prepareForStorage(data)); 
+ 
+
+  // --- convert pre v7.0 export to db format
+  if (data.hasOwnProperty('proxySettings')) {
+    data = prepareForStorage(data);
+  }
+
+  // get storage
+  chrome.storage.local.get(null, result => {
+    // sync is NOT set or it is false, use this result
+    if (!result.sync) {
+      chrome.storage.local.clear(() => chrome.storage.local.set(data, end)); // delete all then save to target storage 
+      return;
+    }
+    // sync is set, leave storage.local as it is
+    chrome.storage.sync.get(null, result => {
+      chrome.storage.sync.clear(() => chrome.storage.sync.set(data, end)); // delete all then save to target storage                      
+    });
+  });
+
+
+
+ 
+ /*
   deleteAllSettings().then(() => writeAllSettings(settings).then(() => {
     Utils.displayNotification(chrome.i18n.getMessage('importEnd'));
     location.href = '/options.html';
   }));
+*/
+}
+
+function end() {
+
+  Utils.displayNotification(chrome.i18n.getMessage('importEnd'));
+  location.href = '/options.html';
 }
 
 /**
@@ -178,7 +213,7 @@ function importXml(oldSettings) {
     console.log('title: ' + newProxySetting.title);
     newProxySetting.color = oldProxySetting.getAttribute('color');
 
-    // Deactivate from patterns mdoe any unsupported types/modes       
+    // Deactivate from patterns mdoe any unsupported types/modes
     newProxySetting.active = oldType !== 'manual' && oldType !== 'direct' ? false : oldProxySetting.getAttribute('enabled') === 'true';
 
     let newId;
@@ -276,7 +311,7 @@ function importXml(oldSettings) {
       location.href = '/options.html';
     }
   }));
- 
+
 }
 
 
