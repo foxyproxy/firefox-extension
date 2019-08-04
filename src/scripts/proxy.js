@@ -9,38 +9,33 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----- global
-let oldProxySetting;
+let proxy = {};
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
-color.fromString(DEFAULT_COLOR); // starting from default color
+color.fromString('#66cc66');                                // starting from default color
 
-const header = document.querySelector('.header'); // dynamic header
+const header = document.querySelector('.header');           // dynamic header
 setHeader();
 
 // ----- check for Edit
-const id = localStorage.getItem('id');
-if (id) { // This is an edit operation
+let id = localStorage.getItem('id');
+const sync = localStorage.getItem('sync') === 'true';
+const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
+if (id) {                                                   // This is an edit operation
 
-  const sync = localStorage.getItem('sync');
+  storageArea.get(id, result => {
 
-  // clear localStorage
-  localStorage.removeItem('id');
-  localStorage.removeItem('sync');
-
-  const API = sync === 'true' ? chrome.storage.sync : chrome.storage.local;
-  API.get(id, result => {
-console.log(result);    
     if (!Object.keys(result).length) {
-      
-      if (id === LASTRESORT) { // error prevention
-        processOptions(DEFAULT_PROXY_SETTING);
+
+      if (id === LASTRESORT) {                              // error prevention
+        proxy = DEFAULT_PROXY_SETTING;
+        processOptions();
         return;
-      }      
+      }
       console.error('Unable to edit saved proxy (could not get existing settings)')
       return;
     }
-    
-    result[id].id = id;
-    processOptions(result[id]);
+    proxy = result[id];
+    processOptions();
   })
 }
 
@@ -73,27 +68,30 @@ function process() {
   switch (this.dataset.i18n) {
 
     case 'cancel':
-      // prevent Firefox's save password prompt
-      proxyPassword.value = '';
+      proxyPassword.value = '';                             // prevent Firefox's save password prompt
       location.href = '/options.html';
       break;
 
     case 'saveAdd':
       if (!validateInput()) { return; }
-      saveProxySetting().then(resetOptions)
-      .catch((e) => console.error('Error saving proxy: ' + e));
+      storageArea.set(makeProxy(), resetOptions);
       break;
 
     case 'saveEditPattern':
       if (!validateInput()) { return; }
-      saveProxySetting().then((id) => location.href = '/patterns.html?id=' + Utils.jsonObject2UriComponent(id))
-      .catch((e) => console.error('Error saving proxy: ' + e));
+      storageArea.set(makeProxy(), () => {
+        localStorage.setItem('id', id);                     // in case new proxy was added
+        proxyPassword.value = '';                           // prevent Firefox's save password prompt
+        location.href = '/patterns.html';
+      });
       break;
 
     case 'save':
       if (!validateInput()) { return; }
-      saveProxySetting().then(() => location.href = '/options.html')
-      .catch((e) => console.error('Error saving proxy: ' + e));
+      storageArea.set(makeProxy(), () => {
+        proxyPassword.value = '';                           // prevent Firefox's save password promp 
+        location.href = '/options.html' 
+      });
       break;
 
     case 'togglePW|title':
@@ -115,21 +113,9 @@ function setHeader(proxy) {
 }
 
 
-function processOptions(proxy) {
+function processOptions() {
 
-    //console.log(proxy);
-    oldProxySetting = proxy;
-
-    // Populate the form
     setHeader(proxy);
-
-    // input
-    proxyTitle.value = proxy.title || '';
-    proxyAddress.value = proxy.address || '';
-    proxyPort.value = proxy.port || '';
-    proxyUsername.value = proxy.username || '';
-    proxyPassword.value = proxy.password || '';
-    pacURL.value = proxy.pacURL || '';
 
     // select
     proxyType.value = proxy.type;
@@ -140,63 +126,47 @@ function processOptions(proxy) {
 
     // color
     color.fromString(proxy.color || DEFAULT_COLOR);
+
+    // input
+    proxyTitle.value = proxy.title || '';
+    proxyAddress.value = proxy.address || '';
+    proxyPort.value = proxy.port || '';
+    proxyUsername.value = proxy.username || '';
+    proxyPassword.value = proxy.password || '';
+    pacURL.value = proxy.pacURL || '';
 }
 
-function resetOptions() {
+function makeProxy() {
 
-  setHeader();
+  proxy.type = proxyType.value *1;
+  proxy.color = document.querySelector('#colorChooser').value;
+  proxy.title = proxyTitle.value;
 
-  //proxyType.value = '1'; // http
-  
-  // to help entering sets quickly, some fields are kept
-  [proxyTitle, proxyAddress].forEach(item => item.value = '');
-  //document.querySelectorAll('input[type="text"]').forEach(item => item.value = '');
-  //document.querySelectorAll('input[type="checkbox"]').forEach(item => item.checked = true);
+  if (proxy.type !== PROXY_TYPE_NONE) {
 
-  color.fromString(DEFAULT_COLOR);
+    proxy.address = proxyAddress.value;
+    proxy.port = proxyPort.value *1;
+    if (proxy.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked) { proxy.proxyDNS = true; }
+    proxy.active = proxyActive.checked;
+    // already trimmed in validateInput()
+    proxy.username = proxyUsername.value;                   // if it had u/p and then deletd it, it must be reflected
+    proxy.password = proxyPassword.value;
+  }
 
-  proxyTitle.focus();
+  proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#onOffWhiteAll').checked ? [PATTERN_ALL_WHITE] : []);
+  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#onOffBlackAll').checked ?
+                                    [PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK] : []);
+  proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
+
+  id = id || getUniqueId();                                 // global
+  proxy.index = proxy.index || -1;
+
+  return {[id]: proxy};
 }
 
-
-function saveProxySetting() {
-
-  let proxySetting = {};
-
-  proxySetting.type = proxyType.value *1;
-  proxySetting.color = document.querySelector('#colorChooser').value;
-  if (proxyTitle.value) { proxySetting.title = proxyTitle; }
-  proxySetting.active = true; // default
-
-  if (proxySetting.type !== PROXY_TYPE_NONE) {
-
-    proxySetting.address = proxyAddress.value;
-    proxySetting.port = proxyPort.value *1;
-    if (proxySetting.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked) { proxySetting.proxyDNS = true; }
-    proxySetting.active = proxyActive.checked;
-    // already trimmed in validateInput() , don't store ''
-    if (proxyUsername.value) { proxySetting.username = proxyUsername.value; }
-    if (proxyPassword.value) { proxySetting.password = proxyPassword.value; }
-  }
-
-    // prevent Firefox's save password prompt
-    proxyPassword.value = '';
-
-  if (oldProxySetting) { // Edit operation
-    proxySetting.whitePatterns = oldProxySetting.whitePatterns;
-    proxySetting.blackPatterns = oldProxySetting.blackPatterns;
-    if (oldProxySetting.pacURL) { proxySetting.pacURL = oldProxySetting.pacURL; } // imported foxyproxy.xml
-    return editProxySetting(oldProxySetting.id, oldProxySetting.index, proxySetting);
-  }
-  else { // Add operation
-    // Do not use this proxy for internal IP addresses.
-    proxySetting.whitePatterns = document.querySelector('#onOffWhiteAll').checked ? [PATTERN_ALL_WHITE] : [];
-
-    proxySetting.blackPatterns = document.querySelector('#onOffBlackAll').checked ?
-      [PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK] : [];
-
-    return addProxySetting(proxySetting);
-  }
+function getUniqueId() {
+  // We don't need cryptographically secure UUIDs, just something unique
+  return Math.random().toString(36).substring(7) + new Date().getTime();
 }
 
 function validateInput() {
@@ -226,3 +196,18 @@ function validateInput() {
 
   return true;
 }
+
+
+function resetOptions() {
+  
+  id = '';
+  oldProxy = {};
+  localStorage.removeItem('id');
+
+  // to help entering sets quickly, some fields are kept
+  [proxyTitle, proxyAddress].forEach(item => item.value = '');
+  color.fromString(DEFAULT_COLOR);
+
+  setHeader();  
+  proxyTitle.focus();
+} 

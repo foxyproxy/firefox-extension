@@ -8,51 +8,40 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-//getAllSettings().then(popupSuccess, popupError).catch((e) => console.log('exception: ' + e));
-
 // ----------------- User Preference -----------------------
+let storageArea;
 chrome.storage.local.get(null, result => {
-  if (!result.sync) { // sync is NOT set or it is false, use this result
-    renderOptions(prepareForSettings(result)); 
-    return;
-  }
-  chrome.storage.sync.get(null, result => { // sync is set
-    renderOptions(prepareForSettings(result));;       
-  });
+  storageArea = result.sync ? chrome.storage.sync : chrome.storage.local;
+  result.sync ? chrome.storage.sync.get(null, processOptions) : processOptions(result);
 });
 // ----------------- /User Preference ---------------------- 
 
-function popupSuccess(settings) {
-
-  renderOptions(settings);
-}
-
-function popupError(error) {
-
-  console.log(`popupError(): ${error}`);
-  // using hide class app.css#4575 to show/hide
-  // note: all elements are hidden, only need to unhide
-  document.querySelector('#error').classList.remove('hide');
-}
-
-function renderOptions(settings) {
-
-  //console.log('renderOptions() and settings is ' + JSON.stringify(settings));
+function processOptions(pref) {
 
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
   const temp = document.querySelector('li.template');
-  
-  settings.proxySettings.forEach(item => {
 
-    if (!Utils.isUnsupportedType(item.type)) { // if supported
+  // add default lastresort if not there
+  pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
+
+  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
+
+  prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
+  
+  pref.mode = pref.mode || 'patterns';                      // defaults to patterns
+  
+  prefKeys.forEach(id => {
+
+    const item = pref[id];
+    
+    if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
       const li = temp.cloneNode(true);
       li.classList.remove('template');
-      li.id = item.id;
+      li.id = id;
       li.style.color = item.color;
-      li.id = item.id;
-      li.appendChild(document.createTextNode(item.title || `${item.address}:${item.port}`));
+      li.appendChild(document.createTextNode((item.title || `${item.address}:${item.port}`) + '  (ignore patterns & proxy order)'));
 
       docfrag.appendChild(li);
     }
@@ -62,19 +51,16 @@ function renderOptions(settings) {
 
   // <span id="patternsSelected"></span>
   // no need to replace node, using CSS on the same node
-  // HTML is set to the exact PATTERNS/DISABLED (patterns/disabled) so no need to re-evalute
+  // HTML is set to the exact patterns/disabled so no need to re-evalute
   // default set to 'patterns'
-  const node = document.getElementById(settings.mode || 'patterns'); // querySelector error with selectors starting with number
+  const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number
   node.classList.add('on');
 
-  if (FOXYPROXY_BASIC) { 
-    document.querySelectorAll('h6, #patterns').forEach(item => item.style.display = 'none');
-  }
+  FOXYPROXY_BASIC && document.querySelectorAll('h4, #patterns').forEach(item => item.classList.add('hide'));
 
   // add Listeners
   document.querySelectorAll('li, button').forEach(item => item.addEventListener('click', process));
 
-  // using hide class app.css#4575 to show/hide
   document.querySelector('#optionsRow').classList.remove('hide');
 }
 
@@ -110,15 +96,15 @@ function process() {
       break;
 
     default:
-      //setMode(this.id).then(window.close);
-      setMode(this.id); // keep it open for more action
       // reset the old one
       const old = document.querySelector('.on');      
       old &&  old.classList.remove('on');
       this.classList.add('on');
       
+
+      storageArea.set({mode: this.id});                     // keep it open for more action
       // popup & options are the only place that can set mode
-      // sneding message to option, if it is open
+      // sending message to option && bg, if it is open
       chrome.runtime.sendMessage({mode: this.id});
   }
 }

@@ -8,16 +8,9 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-const upgraded = Utils.urlParamsToJsonMap().upgraded;
-//console.log('is upgraded? ' + upgraded);
-// .hide in app.css#4575 already has display: none;
-// we only need to remove .hide to show the item
-document.querySelector(upgraded ? '.hide-if-not-upgrade' : '.hide-if-upgrade').classList.remove('hide');
-
-
 // addEventListener for all buttons & handle together
 document.querySelectorAll('#cancel, #export').forEach(item => item.addEventListener('click', process));
-document.querySelectorAll('#importJson, #importXml1, #importXml2').forEach(item => item.addEventListener('change', process));
+document.querySelectorAll('#importJson, #importXml').forEach(item => item.addEventListener('change', process));
 
 function process(e) {
 
@@ -28,216 +21,139 @@ function process(e) {
 
     // change
     case 'importJson':
-      Utils.importFile(e.target.files[0], ['text/plain', 'application/json'], 1024*1024*50 /* 50 MB */, 'json', importJson);
+      Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*5, 'json', importJson); // 5mb
       break;
-    case 'importXml1':
-    case 'importXml2':
-      Utils.importFile(e.target.files[0], ['text/plain', 'application/xml', 'text/xml'], 1024*1024*50 /* 50 MB */, 'xml', importXml);
+    case 'importXml':
+      Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*5, 'xml', importXml);  // 5mb
       break;
   }
 }
 
-function importJson(data) {
+function importJson(pref) {
 
-//    console.log(settings);
-//  console.log(addonStructToStorageObject(data));
-//  console.log(prepareForStorage(data)); 
- 
-
-  // --- convert pre v7.0 export to db format
-  if (data.hasOwnProperty('proxySettings')) {
-    data = prepareForStorage(data);
+  // --- if change agreed, convert pre v7.0 export to db format
+  if (pref.hasOwnProperty('proxySettings')) {
+    pref = prepareForStorage(pref);
   }
 
   // get storage
-  chrome.storage.local.get(null, result => {
+  chrome.storage.local.get('sync', result => {
     // sync is NOT set or it is false, use this result
-    if (!result.sync) {
-      chrome.storage.local.clear(() => chrome.storage.local.set(data, end)); // delete all then save to target storage 
-      return;
-    }
-    // sync is set, leave storage.local as it is
-    chrome.storage.sync.get(null, result => {
-      chrome.storage.sync.clear(() => chrome.storage.sync.set(data, end)); // delete all then save to target storage                      
-    });
+    // delete all then save to target storage
+    // if sync is set, leave storage.local as it is
+    !result.sync ? chrome.storage.local.clear(() => chrome.storage.local.set(pref, end)) :
+                    chrome.storage.sync.clear(() => chrome.storage.sync.set(pref, end));
   });
-
-
-
- 
- /*
-  deleteAllSettings().then(() => writeAllSettings(settings).then(() => {
-    Utils.displayNotification(chrome.i18n.getMessage('importEnd'));
-    location.href = '/options.html';
-  }));
-*/
 }
 
 function end() {
 
-  Utils.displayNotification(chrome.i18n.getMessage('importEnd'));
+  Utils.notify(chrome.i18n.getMessage('importEnd'));
   location.href = '/options.html';
 }
 
-/**
-  Example new proxy setting:
 
-  "ye3ikc1508098264080": {
-    "title": "test",
-    "type": 3,
-    "color": "#66cc66",
-    "address": "123.123.123.123",
-    "port": 9999,
-    "username": "eric",
-    "password": "jung",
-    "active": true,
-    "whitePatterns": [
-      {
-        "title": "all URLs",
-        "active": true,
-        "pattern": "*",
-        "type": 1,
-        "protocols": 1
-      }
-    ],
-    "blackPatterns": [
-      {
-        "title": "localhost URLs",
-        "active": true,
-        "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?(?:localhost|127\\.\\d+\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
-        "type": 2,
-        "protocols": 1
-      },
-      {
-        "title": "internal IP addresses",
-        "active": true,
-        "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?(?:192\\.168\\.\\d+\\.\\d+|10\\.\\d+\\.\\d+\\.\\d+|172\\.(?:1[6789]|2[0-9]|3[01])\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
-        "type": 2,
-        "protocols": 1
-      },
-      {
-        "title": "localhost hostnames",
-        "active": true,
-        "pattern": "^(?:[^:@/]+(?::[^@/]+)?@)?[\\w-]+(?::\\d+)?(?:/.*)?$",
-        "type": 2,
-        "protocols": 1
-      }
-    ],
-    "index": 0
-  }
+function importXml(doc) {
 
-
-example old proxy setting:
-
-<proxy name="Work" id="2922082020" notes="PAC at work" enabled="true" mode="direct" selectedTabIndex="2" lastresort="false" animatedIcons="true" includeInCycle="true" color="#D6657F" proxyDNS="true"><matches><match enabled="true" name="leahscape" pattern="*://leahscape.com/*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false"/></matches><autoconf url="http://192.168.1.1/proxy.pac" loadNotification="true" errorNotification="true" autoReload="true" reloadFreqMins="60" disableOnBadPAC="true"/>
-  <manualconf host="ny.bbc.pac" port="8118" socksversion="5" isSocks="false"/>
-</proxy>
-
-<proxy name="Default" id="2653187683" notes="These are the settings that are used when no patterns match a URL." fromSubscription="false" enabled="true" mode="manual" selectedTabIndex="1" lastresort="true" animatedIcons="false" includeInCycle="true" color="#0055E5" proxyDNS="true" noInternalIPs="false" autoconfMode="pac" clearCacheBeforeUse="false" disableCache="false" clearCookiesBeforeUse="false" rejectCookies="false">
-  <matches><match enabled="true" name="All" pattern="*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false"/></matches>
-  <autoconf url="" loadNotification="true" errorNotification="true" autoReload="false" reloadFreqMins="60" disableOnBadPAC="true"/><autoconf url="http://wpad/wpad.dat" loadNotification="true" errorNotification="true" autoReload="false" reloadFreqMins="60" disableOnBadPAC="true"/>
-  <manualconf host="foo.com" port="1111" socksversion="5" isSocks="false" isHttps="true" username="eric" password="jung" domain=""/>
-</proxy>
-*/
-function importXml(oldSettings) {
-  // Log it
-  // let serializer = new XMLSerializer(); // <<<................ doesn't seem to be used
-  //console.log("******");
-  //console.log(serializer.serializeToString(oldSettings));
-  //console.log("******");
-  const newSettings = {};
-  const oldMode = oldSettings.evaluate('//foxyproxy/@mode', oldSettings, null, XPathResult.ANY_TYPE, null).iterateNext().value;
   let lastResortFound = false;
+  // base format
+  const pref = {
+    mode: 'disabled',
+    logging: {
+      size: 500,
+      active: true
+    }
+  };
+
+  const FP = doc.querySelector('foxyproxy');
+  if (!FP) {
+    Utils.notify('There is an error with the XML file (missing <foxyproxy ....>)');
+    return;
+  }
+  const mode = FP.getAttribute('mode');
+  mode && (pref.mode = mode);
+
+
   const badModes = [];
-  console.log('old mode is ' + oldMode);
-  newSettings[MODE] = convertOldMode(oldMode);
-  console.log('new mode is ' + newSettings[MODE]);
-/*
 
-<manualconf host="test.getfoxyproxy.org" port="2313" socksversion="5" isSocks="false" isHttps="false" username="" password="" domain=""/>
-*/
-
-  const proxies = oldSettings.getElementsByTagName('proxy');
+  const proxies = doc.getElementsByTagName('proxy');
   let patternsEdited = false;
 
-  for (const oldProxySetting of proxies) {
-    const newProxySetting = {};
-    // type a.k.a. mode
-    const oldType = oldProxySetting.getAttribute('mode');
 
+  doc.querySelectorAll('proxy').forEach((item, index) => {
+
+    const proxy = {};
+    // type a.k.a. mode
+    const oldType = item.getAttribute('mode');
+    // Deactivate from patterns mode any unsupported types/modes
+    const allowedType = ['manual', 'direct'].includes(oldType);
+    proxy.active = allowedType ? item.getAttribute('enabled') === 'true' : false;
     // switch is faster than a series of if/else
     switch (oldType) {
 
       case 'system':
-        badModes.push(oldProxySetting);
-        newProxySetting.type = PROXY_TYPE_SYSTEM;
+        badModes.push(item);
+        proxy.type = PROXY_TYPE_SYSTEM;
         break;
 
       case 'auto':
-        badModes.push(oldProxySetting);
-        if (oldProxySetting.getAttribute('autoconfMode') === 'pac') {
-          newProxySetting.type = PROXY_TYPE_PAC;
-          let autoconf = oldProxySetting.querySelector('autoconf');
-          newProxySetting.pacURL = autoconf.getAttribute('url');
+        badModes.push(item);
+        if (item.getAttribute('autoconfMode') === 'pac') { // PAC
+          proxy.type = PROXY_TYPE_PAC;
+          proxy.pacURL = item.querySelector('autoconf').getAttribute('url');
         }
-        else {
-          // wpad
-          newProxySetting.type = PROXY_TYPE_WPAD;
-          newProxySetting.pacURL = 'http://wpad/wpad.dat';
+        else {                                              // WPAD
+          proxy.type = PROXY_TYPE_WPAD;
+          proxy.pacURL = 'http://wpad/wpad.dat';
         }
         break;
 
       case 'direct':
-        newProxySetting.type = PROXY_TYPE_NONE;
+        proxy.type = PROXY_TYPE_NONE;
         break;
 
       case 'manual':
-        const manualconf = oldProxySetting.querySelector('manualconf');
-        newProxySetting.address = manualconf.getAttribute('host');
-        newProxySetting.port = parseInt(manualconf.getAttribute('port'));
-        newProxySetting.username = manualconf.getAttribute('username');
-        newProxySetting.password = manualconf.getAttribute('password');
+        const manualconf = item.querySelector('manualconf');
+        proxy.address = manualconf.getAttribute('host');
+        proxy.port = parseInt(manualconf.getAttribute('port'));
+        proxy.username = manualconf.getAttribute('username');
+        proxy.password = manualconf.getAttribute('password');
         // There appears to be a bug in 4.6.5 and possibly earlier versions: socksversion is always 5, never 4
         if (manualconf.getAttribute('isSocks') === 'true') {
-          newProxySetting.type = PROXY_TYPE_SOCKS5;
-          console.log('proxyDNS: ' + oldProxySetting.getAttribute('proxyDNS'));
-          console.log('proxyDNS: ' + (oldProxySetting.getAttribute('proxyDNS') === 'true'));
-          if (oldProxySetting.getAttribute('proxyDNS') === 'true') { newProxySetting.proxyDNS = true; }
+          proxy.type = PROXY_TYPE_SOCKS5;
+          if (item.getAttribute('proxyDNS') === 'true') { proxy.proxyDNS = true; }
         }
-        else if (manualconf.getAttribute('isHttps') === 'true') { newProxySetting.type = PROXY_TYPE_HTTPS; }
-        else { newProxySetting.type = PROXY_TYPE_HTTP; }
+        else if (manualconf.getAttribute('isHttps') === 'true') { proxy.type = PROXY_TYPE_HTTPS; }
+        else { proxy.type = PROXY_TYPE_HTTP; }
         break;
     }
 
-    newProxySetting.title = oldProxySetting.getAttribute('name');
-    console.log('title: ' + newProxySetting.title);
-    newProxySetting.color = oldProxySetting.getAttribute('color');
-
-    // Deactivate from patterns mdoe any unsupported types/modes
-    newProxySetting.active = oldType !== 'manual' && oldType !== 'direct' ? false : oldProxySetting.getAttribute('enabled') === 'true';
+    proxy.title = item.getAttribute('name');
+    proxy.color = item.getAttribute('color');
 
     let newId;
-    const oldId = oldProxySetting.getAttribute('id');
-    if (oldProxySetting.getAttribute('lastresort') === 'true') {
+    const oldId = item.getAttribute('id');
+    if (item.getAttribute('lastresort') === 'true') {
       lastResortFound = true;
-      newId = LASTRESORT; // This is a string
-      newProxySetting.index = Number.MAX_SAFE_INTEGER;
-      if (oldType !== 'manual' && oldType !== 'direct') { newProxySetting.type = PROXY_TYPE_NONE; }
+      newId = LASTRESORT;                                   // this is a string
+      proxy.index = Number.MAX_SAFE_INTEGER;
+      if (!allowedType) { proxy.type = PROXY_TYPE_NONE; }
     }
     else {
-      newProxySetting.index = i;
-      newId = 'import-' + oldId; // Force it to a string
+      proxy.index = index;
+      newId = 'import-' + oldId;
     }
 
-    if (newSettings[MODE] === oldId) {
+    if (pref.mode === oldId) {
       // If the old top-level mode points to a proxy setting with an unsupported mode (e.g. WPAD),
       // we have to change the new top-level mode otherwise nothing will work w/o user intervention
-      newSettings[MODE] = oldType !== 'manual' && oldType !== 'direct' ? PROXY_TYPE_NONE : newId;// Update mode to the new id ("import-" prefix)
+      pref.mode = !allowedType ? PROXY_TYPE_NONE : newId;   // Update mode to the new id ("import-" prefix)
     }
-    newProxySetting.whitePatterns = [];
-    newProxySetting.blackPatterns = [];
+    proxy.whitePatterns = [];
+    proxy.blackPatterns = [];
 
-    for (const oldMatch of oldProxySetting.getElementsByTagName('match')) {
+    item.querySelectorAll('match').forEach(mtch => {
+
       const newPattern = {};
       /*
         "whitePatterns": [
@@ -251,27 +167,34 @@ function importXml(oldSettings) {
         ]
 
       */
-      newPattern.title = oldMatch.getAttribute('name');
-      //console.log('name? ' + oldMatch.getAttribute('name'));
-      newPattern.active = oldMatch.getAttribute('enabled') === 'true';
-      newPattern.importedPattern = newPattern.pattern = oldMatch.getAttribute('pattern');
-      //console.log('enabled? ' + oldMatch.getAttribute('enabled'));
-      newPattern.type = oldMatch.getAttribute('isRegEx') === 'true' ? PATTERN_TYPE_REGEXP : PATTERN_TYPE_WILDCARD;
+      newPattern.title = mtch.getAttribute('name');
+      newPattern.active = mtch.getAttribute('enabled') === 'true';
+      newPattern.importedPattern = newPattern.pattern = mtch.getAttribute('pattern');
+      newPattern.type = mtch.getAttribute('isRegEx') === 'true' ? PATTERN_TYPE_REGEXP : PATTERN_TYPE_WILDCARD;
       // Do some simple parsing but only for wildcards. Anything else is going to fail.
       if (newPattern.type === PATTERN_TYPE_WILDCARD) {
-        if (newPattern.pattern.startsWith('http://')) {
-          newPattern.protocols = PROTOCOL_HTTP;
-          newPattern.pattern = newPattern.pattern.substring(7);
+
+        switch (true) {
+
+          case newPattern.pattern.startsWith('http://'):
+            newPattern.protocols = PROTOCOL_HTTP;
+            newPattern.pattern = newPattern.pattern.substring(7);
+            break;
+
+          case newPattern.pattern.startsWith('https://'):
+            newPattern.protocols = PROTOCOL_HTTPS;
+            newPattern.pattern = newPattern.pattern.substring(8);
+            break;
+
+          case newPattern.pattern.startsWith('*://'):
+            newPattern.protocols = PROTOCOL_ALL;
+            newPattern.pattern = newPattern.pattern.substring(4);
+            break;
+
+          default:
+            newPattern.protocols = PROTOCOL_ALL;
         }
-        else if (newPattern.pattern.startsWith('https://')) {
-          newPattern.protocols = PROTOCOL_HTTPS;
-          newPattern.pattern = newPattern.pattern.substring(8);
-        }
-        else if (newPattern.pattern.startsWith('*://')) {
-          newPattern.protocols = PROTOCOL_ALL;
-          newPattern.pattern = newPattern.pattern.substring(4);
-        }
-        else newPattern.protocols = PROTOCOL_ALL;
+
         // Clip everything after slashes; it can't be used anymore: https://bugzilla.mozilla.org/show_bug.cgi?id=1337001
         const idx = newPattern.pattern.indexOf('/');
         if (idx > -1) {
@@ -280,49 +203,102 @@ function importXml(oldSettings) {
         }
       }
       else { // e.g. ^https?://(?:[^:@/]+(?::[^@/]+)?@)?(?:localhost|127\.\d+\.\d+\.\d+)(?::\d+)?(?:/.*)?$
-        if (newPattern.pattern.indexOf('^https?://') === 1) {
-          newPattern.pattern = '^' + newPattern.pattern.substring(10);
-          newPattern.protocols = PROTOCOL_ALL;
+
+        switch (true) {
+
+          case newPattern.pattern.indexOf('^http://') === 1:
+            newPattern.protocols = PROTOCOL_HTTP;
+            newPattern.pattern = '^' + newPattern.pattern.substring(8);
+            break;
+
+          case newPattern.pattern.indexOf('^https://') === 1:
+            newPattern.protocols = PROTOCOL_HTTPS;
+            newPattern.pattern = '^' + newPattern.pattern.substring(9);
+            break;
+
+          case newPattern.pattern.indexOf('^https?://') === 1:
+            newPattern.protocols = PROTOCOL_ALL;
+            newPattern.pattern = '^' + newPattern.pattern.substring(10);
+            break;
+
+          default:
+            newPattern.protocols = PROTOCOL_ALL;
         }
-        else if (newPattern.pattern.indexOf('^http://') === 1) {
-          newPattern.pattern = '^' + newPattern.pattern.substring(8);
-          newPattern.protocols = PROTOCOL_HTTP;
-        }
-        else if (newPattern.pattern.indexOf('^https://') === 1) {
-          newPattern.pattern = '^' + newPattern.pattern.substring(9);
-          newPattern.protocols = PROTOCOL_HTTPS;
-        }
-        else newPattern.protocols = PROTOCOL_ALL;
       }
-      if (oldMatch.getAttribute('isBlackList') === 'true') newProxySetting.blackPatterns.push(newPattern);
-      else { newProxySetting.whitePatterns.push(newPattern); }
-    }
-    newSettings[newId] = newProxySetting;
-  }
-  if (!lastResortFound) { newSettings[LASTRESORT] = JSON.parse(JSON.stringify(DEFAULT_PROXY_SETTING)); }
-  //console.log("Converted settings:");
-  //console.log(JSON.stringify(newSettings));
-  //console.log("Done");
-  deleteAllSettings().then(() => writeAllSettings(newSettings, false).then(() => {
-    //Utils.displayNotification("Import finished");
-    if (patternsEdited) { Utils.displayNotification(chrome.i18n.getMessage('patternsChanged')); }
-    else {
-      Utils.displayNotification(chrome.i18n.getMessage('importEndSlash'));
-      location.href = '/options.html';
-    }
-  }));
 
+      mtch.getAttribute('isBlackList') === 'true' ? proxy.blackPatterns.push(newPattern) : proxy.whitePatterns.push(newPattern);
+    });
+
+    pref[newId] = proxy;
+  });
+
+  if (!lastResortFound) { pref[LASTRESORT] = DEFAULT_PROXY_SETTING; }
+
+  // get storage
+  chrome.storage.local.get('sync', result => {
+    // sync is NOT set or it is false, use this result
+    // delete all then save to target storage
+    // if sync is set, leave storage.local as it is
+    !result.sync ? chrome.storage.local.clear(() => chrome.storage.local.set(pref, () => endXML(patternsEdited))) :
+                    chrome.storage.sync.clear(() => chrome.storage.sync.set(pref, () => endXML(patternsEdited)));
+  });
 }
 
+function endXML(patternsEdited) {
 
-/**
-  const PATTERNS = 1;
-  const DISABLED = 16;
-*/
-function convertOldMode(oldMode) {
-  switch (oldMode) {
-    case 'patterns': return PATTERNS;
-    case 'disabled': return DISABLED;
-    default: return oldMode;
+  if (patternsEdited) { Utils.notify(chrome.i18n.getMessage('patternsChanged')); }
+  else {
+    Utils.notify(chrome.i18n.getMessage('importEndSlash'));
+    location.href = '/options.html';
   }
 }
+
+
+function prepareForStorage(settings) {
+
+  if (!settings.hasOwnProperty('proxySettings') || !settings.proxySettings[0]) {
+    alert('Imported file doesn not have any proxies.');
+    return null;
+  }
+
+  let lastResortFound = false;
+
+  const def = {
+    active: true,
+    title: 'Default',
+    notes: 'These are the settings that are used when no patterns match a URL.',
+    color: '#0055E5',
+    type: PROXY_TYPE_NONE,
+    whitePatterns: [PATTERN_ALL_WHITE],
+    blackPatterns: []
+  }
+
+  // base format
+  const ret = {
+    mode: 'disabled',
+    logging: {
+      size: 500,
+      active: true
+    }
+  };
+
+  settings.mode && (ret.mode = settings.mode);
+  settings.logging && (ret.logging = settings.logging);
+
+  let idx = 0;
+  settings.proxySettings.forEach(item => {
+
+    const id = item.id;
+    if (id === LASTRESORT) {
+      lastResortFound = true;
+      item.index = Number.MAX_SAFE_INTEGER;
+    }
+    else { item.index = idx++; }
+    delete item.id;                                         // Don't need id
+    ret[id] = item;
+
+  });
+  if (!lastResortFound) { ret[LASTRESORT] = def; }          // Fix data integrity, Copy but without id
+ 
+  return ret;
+} 

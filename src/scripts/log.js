@@ -8,36 +8,40 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
-let logg, bg;
-const onOff = document.querySelector('#onOff'); // cache for later
+// ----- global
+let newLog;
+const onOff = document.querySelector('#onOff');
 
-chrome.runtime.getBackgroundPage((bgPage) => {
-  bg = bgPage;
-  logg = bg.getLogg();
-  //console.log("logg active is " + logg.active);
-  onOff.checked = logg.active;
+chrome.runtime.getBackgroundPage(bg => {
+
+  newLog = bg.getLog();
+  onOff.checked = newLog.active;
   renderLog(); // log content will be shown if there are any, regardless of onOff
   hideSpinner();
 });
 
 function hideSpinner() {
-  
+
   const spinner = document.querySelector('#spinner');
   spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600); 
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
 }
 
 
-onOff.addEventListener('click', (e) => {
+onOff.addEventListener('change', (e) => {
 
   const isON = onOff.checked;
   //console.log("user changed logging to " + isON);
-  bg.ignoreNextWrite(); // Don't propagate changes the PAC script
-  setLogging(500, isON).then(() => {
-    logg.active = isON;
-    isON && renderLog(); // redisplay log when clicking ON
-    //logg.clear(); // better not clearing the log, user might temporary want to diable, use clear button to clear
+  const logging = {
+    size: 500,
+    active: isON
+  };
+  isON && renderLog(); // redisplay log when clicking ON
+
+  chrome.storage.local.get(null, result => {
+    !result.sync ? chrome.storage.local.set({logging}) : chrome.storage.sync.set({logging});
   });
+  // better not clearing the log, user might temporary want to diable, use clear button to clear
 });
 
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
@@ -49,7 +53,7 @@ function process () {
     case 'back': location.href = '/options.html'; break;
     case 'refresh': renderLog(); break;
     case 'clear':
-      logg.clear();
+      newLog.clear();
       renderLog();
       break;
   }
@@ -63,37 +67,24 @@ function renderLog() {
   const tbody = tr.parentNode.nextElementSibling;
   tbody.textContent = ''; // clearing the content
 
-//  for (let i = 0, len = logg.length; i < len; i++) {
-  logg.elements.forEach(item => {
+  newLog.elements.forEach(item => {
 
     const pattern = item.matchedPattern ?
-      (item.matchedPattern === USE_PROXY_FOR_ALL_URLS ? 'Use proxy for all URLs' : item.matchedPattern.pattern) : 'No matches';
+      (item.matchedPattern === 'all' ? 'Proxy for all URLs' : item.matchedPattern.pattern) : 'No matches';
 
     // Build a row for this log entry by cloning the tr containing 6 td
     const row = tr.cloneNode(true);
     row.className = item.matchedPattern ? 'success' : 'secondary'; // this will rest class .tamplate as well
     const td = row.children;
-    
-    // cell1
+
     const a = td[0].children[0];
     a.href = item.url;
     a.textContent = item.url;
 
-    // cell2
-    td[1].textContent = item.proxySetting ? item.proxySetting.title : 'No matches';
-
-    // cell3
-    //const cell3 = row.children[2];
-    //cell3.className = 'fp-color-blob-log'; // this style is blank app.css#4675
-    td[2].style.backgroundColor = item.proxySetting ? item.proxySetting.color : 'blue';
-
-    // cell4
-    td[3].textContent = item.proxySetting ? item.proxySetting.address : 'No matches';
-
-    // cell5
+    td[1].textContent = item.title || 'No matches';
+    td[2].style.backgroundColor = item.color || 'blue';
+    td[3].textContent = item.address || 'No matches';
     td[4].textContent = pattern;
-
-    // cell6
     td[5].textContent = formatInt(item.timestamp);
 
     docfrag.appendChild(row);

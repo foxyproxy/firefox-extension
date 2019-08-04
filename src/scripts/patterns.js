@@ -9,64 +9,62 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----- global
-let editingProxy;
+let proxy = {};
 vex.defaultOptions.className = 'vex-theme-default';
 
 const header = document.querySelector('.header');
-header.textContent = chrome.i18n.getMessage('addEditPatterns');
 
 // ----- check for Edit
-const id = localStorage.getItem('id');
+let id = localStorage.getItem('id');
+const sync = localStorage.getItem('sync') === 'true';
+const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
 if (id) { // This is an edit operation
 
-  const sync = localStorage.getItem('sync');
+  storageArea.get(id, result => {
 
-  // clear localStorage
-  localStorage.removeItem('id');
-  localStorage.removeItem('sync');
+    if (!Object.keys(result).length) {
 
-  const API = sync === 'true'  ? chrome.storage.sync : chrome.storage.local;
-  API.get(id, (data) => {
-
-    if (id === LASTRESORT && Object.keys(data).length === 0) { // error prevention
-      processOptions(DEFAULT_PROXY_SETTING);
+      if (id === LASTRESORT) {                              // error prevention
+        proxy = DEFAULT_PROXY_SETTING;
+        processOptions();
+        return;
+      }
+      console.error('Unable to edit saved proxy (could not get existing settings)')
+      return;
     }
-    data[id].id = id;
-    editingProxy = data[id];
 
-    if (editingProxy.title) { header.textContent = chrome.i18n.getMessage('addEditPatternsFor', editingProxy.title); }
-
-    renderPatterns();
+    proxy = result[id];    
+    if (proxy.title) { header.textContent = chrome.i18n.getMessage('editPatternsFor', proxy.title); }
+    processOptions();
     hideSpinner();
-  });
-
-  //.catch((e) => console.error("1: Unable to read saved proxy (could not get existing settings): " + e));
+  })
 }
+/*
 else {
   // Error, shouldn't ever get here
   hideSpinner();
   document.querySelector('#error').classList.remove('hide');
   document.querySelector('.main').classList.add('hide');
   console.error("2: Unable to read saved proxy proxy (could not get existing settings)");
-}
-
-function hideSpinner() {
-
-  const spinner = document.querySelector('#spinner');
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600);
-}
-
-
+}*/
 
 // --- processing all buttons
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
 
 function process() {
 
+  const PATTERN_NEW = {
+    title: '',
+    active: true,
+    pattern: "",
+    type: PATTERN_TYPE_WILDCARD,
+    protocols: PROTOCOL_ALL
+  };
+
+
   switch (this.dataset.i18n) {
 
-    case 'back':
+    case 'back':                                            // error
     case 'cancel':
       location.href = '/options.html';
       break;
@@ -77,19 +75,16 @@ function process() {
     // Make a copy of PATTERN_NEW and pass it to the vex dialog.
     // Note that openDialog() returns immediately even though the dialog is modal
     // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
-    case 'newWhite': openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.whitePatterns); break;
-    case 'newBlack': openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.blackPatterns); break;
+    case 'newWhite': openDialog(PATTERN_NEW, true, proxy.whitePatterns); break;
+    case 'newBlack': openDialog(PATTERN_NEW, true, proxy.blackPatterns); break;
     case 'save':
-      savePatterns().then(() => location.href = '/options.html')
-        .catch((e) => console.error('Error saving proxy: ' + e));
+      storageArea.set({[id]: proxy}, () => location.href = '/options.html');
       break;
 
     case 'add':
-      editingProxy.blackPatterns.push(PATTERN_LOCALHOSTURLS_BLACK);
-      editingProxy.blackPatterns.push(PATTERN_INTERNALIPS_BLACK);
-      editingProxy.blackPatterns.push(PATTERN_LOCALHOSTNAMES_BLACK);
-      renderPatterns();
-      document.getElementById(editingProxy.blackPatterns.length-1).scrollIntoView({behavior: 'smooth'});
+      proxy.blackPatterns.push(PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK);
+      processOptions();
+      document.getElementById(proxy.blackPatterns.length-1).scrollIntoView({behavior: 'smooth'});
       break;
   }
 }
@@ -97,7 +92,7 @@ function process() {
 function processEdit() {
 
   const idx = this.parentNode.parentNode.dataset.idx *1;
-  const patternsArray = this.parentNode.dataset.bw === 'white' ? editingProxy.whitePatterns : editingProxy.blackPatterns;
+  const patternsArray = this.parentNode.dataset.bw === 'white' ? proxy.whitePatterns : proxy.blackPatterns;
 
   switch (this.dataset.i18n) {
 
@@ -111,25 +106,25 @@ function processEdit() {
 
     case 'delete|title':
       patternsArray.splice(idx, 1);
-      this.parentNode.parentNode.remove(); // remove row
+      this.parentNode.parentNode.remove();                  // remove row
       break;
   }
 }
 
 
-function renderPatterns() {
+function processOptions() {
 
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
   const tr = document.querySelector('tr.template');
-  const tbody = document.querySelectorAll('tbody'); // there are 2
-  tbody[0].textContent = ''; // clearing the content
-  tbody[1].textContent = ''; // clearing the content
+  const tbody = document.querySelectorAll('tbody');         // there are 2
+  tbody[0].textContent = '';                                // clearing the content
+  tbody[1].textContent = '';                                // clearing the content
 
-  editingProxy.whitePatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'white')));
+  proxy.whitePatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'white')));
   docfrag.hasChildNodes() && tbody[0].appendChild(docfrag);
 
-  editingProxy.blackPatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'black')));
+  proxy.blackPatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, tr, 'black')));
   docfrag.hasChildNodes() && tbody[1].appendChild(docfrag);
 
   // add Listeners();
@@ -164,15 +159,8 @@ function makeRow(patternObj, index, template, bw) {
 }
 
 
-function savePatterns() {
-
-  //document.querySelector('#patternsRow').classList.add('hide');
-  //document.querySelector('#spinner').classList.remove('hide');
-  return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
-}
-
 function openDialog(pat, isNew, patternArray) {
-  console.log(pat);
+
   vex.dialog.buttons.YES.className = 'button';
   //vex.dialog.buttons.YES.text = 'Save';
   vex.dialog.buttons.NO.className = 'button alert';
@@ -239,20 +227,20 @@ function openDialog(pat, isNew, patternArray) {
         pat.protocols = parseInt(data.protocols);
         pat.active = data.active === 'on';
         if (isNew) { patternArray.push(pat); }
-        renderPatterns();
+        processOptions();
       }
     },
 
     beforeClose: function() {
       // |this| is vex instance
-      if (!this.value) {return true; } // Cancel button was clicked
+      if (!this.value) { return true; }                     // Cancel button was clicked
 
-      let pat = this.value.pattern.trim();
+      const pat = this.value.pattern.trim();
       if (!pat) {
         alert(chrome.i18n.getMessage('errorPattern'));
         return false;
       }
-      else { return true; }
+      return true;
     }
   });
 
@@ -267,14 +255,14 @@ function openDialog(pat, isNew, patternArray) {
 
 function exportPatterns() {
 
-  const tmpObject = {whitePatterns: editingProxy.whitePatterns, blackPatterns: editingProxy.blackPatterns};
+  const tmpObject = {whitePatterns: proxy.whitePatterns, blackPatterns: proxy.blackPatterns};
   const blob = new Blob([JSON.stringify(tmpObject, null, 2)], {type : 'text/plain'});
   const filename = 'foxyproxy-patterns.json';
   chrome.downloads.download({
     url: URL.createObjectURL(blob),
     filename,
     saveAs: true
-  }).then(() => console.log('Export/download finished')); // wait for it to complete before returning
+  }, () => console.log('Export/download finished'));        // wait for it to complete before returning
 }
 
 function importPatterns() {
@@ -292,22 +280,36 @@ function importPatterns() {
       }
     </style>
     <div class="prime alert">
-      <input id="importFileSelected" type="file"/>
+      <input id="importFileSelected" type="file" accept=".json">
     </div>`
   });
 
   document.querySelector('#importFileSelected').addEventListener('change', (e) =>
-    importFileSelected(e.target.files[0], ["text/plain", "application/json"], 1024*1024*50 /* 50 MB */));;
+    importFileSelected(e.target.files[0], ['application/json'], 1024*1024*5)); // 5mb
 }
 
 function importFileSelected(file, mimeTypeArr, maxSizeBytes) {
 
-  Utils.importFile(file, mimeTypeArr, maxSizeBytes, "json", (allPatterns) => {
-    editingProxy.whitePatterns = allPatterns.whitePatterns;
-    editingProxy.blackPatterns = allPatterns.blackPatterns;
+  Utils.importFile(file, mimeTypeArr, maxSizeBytes, 'json', (allPatterns) => {
+    proxy.whitePatterns = allPatterns.whitePatterns;
+    proxy.blackPatterns = allPatterns.blackPatterns;
     vex.closeTop();
-    renderPatterns();
-    Utils.displayNotification(chrome.i18n.getMessage('importBW', editingProxy.whitePatterns.length, editingProxy.blackPatterns.length));
+    processOptions();
+    Utils.notify(chrome.i18n.getMessage('importBW', proxy.whitePatterns.length, proxy.blackPatterns.length));
   });
 }
 
+// ----------------- Helper functions ----------------------
+const spinner = document.querySelector('#spinner');
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flax';
+  spinner.classList.add('on');
+}
+// ----------------- /Helper functions ---------------------

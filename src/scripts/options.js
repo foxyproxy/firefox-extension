@@ -12,11 +12,22 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 const accounts = document.querySelector('#accounts');
 const mode = document.querySelector('#mode');
 const syncOnOff = document.querySelector('input[name="syncOnOff"]');
-const spinner = document.querySelector('#spinner');
 
 vex.defaultOptions.className = 'vex-theme-default';
 vex.dialog.buttons.YES.className = 'button';
 let noRefresh = false;
+let storageArea;
+
+// ----------------- User Preference -----------------------
+chrome.storage.local.get(null, result => {
+  // if sync is NOT set or it is false, use this result
+  syncOnOff.checked = result.sync;
+  localStorage.setItem('sync', syncOnOff.checked);
+  storageArea = result.sync ? chrome.storage.sync : chrome.storage.local;
+  result.sync ? chrome.storage.sync.get(null, processOptions) : processOptions(result);
+});
+// ----------------- /User Preference ----------------------
+
 
 
 // ----- add Listeners for menu
@@ -25,14 +36,23 @@ function process() {
 
   switch (this.dataset.i18n) {
 
-    case 'add': location.href = '/proxy.html'; break;
+    case 'add': 
+      localStorage.removeItem('id');                        // clear localStorage
+      location.href = '/proxy.html'; 
+      break;
     case 'export': Utils.exportFile(); break;
     case 'import': location.href = '/import.html'; break;
     case 'log': location.href = '/log.html'; break;
     case 'about': location.href = '/about.html'; break;
 
     case 'deleteAll':
-      confirm(chrome.i18n.getMessage('confirmDelete')) && deleteAllSettings().then(() => console.log('delete all completed'));
+      if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
+        showSpinner();
+        chrome.storage.local.clear(() => chrome.storage.sync.clear(() => {
+          hideSpinner();
+          console.log('delete all completed');
+        }));
+      }
       break;
 
     case 'deleteBrowserData':
@@ -61,7 +81,7 @@ function process() {
               //webSQL: true,
               //serverBoundCertificates: true,
               serviceWorkers: true
-            }, () => Utils.displayNotification(chrome.i18n.getMessage('done')));
+            }, () => Utils.notify(chrome.i18n.getMessage('done')));
           }
         }
       });
@@ -73,94 +93,75 @@ function process() {
 mode.addEventListener('change', selectMode); 
 function selectMode() {
   
- console.log('selectMode', this);
   // set color
   mode.style.color = mode.children[mode.selectedIndex].style.color; 
   
-  // we laready know the state of sync | this is set when manually changing the select
-  this && (!syncOnOff.checked ? chrome.storage.local.set({mode: mode.value}) : chrome.storage.sync.set({mode: mode.value}));
-  // change the state of success/secondary 
-  const last = document.querySelector('.success');
-  if (last) {
-    last.classList.remove('success') ;
-    last.classList.add('secondary');
-  }
-  const next = document.querySelector('#' + mode.value);
-  if (next) {
-    next.classList.remove('secondary') ;
-    next.classList.add('success'); 
+  // we already know the state of sync | this is set when manually changing the select
+  this && storageArea.set({mode: mode.value});
+  
+  // --- change the state of success/secondary 
+  // change all success -> secondary
+  document.querySelectorAll('.success').forEach(item => item.classList.replace('success', 'secondary'));
+
+    switch (mode.value) {
+
+    case 'patterns':
+      document.querySelectorAll('input[name="onOff"]:checked').forEach(item => {
+          const node = item.parentNode.parentNode;
+          node.classList.replace('secondary', 'success'); // FF49, Ch 61 
+      });
+      break;
+
+    case 'disabled':                                        // do nothing
+      break;
+
+    default:
+      const node = document.getElementById(mode.value);
+      node && node.classList.replace('secondary', 'success');
   }
 }
 
 
 
 
-syncOnOff.addEventListener('change', function() {
-  const useSync = this.checked;
-  // always stored locally
-  //chrome.storage.local.set({'sync': useSync}, () => console.log('sync value changed to ' + useSync));
+syncOnOff.addEventListener('change', () => {
+  const useSync = syncOnOff.checked;
+  // sync value always CHECKED locally
+  // data is merged, replacing exisitng and adding new ones
+  localStorage.setItem('sync', syncOnOff.checked);
+  storageArea = syncOnOff.checked ? chrome.storage.sync : chrome.storage.local;
   if (useSync && confirm(chrome.i18n.getMessage('confirmTransferToSync'))) {
     showSpinner();
+    chrome.storage.local.set({sync: true});                 // save sync state
     chrome.storage.local.get(null, result => {              // get source
-      result.sync = useSync;                                // save sync state
-      chrome.storage.sync.get(null, res => {                // get target
-        res.mode = result.mode;
-        res.logging = result.logging;
-        res.proxySettings = [...new Set([...res.proxySettings, ...result.proxySettings])]; // ES6 new Set() to create unique array
-        chrome.storage.sync.set(res, () => processOptions(res)); // save to target
-      });
-    });
+      delete result.sync;
+      chrome.storage.sync.set(result, hideSpinner);         // save to target
+    }); // get source & save to target
   }
   else if (!useSync && confirm(chrome.i18n.getMessage('confirmTransferToLocal'))) {
     showSpinner();
     chrome.storage.sync.get(null, result => {               // get source
-      chrome.storage.local.get(null, res => {               // get target
-        res.sync = useSync;                                 // save sync state
-        res.mode = result.mode;
-        res.logging = result.logging;
-        res.proxySettings = [...new Set([...res.proxySettings, ...result.proxySettings])]; // ES6 new Set() to create unique array
-        chrome.storage.local.set(res, () => processOptions(res)); // save to target
-      });
+      result.sync = false;                                  // set sync = false                              
+      chrome.storage.local.set(result, hideSpinner);        // save to target
     });
   }
 });
 
 
 chrome.runtime.onMessage.addListener((message, sender) => { // from popup or bg
-  console.log(message);
-  if(!message.mode) { return; }
+//  console.log(message);
+  if(!message.mode || message.mode === mode.value) { return; } // change if it is different
   mode.value = message.mode;
   selectMode();
 });
 
-// ----- get storage and populate
-init();
-function init() {
 
-  // ----------------- User Preference -----------------------
-  chrome.storage.local.get(null, result => {
-    // sync is NOT set or it is false, use this result
-    if (!result.sync) {
-      syncOnOff.checked = false;
-      //processOptions(prepareForSettings(result));
-      processOptions(result);
-      return;
-    }
-    // sync is set
-    syncOnOff.checked = true;
-    chrome.storage.sync.get(null, result => {
-     // processOptions(prepareForSettings(result));
-      processOptions(result);
-    });
-  });
-  // ----------------- /User Preference ----------------------
-}
 
 function processOptions(pref) {
 
   // --- reset
   accounts.textContent = '';
-  [...mode.children].forEach(item => mode.children.length > 2 && item.remove());
+  [...mode.children].forEach(item => !['patterns', 'disabled'].includes(item.value) && item.remove());
 
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
@@ -180,14 +181,12 @@ function processOptions(pref) {
 
   prefKeys.forEach(id => {
 
-    // note item is the id
     const item = pref[id];
-console.log(item);
+
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
     div.classList.remove('template');
-    item === LASTRESORT && div.children[1].classList.add('default');
-
+    id === LASTRESORT && div.children[1].classList.add('default');
 
     div.id = id;
     node[0].style.backgroundColor = item.color;
@@ -203,16 +202,18 @@ console.log(item);
     switch (true) {
 
       case Utils.isUnsupportedType(item.type):
-        div.classList.add('unsupported-color');
+        div.classList.add('unsupported');
         break;
 
       case pref.mode === 'patterns':
       case pref.mode === 'random':
       case pref.mode === 'roundrobin':
         div.classList.add(item.active ? 'success' : 'secondary');
+        break;
 
       case pref.mode === 'disabled':
         div.classList.add('secondary');
+        break;
 
       default:
         div.classList.add(pref.mode == id ? 'success' : 'secondary');
@@ -227,7 +228,7 @@ console.log(item);
   });
 
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
-  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild.previousElementSibling);
+  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
   const opt = mode.querySelector(`option[value="${pref.mode}"]`);
   if (opt) {
@@ -238,11 +239,13 @@ console.log(item);
   // add Listeners
   document.querySelectorAll('button').forEach(item => item.addEventListener('click', processButton));
 
-  document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('click', function() {
+  document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('change', function() {
     const id = this.parentNode.parentNode.id;
-    //console.log('toggle on/off', id);
-    noRefresh = true;
-    toggleActiveProxySetting(id).then(() => console.log('toggle done'));
+    //console.log('toggle on/off', id, this.checked);
+    storageArea.get(id, result => {
+      result[id].active = this.checked;
+      storageArea.set(result);
+    });
   }));
 
   hideSpinner();
@@ -264,20 +267,19 @@ function processButton() {
 
     case 'edit':
       localStorage.setItem('id', id);
-      localStorage.setItem('sync', syncOnOff.checked);
       location.href = '/proxy.html';
       break;
 
     case 'patterns':
       localStorage.setItem('id', id);
-      localStorage.setItem('sync', syncOnOff.checked);
       location.href = '/patterns.html';
       break;
 
     case 'delete|title':
-      //console.log('delete one proxy setting: ' + id);
-      confirm(chrome.i18n.getMessage('confirmDelete')) &&
-        deleteProxyById(id).then(() => console.log('delete single completed'));
+      if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
+        parent.remove();
+        //storageArea.remove(id, () => console.log('delete single completed');
+      }
       break;
 
     case 'up|title':
@@ -288,56 +290,18 @@ function processButton() {
       target.classList.add('off');
       parent.classList.add('on');
       setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 600);
-      noRefresh = true;
-      swapProxySettingWithNeighbor(id, target.id).then((settings) => {
-        //console.log('swapProxySettingWithNeighbor() succeeded');
-        processOptions(settings);
-      }).catch((e) => console.error('swapProxySettingWithNeighbor failed: ' + e));
+      storageArea.get(null, result => {
+        const fromIndex = result[id].index;
+        const toIndex = result[target.id].index; 
+        result[id].index = toIndex;
+        result[target.id].index = fromIndex;
+        storageArea.set(result);
+      }); 
       break;
   }
 }
-
-/*
-// ----  update UI manaully
-
-// Update the UI whenever stored settings change and we are open.
-// one example is user deleting a proxy setting that is the current mode.
-// another: user changes mode from popup.html
-chrome.storage.onChanged.addListener((oldAndNewSettings) => {
-  //console.log('proxies.js: settings changed on disk');
-  if (noRefresh) { noRefresh = false; } // We made the change ourselves
-  //else location.reload();
-  //else { init(); }
-});
-
-function storageRetrievalSuccess(settings) {
-
-  if (!settings.proxySettings || !settings.proxySettings.length) {
-
-    // using hide class app.css#4575 to show/hide
-    // note: all elements are hidden, only need to unhide
-    hideSpinner();
-    document.querySelector('#error').classList.remove('hide');
-    return;
-  }
-
-  console.log('Proxies found in storage.');
-  processOptions(settings);
-  hideSpinner();
-}
-
-
-
-
-function storageRetrievalError(error) {
-
-  console.log(`storageRetrievalError(): ${error}`);
-  document.querySelector('#error').classList.remove('hide');
-}
-
-*/
-
 // ----------------- Helper functions ----------------------
+const spinner = document.querySelector('#spinner');
 function hideSpinner() {
 
   spinner.classList.remove('on');
