@@ -81,9 +81,9 @@ function renderLog() {
     a.href = item.url;
     a.textContent = item.url;
 
-    td[1].textContent = item.title || 'No matches';
+    td[1].textContent = item.title || 'n/a';
     td[2].style.backgroundColor = item.color || 'blue';
-    td[3].textContent = item.address || 'No matches';
+    td[3].textContent = item.address || 'n/a';
     td[4].textContent = pattern;
     td[5].textContent = formatInt(item.timestamp);
 

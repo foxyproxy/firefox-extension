@@ -41,7 +41,8 @@ function processOptions(pref) {
       li.classList.remove('template');
       li.id = id;
       li.style.color = item.color;
-      li.appendChild(document.createTextNode((item.title || `${item.address}:${item.port}`) + '  (ignore patterns & proxy order)'));
+      li.children[1].textContent = item.title || `${item.address}:${item.port}`;
+      li.children[2].textContent = '(for all URLs)';
 
       docfrag.appendChild(li);
     }
