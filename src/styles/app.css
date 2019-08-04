@@ -41,18 +41,27 @@ table {
   width: 100%;
 }
 th {
+  background-color: #dcdcdc;
   padding: 0.4em;
   text-align: left;
-  background-color: #f1f1f1;
 }
 tr{
-  background-color: #f5f5f5;
-}
-tr:nth-of-type(odd){
   background-color: #f8f8f8;
+}
+tbody tr:nth-child(even) {
+  background-color: #f5fffa;
+}
+tbody tr:hover {
+  background-color: #cae1d3;
 }
 td {
   padding: 0.2em;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
@@ -103,8 +112,8 @@ button[type="submit"].off {
   opacity: 0;
 }
 
-input::placeholder { 
-  font-style: italic; 
+input::placeholder {
+  font-style: italic;
 }
 
 [type="file"],
@@ -119,11 +128,11 @@ input::placeholder {
   margin-left: 0.5em;
   margin-right: 1em;
   margin-bottom: 0;
-  vertical-align: baseline; 
+  vertical-align: baseline;
 }
 
-[type="text"], [type="password"], [type="date"], [type="datetime"], [type="datetime-local"], 
-[type="month"], [type="week"], [type="email"], [type="number"], [type="search"], 
+[type="text"], [type="password"], [type="date"], [type="datetime"], [type="datetime-local"],
+[type="month"], [type="week"], [type="email"], [type="number"], [type="search"],
 [type="tel"], [type="time"], [type="url"], [type="color"],
 textarea {
   background-color: #fefefe;
@@ -141,11 +150,11 @@ textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-  
-  
-[type="text"]:focus, [type="password"]:focus, [type="date"]:focus, [type="datetime"]:focus, 
-[type="datetime-local"]:focus, [type="month"]:focus, [type="week"]:focus, 
-[type="email"]:focus, [type="number"]:focus, [type="search"]:focus, 
+
+
+[type="text"]:focus, [type="password"]:focus, [type="date"]:focus, [type="datetime"]:focus,
+[type="datetime-local"]:focus, [type="month"]:focus, [type="week"]:focus,
+[type="email"]:focus, [type="number"]:focus, [type="search"]:focus,
 [type="tel"]:focus, [type="time"]:focus, [type="url"]:focus, [type="color"]:focus,
 textarea:focus {
   border: 1px solid #8a8a8a;
@@ -158,7 +167,7 @@ textarea:focus {
 
 label > [type="checkbox"],
 label > [type="label"] {
-  margin-right: 0.5em; 
+  margin-right: 0.5em;
 }
 
 label {
@@ -167,18 +176,18 @@ label {
   font-size: 0.85em;
   font-weight: normal;
   line-height: 1.8;
-  color: #0a0a0a; 
+  color: #0a0a0a;
 }
 label.middle {
   margin: 0 0 1em;
-  padding: 0.5em 0; 
+  padding: 0.5em 0;
 }
 
 select {
   background-color: #fafafa;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="24" viewBox="0 0 32 24"><polygon points="0,0 32,0 16,24" style="fill: rgb(51, 51, 51)"></polygon></svg>');
   background-position: right 0.5em center;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
   background-size: 9px 6px;
   border-radius: 5px;
   border: 1px solid #cacaca;
@@ -195,11 +204,11 @@ select {
 }
 select:disabled {
   background-color: #e6e6e6;
-  cursor: default; 
+  cursor: default;
 }
 
 select[multiple] {
-  height: auto; 
+  height: auto;
 }
 
 
@@ -253,7 +262,7 @@ select[multiple] {
   width: 1px;
   height: 1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0); 
+  clip: rect(0, 0, 0, 0);
 }
 
 
@@ -264,7 +273,7 @@ select[multiple] {
 /* --- onOff switch --- */
 .switch-input {
   opacity: 0;
-  position: absolute; 
+  position: absolute;
 }
 
 .switch-paddle {
@@ -277,11 +286,11 @@ select[multiple] {
   transition: all 0.25s ease-out;
   border-radius: 3px;
   color: inherit;
-  font-weight: inherit; 
+  font-weight: inherit;
   vertical-align: middle !important;
 }
 input + .switch-paddle {
-  margin: 0; 
+  margin: 0;
 }
 .switch-paddle::after {
   background: #fefefe;
@@ -295,35 +304,35 @@ input + .switch-paddle {
   transition: all 0.25s ease-out;
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 input:checked ~ .switch-paddle {
-  background: #f7941e; 
+  background: #f7941e;
 }
 input:checked ~ .switch-paddle::after {
-  left: 2.25em; 
+  left: 2.25em;
 }
 [data-whatinput='mouse'] input:focus ~ .switch-paddle {
-  outline: 0; 
+  outline: 0;
 }
 .switch-active, .switch-inactive {
   position: absolute;
   top: 50%;
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
-          transform: translateY(-50%); 
+          transform: translateY(-50%);
 }
 .switch-active {
   left: 8%;
   display: none; }
   input:checked + label > .switch-active {
-    display: block; 
+    display: block;
 }
 .switch-inactive {
-  right: 15%; 
+  right: 15%;
 }
 input:checked + label > .switch-inactive {
-  display: none; 
+  display: none;
 }
 /* --- /onOff switch --- */
 
@@ -334,17 +343,17 @@ input:checked + label > .switch-inactive {
 
 .has-tip {
   border-bottom: dotted 1px #aaa;
-  cursor: help; 
+  cursor: help;
   display: inline-block;
   font-weight: bold;
-  margin: 0 0.2em !important; 
-  padding: 0 0.5em !important; 
+  margin: 0 0.2em !important;
+  padding: 0 0.5em !important;
   font-size: 1em;
   color: #08f;
 }
 
 .fp-orange {
-  color: #f7941e; 
+  color: #f7941e;
 }
 
 .fp-color-blob {
@@ -396,7 +405,7 @@ input:checked + label > .switch-inactive {
 
 .header {
   color: #c60;
-  font-size: 1.5em; 
+  font-size: 1.5em;
   font-weight: bold;
   padding: 0.5em !important;
   margin: 0 0 0.5rem 0;
@@ -411,7 +420,7 @@ input:checked + label > .switch-inactive {
 }
 
 .header.popup {
-  font-size: 1.4em; 
+  font-size: 1.4em;
   padding: 0em !important;
   margin: 0 0 0.4rem 0;
 }
@@ -421,11 +430,11 @@ input:checked + label > .switch-inactive {
   margin: 0 0em -0.3em 0;
 }
 
-.scroll {  
-  max-height: 40vh; 
-  overflow-y: auto; 
-  scrollbar-color: #ddd #f5f5f5; 
-  scrollbar-width: thin; 
+.scroll {
+  max-height: 40vh;
+  overflow-y: auto;
+  scrollbar-color: #ddd #f5f5f5;
+  scrollbar-width: thin;
 }
 
 
@@ -445,8 +454,8 @@ input:checked + label > .switch-inactive {
   transition: all 0.5s ease-in-out;
   font-size: 20em;
 }
-#spinner.on { 
-  opacity: 0.5; 
+#spinner.on {
+  opacity: 0.5;
 }
 
 
@@ -459,7 +468,7 @@ input:checked + label > .switch-inactive {
 }
 
 /*
- <div class="loader"></div> 
+ <div class="loader"></div>
 */
 .loader {
   border: 16px solid #eee; /* Light grey */
