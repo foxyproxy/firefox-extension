@@ -23,7 +23,7 @@
       .pxy:nth-last-child(2) button.down { visibility: hidden; }
       #accounts { max-height: 60vh; overflow-y: auto; }
       #accounts div:last-of-type { margin: 0; }
-      .title, .address { display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .title, .address { display: inline-block; }
       .title { width: 6em; margin: 0 0.5em; }
       .address { max-width: 10em; }
       #accounts button.small { margin-left: 0.2em; }
@@ -88,8 +88,8 @@
           <div class="pxy flex template">
             <div>
               <span class="fp-color-blob"></span>
-              <span class="title"></span>
-              <span class="address"></span>
+              <span class="title ellipsis"></span>
+              <span class="address ellipsis"></span>
             </div>
             <div style="text-align: right;">
               <input type="checkbox" name="onOff" class="switch-input" id="">
