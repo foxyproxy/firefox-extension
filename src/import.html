@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title data-i18n="import">FoxyProxy </title>
     <link rel="icon" type="image/png" href="/images/icon.svg">
-    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
-      .button { margin-bottom: 0; }
+      a { cursor: pointer; }
+      h3 { display: inline-block; margin-bottom: 0.4em; }
     </style>
   </head>
   <body>
@@ -18,27 +18,22 @@
     <!-- main -->
     <div class="prime">
 
-      <div class="hide-if-upgrade hide">
-        <h4>Import Settings from FoxyProxy 6.x (current version)</h4>
-        <p>FoxyProxy can use <a href="https://support.mozilla.org/products/firefox/sync" target="_blank">Firefox Sync</a> to synchronize settings across different installations of Firefox. But if you don't use Firefox Sync or want to share your settings with friends, <a id="export">export</a> FoxyProxy settings. Then use this page to import those settings. By default, the file is called foxyproxy.json.</p>
-        <input id="importJson" type="file" accept=".json">
+        <h3>Import Settings from FoxyProxy 6.0+</h3> <i>(current version)</i>
+        
+        <p>FoxyProxy can use <a href="https://support.mozilla.org/products/firefox/sync" target="_blank">Firefox Sync</a> to synchronize settings across different installations of Firefox. But if you don't use Firefox Sync or want to share your settings with friends, <a id="export">export</a> FoxyProxy settings. Then use this page to import those settings. By default, the file is called <i>foxyproxy.json</i>.<br><br>
+        <input id="importJson" type="file" accept=".json"></p>
 
-        <h4 style="margin-top: 2em;">Import Settings From Older FoxyProxy Versions</h4>
-        <div style="display: flex;">
-          <p style="margin-right: 1em;">Older FoxyProxy versions used a pop-up window. It looked a little different on Windows, Mac, and Linux, but the essence was this:<br>
-          File is called <i>foxyproxy.xml</i> by default. You can find it in the <a target="_blank" href="https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data#w_how-do-i-find-my-profile">Firefox profile directory</a>.<br><br>
-          <input id="importXml2" type="file" accept=".xml"></p>
+
+        <h3>Import Settings from older FoxyProxy versions</h3>
+        
+        <p>If you have upgraded from an older version of FoxyProxy, Firefox has completely changed the addon system since the previous FoxyProxy version. Older FoxyProxy versions used a pop-up window. It looked a little different on Windows, Mac, and Linux, but the essence was like the image blllow.</p>
           
-          <p style="text-align: center;"><a target="_blank" href="/images/legacy-version.png"><img src="/images/legacy-version.png" style="width: 300px;"></a><br>
-          (click image for larger picture)</p>
-        </div>
-      </div>
-
-      <div class="hide-if-not-upgrade hide">
-        <h4>Import Settings From Older FoxyProxy Versions</h4>
-        <p>You just upgraded from an older version of FoxyProxy. Firefox has completely changed the addon system since the previous FoxyProxy version. Unfortunately, due to Firefox 57+ limitations, we cannot read your FoxyProxy settings automatically. But they are not lost. To import your old settings, please select the file <strong>foxyproxy.xml</strong> below. You can find it in the <a target="_blank" href="https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data#w_how-do-i-find-my-profile">Firefox profile directory</a>.</p>
-        <input id="importXml1" type="file" accept=".xml">
-      </div>
+        <p>Unfortunately, due to Firefox 57+ limitations, we cannot read your FoxyProxy settings automatically. However, they are not lost. To import your old settings, please select the file <i>foxyproxy.xml</i> below. You can find it in the <a href="https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data#w_how-do-i-find-my-profile" target="_blank">Firefox profile directory</a>.<br><br>
+        <input id="importXml" type="file" accept=".xml"></p>          
+          
+          
+        <p style="text-align: center;"><a target="_blank" href="/images/legacy-version.png"><img src="/images/legacy-version.png" style="width: 300px;"></a><br>
+        <i>(click image for larger picture)</i></p>
 
 
       <div style="text-align: right;">
@@ -49,7 +44,6 @@
 
   <script src="scripts/const.js"></script>
   <script src="scripts/utils.js"></script>
-  <script src="scripts/storage.js"></script>
   <script src="scripts/import.js"></script>
   </body>
 </html>

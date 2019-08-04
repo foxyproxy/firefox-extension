@@ -17,8 +17,7 @@
   },
 
   "background": {
-    "scripts": ["scripts/utils.js", "scripts/const.js", 
-                "scripts/storage.js", "scripts/log-entries.js", "scripts/background.js"]
+    "scripts": ["scripts/const.js", "scripts/utils.js", "scripts/background.js"]
   },
 
   "options_ui": {

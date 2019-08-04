@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/vex-4.1.0.css"/>
     <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
+      a i.fa { font-size: 1.5em; margin-left: 0.2em; }
       tbody tr:nth-child(even) { background-color: #f5fffa  !important; }
       tbody tr:hover { background-color: #cae1d3 !important; }
       tbody td { padding: 0.2em; }
@@ -18,14 +19,13 @@
       th:nth-of-type(1), th:nth-of-type(2) { min-width: 10em; }
       th:nth-of-type(3), th:nth-of-type(4), th:nth-of-type(5) { width: 5em; }
       th:nth-of-type(6) { width: 7em; }
-      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { text-align: center; }}
-      .scroll {  max-height: 40vh; overflow-y: auto; scrollbar-color: #ddd #f5f5f5; scrollbar-width: thin; }
+      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { text-align: center; }
     </style>
   </head>
   <body>
 
     <!-- header -->
-    <div class="prime header" data-i18n="options"></div>
+    <div class="prime header" data-i18n="editPatterns"></div>
 
     <!-- spinner --> <!-- options, patterns, log -->
     <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
@@ -56,9 +56,9 @@
             <tr class="template">
                <td></td><td></td><td></td><td></td><td></td>
                <td style="text-align: right;">
-                <a class="hide" data-i18n="imported|title"><i class="fa fa-1point8x fa-upload fp-orange"></i></a>
-                <a data-i18n="edit|title" ><i class="fa fa-1point8x fa-pencil"></i></a>
-                <a data-i18n="delete|title" ><i class="fa fa-1point8x fa-trash"></i></a>
+                <a class="hide1" data-i18n="imported|title"><i class="fa fa-download"></i></a>
+                <a data-i18n="edit|title" ><i class="fa fa-pencil"></i></a>
+                <a data-i18n="delete|title" ><i class="fa fa-trash"></i></a>
                </td>
             </tr>
           </thead>
@@ -108,7 +108,6 @@
   <script src="scripts/vex.combined-4.1.0.js"></script>
   <script src="scripts/const.js"></script>
   <script src="scripts/utils.js"></script>
-  <script src="scripts/storage.js"></script>
   <script src="scripts/patterns.js"></script>
   </body>
 </html>
