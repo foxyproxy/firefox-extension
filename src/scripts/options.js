@@ -192,9 +192,10 @@ function processOptions(pref) {
     node[0].style.backgroundColor = item.color;
     node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
     node[2].textContent = item.address; // ellipsis is handled by CSS
-    node[3].id = id + '-onoff';
-    node[3].checked = item.active;
-    node[4].setAttribute('for', node[3].id);
+    item.username && item.password && node[3].classList.remove('hide');
+    node[4].id = id + '-onoff';
+    node[4].checked = item.active;
+    node[5].setAttribute('for', node[4].id);
 
     FOXYPROXY_BASIC && (node[0].style.display = 'none');
 
@@ -241,7 +242,7 @@ function processOptions(pref) {
 
   document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('change', function() {
     const id = this.parentNode.parentNode.id;
-    //console.log('toggle on/off', id, this.checked);
+    console.log('toggle on/off', id, this.checked);
     storageArea.get(id, result => {
       result[id].active = this.checked;
       storageArea.set(result);

@@ -1,15 +1,6 @@
 'use strict';
 
-// Consts copied from const.js
-const PROXY_TYPE_HTTP = 1;
-const PROXY_TYPE_HTTPS = 2;
-const PROXY_TYPE_SOCKS5 = 3;
-const PROXY_TYPE_SOCKS4 = 4;
-const PROXY_TYPE_NONE = 5; // DIRECT
-const PROXY_TYPE_PAC = 6;
-const PROXY_TYPE_WPAD = 7;
-const PROXY_TYPE_SYSTEM = 8;
-const PROXY_TYPE_PASS = 9;
+
 
 // ----- global
 let settings = {};
@@ -18,39 +9,10 @@ browser.runtime.onMessage.addListener(s => settings = s);
 
 function logToUI(log) { browser.runtime.sendMessage(log); }
 
-function prepareSetting(url, ps, matchedPattern) {
-  
-  // proxyTypeForPAC(proxyTypeInt)
-  let type = null;
-  switch (ps.type) {
-    case PROXY_TYPE_HTTP: type = 'http'; break;
-    case PROXY_TYPE_HTTPS: type = 'https'; break;
-    case PROXY_TYPE_SOCKS5: type = 'socks'; break;
-    case PROXY_TYPE_SOCKS4: type = 'socks4'; break;
-    case PROXY_TYPE_NONE: type = 'direct'; break;
-  }
 
-  const ret = {type, host: ps.address, port: ps.port};
-  ps.username && (ret.username = ps.username);
-  ps.password && (ret.password = ps.password);
-  ps.proxyDNS && (ret.proxyDNS = ps.proxyDNS);
-  
-  // trim the log data to what is needed
-  const log = {
-    type: 'log',
-    url,
-    matchedPattern,
-    timestamp: Date.now(),
-    title: ps.title,
-    color: ps.color,
-    address: ps.address
-  };
-  logToUI(log);
-  return ret;
-}
 
 function FindProxyForURL(url, host) {
-                               
+
   switch (settings.mode) {
     // not supported at the moment
     case 'random':
@@ -58,20 +20,21 @@ function FindProxyForURL(url, host) {
       return [{type: 'direct'}];
 
     case 'patterns':
+     
       const proxyMatch = findProxyMatch(url); // |url| contains port, if any, but |host| does not.
+
       if (proxyMatch) {
-        return [prepareSetting(url, proxyMatch.proxy, proxyMatch.matchedPattern)];
+        return [prepareSetting(url, proxyMatch.proxy, proxyMatch.pattern)];
       }
       else {
-        logToUI({type: 'log', url, timestamp: Date.now()});
+       // logToUI({type: 'log', url, timestamp: Date.now()});
         return [{type: 'direct'}];                            // default
       }
 
-    default:
-      // Use proxy "xxxx" for all URLs
-      // const USE_PROXY_FOR_ALL_URLS = 2;
+    default:browser.runtime.sendMessage('default');
+      // Use proxy "xxxx" for all URLs        // const USE_PROXY_FOR_ALL_URLS = 2;
       return [prepareSetting(url, settings.proxySettings[0], 'all')]; // the first proxy
-  }  
+  }
 }
 
 
@@ -79,39 +42,62 @@ function findProxyMatch(url) {
   // for loop is slightly faster than .forEach(), which calls a function and all the overhead with that
   // note: we've already thrown out inactive settings and inactive patterns.
   // we're not iterating over them
-  for (const proxy of settings.proxySettings) {
-    // Check black patterns first
-    if (checkPatterns(url, proxy.blackPatterns)) { continue; } // blacklist match, no proxy, skip
 
-    const result = checkPatterns(url, proxy.whitePatterns);
-    if (result) {                                           // whilelist match, use this proxy
-      return {proxy, matchedPattern: result.matchedPattern};
-    }
-  }
-
-  return null; // no white matches
-}
-
-function checkPatterns(url, patterns) {
-
-  const unmatchedPatterns = [];
   const [scheme, hostPathname] = url.split('://');
   const schemeSet = {                                       // converting to meaningful terms
     all : 1,
     http: 2,
     https: 4
   };
+  
+  for (const proxy of settings.proxySettings) {
+    
+    // Check black patterns first
+    const blackMatch = proxy.blackPatterns.find(item => 
+            (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+              new RegExp(item['regExp'], 'i').test(hostPathname));
+    
+    if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
 
-  for (const item of patterns) {
-
-    if (item.protocols !== schemeSet.all && item.protocols !== schemeSet[scheme]) {
-      unmatchedPatterns.push(item);
-      continue;
-    }
-    else if (new RegExp(item['regExp'], 'i').test(hostPathname)) {
-      return {match: true, matchedPattern: item, unmatchedPatterns};
-    }
-    else { unmatchedPatterns.push(item); }
+    const whiteMatch = proxy.whitePatterns.find(item => 
+            (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+              new RegExp(item['regExp'], 'i').test(hostPathname));
+    
+    if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here
   }
-  return {match: false, unmatchedPatterns};
+
+  return null; // no black or white matches
+}
+
+function prepareSetting(url, proxy, matchedPattern) {
+
+  const typeSet = {
+    1: 'http',    // PROXY_TYPE_HTTP
+    2: 'https',   // PROXY_TYPE_HTTPS
+    3: 'socks',   // PROXY_TYPE_SOCKS5
+    4: 'socks4',  // PROXY_TYPE_SOCKS4
+    5: 'direct'   // PROXY_TYPE_NONE
+  };
+
+  const ret = {
+    type: typeSet[proxy.type] || null, 
+    host: proxy.address, 
+    port: proxy.port
+  };
+  proxy.username && (ret.username = proxy.username);
+  proxy.password && (ret.password = proxy.password);
+  proxy.proxyDNS && (ret.proxyDNS = proxy.proxyDNS);
+
+  // trim the log data to what is needed
+  const log = {
+    type: 'log',
+    url,
+    matchedPattern,
+    timestamp: Date.now(),
+    title: proxy.title,
+    color: proxy.color,
+    address: proxy.address
+  };
+  logToUI(log);
+  return ret;
 }

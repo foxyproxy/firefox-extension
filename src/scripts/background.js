@@ -55,10 +55,9 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
 
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-  // from PAC used only for log
-  //message.type === 'log' && logg && logg.add(message);
+  // used only for log from PAC
   message.type === 'log' && newLog && newLog.active && newLog.add(message);
-//  console.log(message);
+  message.type !== 'log' && console.log(message);
 });
 
 
@@ -186,8 +185,20 @@ console.log('sendToPAC called');
       mode,
       proxySettings: []
     }
-    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id])); // filter out the inactive
+
+    // filter out the inactive & prepare RegEx
+    prefKeys.forEach(id => {
+  
+      if (pref[id].active) {
+    
+        [pref[id].blackPatterns] = checkPatterns(pref[id].blackPatterns); // retrurns [a, b]
+        [pref[id].whitePatterns] = checkPatterns(pref[id].whitePatterns);
+        active.proxySettings.push(pref[id]);
+      }
+    });
+
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
+
 
     browser.proxy.register(pacURL).then(() => {
 
@@ -237,7 +248,7 @@ function setDisabled(isError) {
   });
 }
 
-// Returns an array of active patterns or []
+// Returns an array of patterns or []
 function checkPatterns(patterns = []) {
 
   let update = false;
@@ -271,7 +282,6 @@ function checkRE(str) {
     return 'a^';
   }
 }
-
 
 
 // ----------------- Proxy Authentication ------------------
