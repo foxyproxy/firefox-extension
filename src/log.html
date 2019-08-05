@@ -17,7 +17,7 @@
       td:nth-child(5) { max-width: 8em; }
       td:nth-child(6) { max-width: 14em; }
       .scroll { max-height: 60vh; }
-      .prime { border: 1px solid #ccc; }
+      .prime.warning { border: 1px solid #ccc;  font-size: 0.9em; padding: 0.5em;}
     </style>
   </head>
   <body>
@@ -33,7 +33,6 @@
     <!-- main -->
     <div class="prime">
 
-
       <h3 style="display: inline-block; margin-right: 0.5em;" data-i18n="log"></h3>
       <input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
       <label class="switch-paddle" for="onOff">
@@ -41,7 +40,6 @@
         <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
         <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
       </label>
-
 
       <div class="prime warning"><strong>Failed URLs display here, too!</strong><br>
         A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.
