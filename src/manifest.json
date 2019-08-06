@@ -23,7 +23,7 @@
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true,
-    "browser_style": false
+    "browser_style": true
   },
   
   "browser_action": {

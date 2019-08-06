@@ -10,6 +10,9 @@
       .main > div:nth-child(1) { flex: 2;  margin-right: 1em; }
       .main > div:nth-child(2) { flex: 3; }
       .main label { display: inline-block; }
+      
+      i.fa-eye { font-size: 1.2em; transition: all 0.5s ease-in-out; }
+      i.fa-eye:hover { color: #f50; }
 
       .onOff > label { flex: 4;  margin-right: 1em; }
       .onOff > div { flex: 1 !important; }
@@ -89,8 +92,8 @@
               <input name="onOff" class="switch-input" id="proxyActive" type="checkbox" checked>
               <label class="switch-paddle" for="proxyActive">
                 <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+                <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
               </label>
             </div>
           </div>
@@ -101,8 +104,8 @@
               <input name="onOff" class="switch-input" id="onOffWhiteAll" type="checkbox" checked>
               <label class="switch-paddle" for="onOffWhiteAll">
                 <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+                <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
               </label>
             </div>
           </div>
@@ -115,8 +118,8 @@
               <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
               <label class="switch-paddle" for="onOffBlackAll">
                 <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+                <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
               </label>
             </div>
           </div>
@@ -128,15 +131,15 @@
               <input name="proxyDNS" class="switch-input" id="proxyDNS" type="checkbox" checked>
               <label class="switch-paddle" for="proxyDNS">
                 <span class="show-for-sr">On/Off</span>
-                <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
+                <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
               </label>
             </div>
           </div>
   
           <!-- PAC/WPAD -->
           <div class="pac">
-            <label>URL</label> <i class="fa fa-star fp-orange"></i>
+            <label>URL</label> <i class="fa fa-star"></i>
             <input id="pacURL" type="text">
           </div>
   
@@ -150,17 +153,17 @@
             <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
   
             <div class="proxyData">
-              <label data-i18n="ip"></label> <i class="fa fa-star fp-orange"></i>
+              <label data-i18n="ip"></label> <i class="fa fa-star"></i>
               <input id="proxyAddress" type="text" spellcheck="false" placeholder="111.111.111.111, www.example.com">
   
-              <label data-i18n="port"></label> <i class="fa fa-star fp-orange"></i>
+              <label data-i18n="port"></label> <i class="fa fa-star"></i>
               <input id="proxyPort" type="text" placeholder="443">
   
               <label data-i18n="username"></label>
               <input id="proxyUsername" type="text" spellcheck="false" placeholder="username">
   
               <label data-i18n="password"></label>
-              <button type="button" class="plain" data-i18n="togglePW|title"><i class="fa fa-eye fp-orange"></i></button>
+              <button type="button" class="plain" data-i18n="togglePW|title"><i class="fa fa-eye"></i></button>
               <input id="proxyPassword" type="password" spellcheck="false" placeholder="*****">
             </div>
           </div>

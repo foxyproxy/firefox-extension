@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
       a i.fa { font-size: 1.5em; margin-left: 0.2em; }
+      tr { opacity: 1; transition: all 0.5s ease-in-out; }
       tbody td:nth-of-type(1), tbody td:nth-of-type(2) { min-width: 10em; max-width: 15em; }
       tbody td:nth-of-type(1)::before, tbody td:nth-of-type(2)::before { content: attr(title); }
       th:nth-of-type(3), th:nth-of-type(4), th:nth-of-type(5) { width: 5em; }
@@ -23,7 +24,7 @@
     <div class="prime header" data-i18n="editPatterns"></div>
 
     <!-- spinner --> <!-- options, patterns, log -->
-    <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
+    <div id="spinner" class="on"><i class="fa fa-refresh fa-spin"></i></div>
 
     <!-- error -->
     <div id="error" class="prime hide">
@@ -33,10 +34,10 @@
 
     <!-- main -->
     <div class="prime main">
-      <p style="text-align: right;">
+      <div style="text-align: right;">
         <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
         <a href="/pattern-tester.html" target="_blank">Pattern Tester</a>
-      </p>
+      </div>
 
       <h3 data-i18n="whitePatterns"></h3>
       <!-- table template -->
@@ -55,7 +56,7 @@
                <td></td>
                <td></td>
                <td style="text-align: right;">
-                <a class="hide1" data-i18n="imported|title"><i class="fa fa-download"></i></a>
+                <a class="hide" data-i18n="imported|title"><i class="fa fa-download"></i></a>
                 <a data-i18n="edit|title" ><i class="fa fa-pencil"></i></a>
                 <a data-i18n="delete|title" ><i class="fa fa-trash"></i></a>
                </td>

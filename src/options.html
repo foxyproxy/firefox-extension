@@ -41,7 +41,7 @@
 
 
     <!-- spinner --> <!-- options, patterns, log -->
-    <div id="spinner" class="on"><span class="fa fa-refresh fa-spin fp-orange"></span></div>
+    <div id="spinner" class="on"><i class="fa fa-refresh fa-spin"></i></div>
 
     <!-- error -->
     <div id="error" class="prime hide"><h5 data-i18n="erroNoSettings"></h5></div>
@@ -55,7 +55,7 @@
           <a data-i18n="add"><i class="fa fa-plus-circle"></i></a>
           <a data-i18n="import"><i class="fa fa-download"></i></a>
           <a data-i18n="export"><i class="fa fa-upload"></i></a>
-          <a data-i18n="deleteAll"><i class="fa fa-trash"></i></a>
+          <a data-i18n="deleteAll"><i class="fa fa-trash" style="color: #f7941e;"></i></a>
           <a data-i18n="deleteBrowserData"><i class="fa fa-eraser" style="margin-right: 0.1em;"></i></a>
           <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-globe"></i></a>
           <a data-i18n="log"><i class="fa fa-file-text"></i></a>
@@ -77,8 +77,8 @@
                 <input id="syncOnOff" type="checkbox" name="syncOnOff" class="switch-input">
                 <label class="switch-paddle" for="syncOnOff">
                   <span class="show-for-sr" data-i18n="onOff"></span>
-                  <span class="switch-active bold" aria-hidden="true" style="color: white" data-i18n="on"></span>
-                  <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
+                  <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                  <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
                 </label>
             </div>
           </div>
@@ -97,15 +97,15 @@
               <i class="fa fa-lock hide"></i>
               <input type="checkbox" name="onOff" class="switch-input" id="">
               <label class="switch-paddle" for="">
-                <span class="switch-active" aria-hidden="true" style="color: white" data-i18n="on"></span>
-                <span class="switch-inactive bold fp-orange" aria-hidden="true" data-i18n="off"></span>
+                <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
               </label>
 
               <button type="button" class="small" data-i18n="edit"></button>
               <button type="button" class="small" data-i18n="patterns"></button>
-              <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-trash fp-orange"></i></button>
-              <button type="button" class="plain up" data-i18n="up|title"><i class="fa fa-caret-up fp-orange"></i></button>
-              <button type="button" class="plain down" data-i18n="down|title"><i class="fa fa-sort-desc fp-orange"></i></button>
+              <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-trash"></i></button>
+              <button type="button" class="plain up" data-i18n="up|title"><i class="fa fa-caret-up"></i></button>
+              <button type="button" class="plain down" data-i18n="down|title"><i class="fa fa-sort-desc"></i></button>
             </div>
           </div>
 
