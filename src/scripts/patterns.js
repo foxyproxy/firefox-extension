@@ -130,7 +130,7 @@ function processOptions() {
   docfrag.hasChildNodes() && tbody[1].appendChild(docfrag);
 
   // add Listeners();
-  document.querySelectorAll('td a').forEach(item => item.addEventListener('click', processEdit));
+  document.querySelectorAll('td button').forEach(item => item.addEventListener('click', processEdit));
 }
 
 function makeRow(patternObj, index, template, bw) {
