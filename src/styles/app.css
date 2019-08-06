@@ -479,7 +479,7 @@ input:checked + label > .switch-inactive {
   color: #f7941e;
 }
 
-.fa-star, .fa-eye {
+.fa-star, .fa-eye, .fa-download {
   color: #f7941e;
 }
 
