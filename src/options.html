@@ -21,7 +21,7 @@
       .pxy.on { box-shadow: 0px 3px 6px rgba(0,0,0,0.6); }
       .pxy:first-of-type button.up,
       .pxy:nth-last-child(2) button.down { visibility: hidden; }
-      #accounts { max-height: 60vh; overflow-y: auto; }
+      #accounts { max-height: 60vh; }
       #accounts div:last-of-type { margin: 0; }
       .title, .address { display: inline-block; }
       .title { width: 6em; margin: 0 0.5em; }
@@ -84,7 +84,7 @@
           </div>
 
           <!-- proxy list -->
-          <div id="accounts"></div>
+          <div id="accounts" class="scroll"></div>
 
           <!-- template -->
           <div class="pxy flex template">
