@@ -10,8 +10,7 @@ browser.runtime.onMessage.addListener(s => settings = s);
 function logToUI(log) { browser.runtime.sendMessage(log); }
 
 
-
-function FindProxyForURL(url, host) {
+function FindProxyForURL(url, host) { // The URL being accessed. The path and query components of https:// URLs are stripped. 
 
   switch (settings.mode) {
     // not supported at the moment
@@ -31,7 +30,7 @@ function FindProxyForURL(url, host) {
         return [{type: 'direct'}];                            // default
       }
 
-    default:browser.runtime.sendMessage('default');
+    default:
       // Use proxy "xxxx" for all URLs        // const USE_PROXY_FOR_ALL_URLS = 2;
       return [prepareSetting(url, settings.proxySettings[0], 'all')]; // the first proxy
   }
@@ -43,7 +42,7 @@ function findProxyMatch(url) {
   // note: we've already thrown out inactive settings and inactive patterns.
   // we're not iterating over them
 
-  const [scheme, hostPathname] = url.split('://');
+  const [scheme, hostPort] = url.split('://');
   const schemeSet = {                                       // converting to meaningful terms
     all : 1,
     http: 2,
@@ -55,14 +54,14 @@ function findProxyMatch(url) {
     // Check black patterns first
     const blackMatch = proxy.blackPatterns.find(item => 
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPathname));
-    
+              new RegExp(item['regExp'], 'i').test(hostPort));
+ 
     if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
 
-    const whiteMatch = proxy.whitePatterns.find(item => 
+    const whiteMatch = proxy.whitePatterns.find(item =>
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPathname));
-    
+              new RegExp(item['regExp'], 'i').test(hostPort));
+  
     if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here
   }
 

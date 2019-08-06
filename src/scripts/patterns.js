@@ -90,8 +90,9 @@ function process() {
 }
 
 function processEdit() {
-
-  const idx = this.parentNode.parentNode.dataset.idx *1;
+  
+  const parent = this.parentNode.parentNode;
+  const idx = parent.dataset.idx *1;
   const patternsArray = this.parentNode.dataset.bw === 'white' ? proxy.whitePatterns : proxy.blackPatterns;
 
   switch (this.dataset.i18n) {
@@ -106,7 +107,8 @@ function processEdit() {
 
     case 'delete|title':
       patternsArray.splice(idx, 1);
-      this.parentNode.parentNode.remove();                  // remove row
+      parent.style.opacity = 0;
+      setTimeout(() => { parent.remove(); }, 600);          // remove row                
       break;
   }
 }
@@ -173,7 +175,7 @@ function openDialog(pat, isNew, patternArray) {
       }
     </style>
     <div class="prime alert" style="margin-top: 1em;">
-      Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/ *</strong>
+      Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong><!-- */ -->
     </div>
     <div class="vex-custom-field-wrapper">
         <label for="name" class="bold">Pattern Name (optional)</label>
