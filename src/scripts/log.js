@@ -67,10 +67,12 @@ function renderLog() {
   const tbody = tr.parentNode.nextElementSibling;
   tbody.textContent = ''; // clearing the content
 
+  const forAll = chrome.i18n.getMessage('forAll');;
+
   newLog.elements.forEach(item => {
 
     const pattern = item.matchedPattern ?
-      (item.matchedPattern === 'all' ? 'Proxy for all URLs' : item.matchedPattern.pattern) : 'No matches';
+      (item.matchedPattern === 'all' ? forAll : item.matchedPattern.pattern) : 'No matches';
 
     // Build a row for this log entry by cloning the tr containing 6 td
     const row = tr.cloneNode(true);

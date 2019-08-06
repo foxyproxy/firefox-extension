@@ -278,7 +278,8 @@ function processButton() {
 
     case 'delete|title':
       if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
-        parent.remove();
+        parent.style.opacity = 0;
+        setTimeout(() => { parent.remove(); }, 600);          // remove row 
         //storageArea.remove(id, () => console.log('delete single completed');
       }
       break;

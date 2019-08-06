@@ -11,7 +11,8 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----- global
 let proxy = {};
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
-color.fromString('#66cc66');                                // starting from default color
+const defaultColor = '#66cc66'
+color.fromString(defaultColor);                             // starting from default color
 
 const header = document.querySelector('.header');           // dynamic header
 setHeader();
@@ -125,7 +126,7 @@ function processOptions() {
     proxyDNS.checked = proxy.proxyDNS || false;
 
     // color
-    color.fromString(proxy.color || DEFAULT_COLOR);
+    color.fromString(proxy.color || defaultColor);
 
     // input
     proxyTitle.value = proxy.title || '';
@@ -200,13 +201,11 @@ function validateInput() {
 
 function resetOptions() {
   
-  id = '';
-  oldProxy = {};
   localStorage.removeItem('id');
 
   // to help entering sets quickly, some fields are kept
   [proxyTitle, proxyAddress].forEach(item => item.value = '');
-  color.fromString(DEFAULT_COLOR);
+  color.fromString(defaultColor);
 
   setHeader();  
   proxyTitle.focus();
