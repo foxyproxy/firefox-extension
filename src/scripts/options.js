@@ -15,7 +15,6 @@ const syncOnOff = document.querySelector('input[name="syncOnOff"]');
 
 vex.defaultOptions.className = 'vex-theme-default';
 vex.dialog.buttons.YES.className = 'button';
-let noRefresh = false;
 let storageArea;
 
 // ----------------- User Preference -----------------------
@@ -121,9 +120,6 @@ function selectMode() {
   }
 }
 
-
-
-
 syncOnOff.addEventListener('change', () => {
   const useSync = syncOnOff.checked;
   // sync value always CHECKED locally
@@ -154,8 +150,6 @@ chrome.runtime.onMessage.addListener((message, sender) => { // from popup or bg
   mode.value = message.mode;
   selectMode();
 });
-
-
 
 function processOptions(pref) {
 
@@ -280,7 +274,7 @@ function processButton() {
       if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
         parent.style.opacity = 0;
         setTimeout(() => { parent.remove(); }, 600);          // remove row 
-        //storageArea.remove(id, () => console.log('delete single completed');
+        storageArea.remove(id, () => console.log('delete single completed'));
       }
       break;
 
@@ -289,9 +283,8 @@ function processButton() {
       const target = this.dataset.i18n === 'up|title' ? parent.previousElementSibling : parent.nextElementSibling;
       const insert = this.dataset.i18n === 'up|title' ? target : target.nextElementSibling;
       parent.parentNode.insertBefore(parent, insert);
-      target.classList.add('off');
       parent.classList.add('on');
-      setTimeout(() => { target.classList.remove('off'); parent.classList.remove('on'); }, 600);
+      setTimeout(() => { parent.classList.remove('on'); }, 600);
       storageArea.get(null, result => {
         const fromIndex = result[id].index;
         const toIndex = result[target.id].index; 
@@ -302,6 +295,7 @@ function processButton() {
       break;
   }
 }
+
 // ----------------- Helper functions ----------------------
 const spinner = document.querySelector('#spinner');
 function hideSpinner() {

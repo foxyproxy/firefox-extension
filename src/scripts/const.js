@@ -35,29 +35,26 @@ const PATTERN_ALL_WHITE = {
 };
 
 // patterns | proxy
-const PATTERN_LOCALHOSTURLS_BLACK = {
+// the local-internal blacklist are always used as a set
+const blacklistSet = [
+  {
     title: "local hostnames (usually no dots in the name). Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
-    active: true,
     pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?(?:localhost|127\\.\\d+\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
-    type: PATTERN_TYPE_REGEXP,
-    protocols: PROTOCOL_ALL
-};
-// patterns | proxy
-const PATTERN_INTERNALIPS_BLACK = {
-  title: "local subnets (IANA reserved address space). Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
-  active: true,
-  pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?(?:192\\.168\\.\\d+\\.\\d+|10\\.\\d+\\.\\d+\\.\\d+|172\\.(?:1[6789]|2[0-9]|3[01])\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
-  type: PATTERN_TYPE_REGEXP,
-  protocols: PROTOCOL_ALL
-};
-// patterns | proxy
-const PATTERN_LOCALHOSTNAMES_BLACK = {
-  title: "localhost - matches the local host optionally prefixed by a user:password authentication string and optionally suffixed by a port number. The entire local subnet (127.0.0.0/8) matches. Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
-  active: true,
-  pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?[\\w-]+(?::\\d+)?(?:/.*)?$",
-  type: PATTERN_TYPE_REGEXP,
-  protocols: PROTOCOL_ALL
-};
+  },
+  {
+    title: "local subnets (IANA reserved address space). Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
+    pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?(?:192\\.168\\.\\d+\\.\\d+|10\\.\\d+\\.\\d+\\.\\d+|172\\.(?:1[6789]|2[0-9]|3[01])\\.\\d+\\.\\d+)(?::\\d+)?(?:/.*)?$",
+  },
+  {
+    title: "localhost - matches the local host optionally prefixed by a user:password authentication string and optionally suffixed by a port number. The entire local subnet (127.0.0.0/8) matches. Pattern exists because 'Do not use this proxy for localhost and intranet/private IP addresses' is checked.",
+    pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?[\\w-]+(?::\\d+)?(?:/.*)?$"
+  }
+].map (item => {
+  item.avtive = true;
+  item.type = 2,            //PATTERN_TYPE_REGEXP,
+  item.protocols = 1        // PROTOCOL_ALL  
+  return item;
+});
 
 
 

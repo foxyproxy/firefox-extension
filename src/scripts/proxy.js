@@ -18,7 +18,7 @@ const header = document.querySelector('.header');           // dynamic header
 setHeader();
 
 // ----- check for Edit
-let id = localStorage.getItem('id');
+const id = localStorage.getItem('id');
 const sync = localStorage.getItem('sync') === 'true';
 const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
 if (id) {                                                   // This is an edit operation
@@ -155,8 +155,7 @@ function makeProxy() {
   }
 
   proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#onOffWhiteAll').checked ? [PATTERN_ALL_WHITE] : []);
-  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#onOffBlackAll').checked ?
-                                    [PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK] : []);
+  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#onOffBlackAll').checked ? blacklistSet : []);
   proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
 
   id = id || getUniqueId();                                 // global
@@ -172,7 +171,7 @@ function getUniqueId() {
 
 function validateInput() {
 
-  Utils.trimAllInputs();
+  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
 
   // let's handle here, #proxyPort will be checks later separately
   // Utils.escapeAllInputs('#proxyTitle,#proxyAddress,#proxyPort');

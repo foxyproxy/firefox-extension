@@ -7,25 +7,28 @@ let storageArea; // keeping track of sync
 let bgDisable = false;
 
 // ----------------- logger --------------------------------
-// log.js -> logg.clear() | logg.elements | logg.active
-// bg.js -> new Logg(size, active) | loog.add() | logg.active
-let newLog;
-function getLog() { return newLog; }
+let logger;
+function getLog() { return logger; }
 class Logger {
 
-  constructor(maxSize = 500, active = true) {
-    this.maxSize = maxSize; // there is no UI to hange this, so it is fixed, there may not be an option in ew API for logging
-    this.elements = [];
+  constructor(size = 500, active = true) {
+    this.size = size;
+    this.list = [];
     this.active = active;
   }
 
   clear() {
-    this.elements = [];
+    this.list = [];
   }
 
   add(item) {
-    this.elements.push(item);                             // addds to the end
-    this.elements = this.elements.slice(-this.maxSize);   // slice to the ending maxsize entries
+    this.list.push(item);                             // addds to the end
+    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+  }
+
+  updateStorage() {
+    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+    storageArea.set({logging: {size: this.size, active: this.active} });
   }
 }
 // ----------------- /logger -------------------------------
@@ -53,15 +56,11 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
   }
 });
 
-
 chrome.runtime.onMessage.addListener((message, sender) => {
   // used only for log from PAC
-  message.type === 'log' && newLog && newLog.active && newLog.add(message);
-  message.type !== 'log' && console.log(message);
+  message.type === 'log' && logger && logger.active && logger.add(message);
 });
 
-
-// ----- start
 
 // ----------------- User Preference -----------------------
 chrome.storage.local.get(null, result => {
@@ -99,7 +98,7 @@ function process(settings) {
     update = true;
   }
 
-  // ----- migrate
+  // ----------------- migrate -----------------------------
   if(settings.hasOwnProperty('whiteBlack')) {               // check for pre v5.0 storage, it had a whiteBlack property
 
     delete settings.whiteBlack;
@@ -107,9 +106,10 @@ function process(settings) {
     update = true;
   }
 
+  const ids = prefKeys.filter(item => !['mode', 'logging', 'sync'].includes(item));
   // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
   // imported this property as a string rather than boolean.
-  prefKeys.filter(item => !['mode', 'logging', 'sync'].includes(item)).forEach(item => {
+  ids.forEach(item => {
 
     if (settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string') {
       settings[item].proxyDNS = settings[item].proxyDNS === 'true' ? true : false;
@@ -126,23 +126,22 @@ function process(settings) {
 
   const size = settings.logging ? settings.logging.size : 500; // default 500
   const active = settings.logging ? settings.logging.active : true; // default true
-  newLog = new Logger(size, active);
+  logger = new Logger(size, active);
   sendToPAC(settings);
   console.log('background.js: loaded proxy settings from storage.');
 }
 
 // Update the PAC script whenever stored settings change
 function storageOnChanged(changes, area) {
-    //console.log(changes);
+    console.log(changes);
   // update storageArea on sync on/off change from options
   if (changes.hasOwnProperty('sync') && changes.sync.newValue !== changes.sync.oldValue) {
     storageArea = changes.sync.newValue ? chrome.storage.sync : chrome.storage.local;
   }
 
-  // update newLog on on/off change from log
-  if (changes.logging) {
-    newLog.active = changes.logging.newValue.active;
-  }
+  // update logger from log
+  if (changes.logging) { return; }
+
 
   // mode change from bg
   if(changes.mode && changes.mode.newValue === 'disabled' && bgDisable) {
@@ -152,13 +151,11 @@ function storageOnChanged(changes, area) {
 
   // default: changes from popup | options
   storageArea.get(null, sendToPAC);
-
 }
 
 
 
 function sendToPAC(settings) {
-console.log('sendToPAC called');
 
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
@@ -166,12 +163,7 @@ console.log('sendToPAC called');
   // --- cache credentials in authData (only those with user/pass)
   prefKeys.forEach(id => pref[id].username && pref[id].password &&
     (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
-  // console.log(authData);
 
-  // settings will always have proxySettings with default
-  // Remove inactive proxySetting objects and patterns
-//  settings = Utils.prepareForSettings(settings);
-//  settings.proxySettings = settings.proxySettings.filter(x => x.active);
 
   const mode = settings.mode;
 
@@ -188,17 +180,16 @@ console.log('sendToPAC called');
 
     // filter out the inactive & prepare RegEx
     prefKeys.forEach(id => {
-  
+
       if (pref[id].active) {
-    
-        [pref[id].blackPatterns] = checkPatterns(pref[id].blackPatterns); // retrurns [a, b]
+
+        [pref[id].blackPatterns] = checkPatterns(pref[id].blackPatterns); // returns [a, b]
         [pref[id].whitePatterns] = checkPatterns(pref[id].whitePatterns);
         active.proxySettings.push(pref[id]);
       }
     });
 
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
-
 
     browser.proxy.register(pacURL).then(() => {
 
@@ -212,7 +203,7 @@ console.log('sendToPAC called');
     // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
     // mode is set to the proxySettings id to use for all URLs.
     // Find it and pass to the PAC as the only proxySetting.
-    if (settings[mode]) {  // register only if temp was found
+    if (settings[mode]) {
 
       const tmp = settings[mode];
       browser.proxy.register(pacURL).then(() => {
@@ -254,21 +245,21 @@ function checkPatterns(patterns = []) {
   let update = false;
   const ret = patterns.map(item => {
 
-    const re = item['regExp']; // cache
-    // Build regexp from patterns
-    if (item.type === PATTERN_TYPE_WILDCARD) {
-      item.regExp = checkRE(Utils.wildcardToRegExp(item.pattern));
+    const re = item.regEx;                                  // cache
+    // Build regEx from patterns
+    if (item.type === PATTERN_TYPE_WILDCARD) {              // const PATTERN_TYPE_WILDCARD = 1;
+
+      item.regEx = checkRE(Utils.wildcardToRegExp(item.pattern));
     }
-    else if (item.type == PATTERN_TYPE_REGEXP) {
-      item.regExp = checkRE(item.pattern);
+    else if (item.type == PATTERN_TYPE_REGEXP) {            // const PATTERN_TYPE_REGEXP = 2;
+      item.regEx = checkRE(item.pattern);
     }
-    if (re !== item.regExp) { update = true; }
+    if (re !== item.regEx) { update = true; }
 
     return item;
   });
 
   return [ret, update];
-
 }
 
 function checkRE(str) {

@@ -9,13 +9,15 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----- global
-let newLog;
+let logger;
 const onOff = document.querySelector('#onOff');
+const logSize = document.querySelector('#logSize');
 
 chrome.runtime.getBackgroundPage(bg => {
 
-  newLog = bg.getLog();
-  onOff.checked = newLog.active;
+  logger = bg.getLog();
+  onOff.checked = logger.active;
+  logSize.value = logger.size;
   renderLog(); // log content will be shown if there are any, regardless of onOff
   hideSpinner();
 });
@@ -30,18 +32,17 @@ function hideSpinner() {
 
 onOff.addEventListener('change', (e) => {
 
-  const isON = onOff.checked;
-  //console.log("user changed logging to " + isON);
-  const logging = {
-    size: 500,
-    active: isON
-  };
-  isON && renderLog(); // redisplay log when clicking ON
+  logger.active = onOff.checked;
+  logger.updateStorage();
+});
 
-  chrome.storage.local.get(null, result => {
-    !result.sync ? chrome.storage.local.set({logging}) : chrome.storage.sync.set({logging});
-  });
-  // better not clearing the log, user might temporary want to diable, use clear button to clear
+logSize.addEventListener('change', (e) => {
+
+  logSize.value = logSize.value*1 || logger.size;           // defaults on bad number entry
+  if (logger.size !== logSize.value) {                      // update on change
+    logger.size = logSize.value;
+    logger.updateStorage();
+  }
 });
 
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
@@ -53,7 +54,7 @@ function process () {
     case 'back': location.href = '/options.html'; break;
     case 'refresh': renderLog(); break;
     case 'clear':
-      newLog.clear();
+      logger.clear();
       renderLog();
       break;
   }
@@ -69,7 +70,7 @@ function renderLog() {
 
   const forAll = chrome.i18n.getMessage('forAll');;
 
-  newLog.elements.forEach(item => {
+  logger.list.forEach(item => {
 
     const pattern = item.matchedPattern ?
       (item.matchedPattern === 'all' ? forAll : item.matchedPattern.pattern) : 'No matches';
@@ -93,10 +94,6 @@ function renderLog() {
   });
 
   tbody.appendChild(docfrag);
-
-  // using hide class app.css#4575 to show/hide
-  //document.querySelector('#spinner').classList.add('hide'); // unless there is an error, the spinner never really shows
-  //document.querySelector('#logRow').classList.remove('hide');
 }
 
 function formatInt(d) {

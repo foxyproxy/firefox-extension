@@ -15,10 +15,10 @@ vex.defaultOptions.className = 'vex-theme-default';
 const header = document.querySelector('.header');
 
 // ----- check for Edit
-let id = localStorage.getItem('id');
+const id = localStorage.getItem('id');
 const sync = localStorage.getItem('sync') === 'true';
 const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
-if (id) { // This is an edit operation
+if (id) {                                                   // This is an edit operation
 
   storageArea.get(id, result => {
 
@@ -82,9 +82,8 @@ function process() {
       break;
 
     case 'add':
-      proxy.blackPatterns.push(PATTERN_LOCALHOSTURLS_BLACK, PATTERN_INTERNALIPS_BLACK, PATTERN_LOCALHOSTNAMES_BLACK);
+      proxy.blackPatterns.push(...blacklistSet);
       processOptions();
-      document.getElementById(proxy.blackPatterns.length-1).scrollIntoView({behavior: 'smooth'});
       break;
   }
 }
@@ -184,8 +183,9 @@ function openDialog(pat, isNew, patternArray) {
         </div>
     </div>
     <div class="vex-custom-field-wrapper">
-        <label for="pattern" class="bold">Pattern &mdash; <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
-          <a id="tester">Pattern Tester</a></label>
+        <label for="pattern" class="bold" style="display: inline-block">Pattern &mdash; </label>  
+        <a href="/pattern-help.html" target="_blank">Pattern Help <i class="fa fa-question-circle"></i></a> |
+        <a href="/pattern-tester.html" target="_blank">Pattern Tester <i class="fa fa-flask"></i></a>
         <input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/>
     </div>
 

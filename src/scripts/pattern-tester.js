@@ -82,8 +82,8 @@ function testPattern() {
   }
 
   const regExp = typeTest === PATTERN_TYPE_WILDCARD ?
-    Utils.safeRegExp(Utils.wildcardToRegExp(patternTest)) :
-    Utils.safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
+    safeRegExp(Utils.wildcardToRegExp(patternTest)) :
+    safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
 
   if (regExp.test(parsedURL.host)) {
     result.classList.add('success');
@@ -100,7 +100,7 @@ function testPattern() {
 
 
 function validateInput() {
-  Utils.trimAllInputs();
+  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
   return markInputErrors();
 }
 
@@ -144,4 +144,18 @@ function markInputErrors() {
   }
 
   return true;
+}
+
+
+
+function safeRegExp(str) {
+    
+  try {
+    return new RegExp(str);
+  }
+  catch(e) {
+    console.error(e, 'safeRegExp(): Error creating regexp for pattern: ' + JSON.stringify(str));
+    Utils.notify('Error creating regular expression for pattern: ' + regExpStr);
+    return new RegExp('a^'); // match nothing
+  }
 }

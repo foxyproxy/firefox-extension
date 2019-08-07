@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 // ----- global
 let settings = {};
 
@@ -36,7 +34,6 @@ function FindProxyForURL(url, host) { // The URL being accessed. The path and qu
   }
 }
 
-
 function findProxyMatch(url) {
   // for loop is slightly faster than .forEach(), which calls a function and all the overhead with that
   // note: we've already thrown out inactive settings and inactive patterns.
@@ -54,13 +51,13 @@ function findProxyMatch(url) {
     // Check black patterns first
     const blackMatch = proxy.blackPatterns.find(item => 
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              new RegExp(item.regEx, 'i').test(hostPort));
  
     if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
 
     const whiteMatch = proxy.whitePatterns.find(item =>
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              new RegExp(item.regEx, 'i').test(hostPort));
   
     if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here
   }
@@ -91,11 +88,11 @@ function prepareSetting(url, proxy, matchedPattern) {
   const log = {
     type: 'log',
     url,
-    matchedPattern,
-    timestamp: Date.now(),
     title: proxy.title,
     color: proxy.color,
-    address: proxy.address
+    address: proxy.address,
+    matchedPattern,
+    timestamp: Date.now()
   };
   logToUI(log);
   return ret;

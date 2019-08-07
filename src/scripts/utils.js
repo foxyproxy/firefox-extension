@@ -15,12 +15,8 @@ class Utils {
 
   // options | popup
   static isUnsupportedType(type) {
-    return type === PROXY_TYPE_PAC || type === PROXY_TYPE_WPAD || type === PROXY_TYPE_SYSTEM || type === PROXY_TYPE_PASS;
-  }
-
-  // proxy | validate-pattern
-  static trimAllInputs() { // it is all Input so the selector is fixed
-    document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
+    //return type === PROXY_TYPE_PAC || type === PROXY_TYPE_WPAD || type === PROXY_TYPE_SYSTEM || type === PROXY_TYPE_PASS;
+    return [PROXY_TYPE_PAC, PROXY_TYPE_WPAD, PROXY_TYPE_SYSTEM, PROXY_TYPE_PASS].includes(type);
   }
 
   // bg | pattern-tester | validate-pattern
@@ -57,43 +53,9 @@ class Utils {
     return regExpStr;
   }
 
-  // pattern-tester
-  static safeRegExp(regExpStr) {
-    
-    try {
-      return new RegExp(regExpStr);
-    }
-    catch(e) {
-      console.error(e, 'safeRegExp(): Error creating regexp for pattern: ' + JSON.stringify(regExpStr));
-      Utils.notify('Error creating regular expression for pattern: ' + regExpStr);
-      return new RegExp('a^'); // match nothing
-    }
-  }
-
-  // pac | utils
-  static checkPatterns(patterns, schemeNum, host) {
-    
-    for (const patternObj of patterns) {
-
-      //console.log('Utils.checkPatterns(): protocol of pattern is: ' + patternObj.protocols);
-      if (patternObj.protocols != PROTOCOL_ALL && patternObj.protocols != schemeNum) {
-        //console.log('Utils.checkPatterns(): protocol mismatch; skipping.');
-        continue;
-      }
-      //console.log('Utils.checkPatterns(): checking pattern ' + patternObj.regExp.toString() + ' against ' + host);
-      if (patternObj.regExp.test(host)) {
-        //console.log('Utils.checkPatterns(): match found. Returning ' + JSON.stringify(patternObj));
-        return patternObj;
-      }
-    }
-    return null;
-  }
-
-
-
   // import | pattern
   static importFile(file, mimeTypeArr, maxSizeBytes, jsonOrXml, callback) {
-    
+
     if (!file) {
       alert('There was an error');
       return;
@@ -112,11 +74,11 @@ class Utils {
 
     const reader  = new FileReader();
     reader.onloadend = () => {
-      if (reader.error) { 
-        alert('Error reading file.'); 
+      if (reader.error) {
+        alert('Error reading file.');
         return;
       }
-      
+
       let settings;
       try {
         if (jsonOrXml === 'json') { settings = JSON.parse(reader.result); }
@@ -146,7 +108,7 @@ class Utils {
   }
   // exportFile helper
   static saveAs(data) {
-    
+
     const settings = data; //Utils.prepareForSettings(data);
     const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain;charset=utf-8'});
     const filename = chrome.i18n.getMessage('extensionName') + '_' + new Date().toISOString().substring(0, 10) + '.json';
@@ -158,7 +120,7 @@ class Utils {
     });
   }
 
-  // utils nly used for export now
+  // utils only used for export now
   static prepareForSettings(settings = {}) {
 
     //if (settings && !settings.mode) { }// 5.0 settings
