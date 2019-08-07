@@ -35,8 +35,8 @@
   
   "modePatterns": { "message": "Enabled Proxies By Patterns and Priority" },
   "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
-//  "modeDedicated": { "message": "$1 for all" },
-  "modeSelection": { "message": "Use selected proxy for all URLs" },
+  "forAll": { "message": "for all URLs" },
+
 
   
   
@@ -99,8 +99,8 @@
   "back": { "message": "Back" },
   "test": { "message": "Test" },
   "help": { "message": "Help" },
-  "exportPatterns": { "message": "ExportPatterns" },
-  "importPatterns": { "message": "ImportPatterns" },
+  "importPatterns": { "message": "Import Patterns" },
+  "exportPatterns": { "message": "Export Patterns" },
   "newWhite": { "message": "New White" },
   "newBlack": { "message": "New Black" },
   "save": { "message": "Save" },
@@ -112,7 +112,7 @@
 
 
   
-  
+  "logSize": { "message": "Log Size" },
   "url": { "message": "URL" },
   "proxyTitle": { "message": "Proxy Title" },
   "proxyAddress": { "message": "Proxy Address" },
