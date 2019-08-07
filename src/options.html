@@ -10,14 +10,15 @@
     <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
       nav { width: 14em; margin-right: 0.5em; }
-      nav i {  margin-right: 0.4em; font-size: 1.6em !important; }
+      nav i { margin-right: 0.4em; font-size: 1.6em !important; }
       nav a { display: block; padding: 0.2em 0.5em; border-radius: 0 50px 50px 0; transition: all 0.5s ease-in-out; }
       nav a:hover { background-color: #ffebcd; }
+      nav a i, nav a i:hover { color: inherit !important; }
+      
       select { max-width: 25em; }
       .rightColumn { padding: 1em; flex-grow: 1; border: 1px solid #ccc; border-radius: 5px; }
       .pxy { opacity: 1; transition: all 0.5s ease-in-out; 
           margin: 0 0 1em 0; padding: 0.5em 1em 0 1em; border: 1px solid #ccc; border-radius: 5px; }
-      .pxy.off { opacity: 0.5; }
       .pxy.on { box-shadow: 0px 3px 6px rgba(0,0,0,0.6); }
       .pxy:first-of-type button.up,
       .pxy:nth-last-child(2) button.down { visibility: hidden; }
@@ -31,6 +32,7 @@
       #accounts button i.fa { font-size: 1.8em; }
       .fa-lock { display: inline-block; color: #080; font-size: 1.3em; vertical-align: middle; margin-right: 0.3em; }
       .fa-lock.hide { visibility: hidden; } 
+      .scroll { max-height: 40vh; }
     </style>
 
   </head>
@@ -55,7 +57,7 @@
           <a data-i18n="add"><i class="fa fa-plus-circle"></i></a>
           <a data-i18n="import"><i class="fa fa-download"></i></a>
           <a data-i18n="export"><i class="fa fa-upload"></i></a>
-          <a data-i18n="deleteAll"><i class="fa fa-trash" style="color: #f7941e;"></i></a>
+          <a data-i18n="deleteAll"><i class="fa fa-trash"></i></a>
           <a data-i18n="deleteBrowserData"><i class="fa fa-eraser" style="margin-right: 0.1em;"></i></a>
           <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-globe"></i></a>
           <a data-i18n="log"><i class="fa fa-file-text"></i></a>
