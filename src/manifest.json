@@ -17,7 +17,7 @@
   },
 
   "background": {
-    "scripts": ["scripts/const.js", "scripts/utils.js", "scripts/background.js"]
+    "scripts": ["scripts/utils.js", "scripts/background.js"]
   },
 
   "options_ui": {
@@ -28,7 +28,7 @@
   
   "browser_action": {
     "default_icon": "images/icon.svg",
-    "default_title": "__MSG_app_name_foxyproxy_standard__",
+    "default_title": "__MSG_extensionName__",
     "default_popup": "popup.html",
     "browser_style": true
   },

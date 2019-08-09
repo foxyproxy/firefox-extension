@@ -11,13 +11,13 @@
       .main > div:nth-child(2) { flex: 3; }
       .main label { display: inline-block; }
       
-      i.fa-eye { font-size: 1.2em; transition: all 0.5s ease-in-out; }
+      i.fa { color: #f90; font-size: inherit; }
+      i.fa-eye { font-size: 1.2em; }
       i.fa-eye:hover { color: #f50; }
 
       .onOff > label { flex: 4;  margin-right: 1em; }
       .onOff > div { flex: 1 !important; }
-      .unsupported { margin-top: 1.5em; border: 1px solid #ccc; }
-
+      .unsupported { margin-top: 1.5em; }
       .onOff, .pac, .unsupported { display: none; }
       input[name="nav"] { display: none; }
       #http:checked ~ div div.onOff:not(.dns),
@@ -184,9 +184,8 @@
 
   </div>
 
-  <script src="scripts/const.js"></script>
-  <script src="scripts/utils.js"></script>
   <script src="scripts/jscolor-2.0.5.js"></script><!-- only used here -->
+  <script src="scripts/utils.js"></script>
   <script src="scripts/proxy.js"></script>
   </body>
 </html>

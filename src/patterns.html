@@ -6,17 +6,37 @@
     <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
-    <link rel="stylesheet" href="styles/vex-4.1.0.css"/>
-    <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
     <style>
-      i.fa { font-size: 1.5em; }
-      i.fa.fa-question-circle, i.fa.fa-flask { font-size: 1em; }
+      /*td i.fa { font-size: 1.5em; }*/
       tr { opacity: 1; transition: all 0.5s ease-in-out; }
-      tbody td:nth-of-type(1), tbody td:nth-of-type(2) { min-width: 10em; max-width: 15em; }
-      tbody td:nth-of-type(1)::before, tbody td:nth-of-type(2)::before { content: attr(title); }
-      th:nth-of-type(3), th:nth-of-type(4), th:nth-of-type(5) { width: 5em; }
-      th:nth-of-type(6) { width: 7em; }
-      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { text-align: center; }
+      td { padding: 0.2em 0.5em; }
+      td:nth-of-type(1), td:nth-of-type(2) { min-width: 10em; max-width: 15em; padding: 0 0.5em; }
+      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { width: 5em; text-align: center; }
+      td:nth-of-type(6) { width: 7em; }
+      
+      input[type="text"], input[type="text"]:focus {
+        background-color: transparent;
+        box-shadow: none;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        border: 1px solid transparent;
+      }
+      input[type="text"]:focus {
+        background-color: #f8f8ff;
+      }      
+      input:invalid, input:invalid:focus {
+        background-color: #fff;
+        border-color: #f90;
+      }
+      select {
+        background: #f5fffa;
+        font-size: 0.9em;
+        height: auto;
+        margin: 0;
+        padding: 0.1em;
+      }
+      #result { margin: 1em 0 0; }
     </style>
   </head>
   <body>
@@ -36,8 +56,8 @@
     <!-- main -->
     <div class="prime main">
       <div style="text-align: right;">
-        <a href="/pattern-help.html" target="_blank">Pattern Help <i class="fa fa-question-circle"></i></a> |
-        <a href="/pattern-tester.html" target="_blank">Pattern Tester <i class="fa fa-flask"></i></a>
+        <a href="/pattern-help.html" target="_blank"><span data-i18n="patternHelp"></span> <i class="fa fa-question-circle"></i></a> |
+        <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>
       </div>
 
       <h3 data-i18n="whitePatterns"></h3>
@@ -51,17 +71,38 @@
             </tr>
             <!-- template -->
             <tr class="template">
-              <td class="ellipsis"></td>
-              <td class="ellipsis"></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td><input type="text" spellcheck="false"></td>
+              <td><input type="text" spellcheck="false" required></td>
+              <td>
+                <select name="type">
+                  <option value="1">Wildcard</option>
+                  <option value="2">Reg Exp</option>
+                </select>
+              </td>
+              <td>
+                <select name="protocol">
+                  <option value="1">all</option>
+                  <option value="2">http</option>
+                  <option value="4">https</option>
+                </select>
+              </td>
+              <td>
+                <input name="onOff" class="switch-input" id="" type="checkbox" checked>
+                <label class="switch-paddle" for="active">
+                  <span class="show-for-sr">On/Off</span>
+                  <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
+                  <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
+                </label>
+              </td>
               <td style="text-align: right;">
                 <button type="button" class="plain hide" data-i18n="imported|title"><i class="fa fa-download"></i></button>
-                <button type="button" class="plain" data-i18n="edit|title"><i class="fa fa-pencil"></i></button>
+                <button type="button" class="plain" data-i18n="patternTester|title"><i class="fa fa-flask"></i></button>
+                <!-- <button type="button" class="plain" data-i18n="edit|title"><i class="fa fa-pencil"></i></button> -->
                 <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-trash"></i></button>
               </td>
             </tr>
+
+
           </thead>
 
           <tbody></tbody>
@@ -85,29 +126,30 @@
       </div>
 
 
-    <p style="margin-top: 1em; text-align: center;">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
+      <p style="margin-top: 1em; text-align: center;">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
       <span class="has-tip" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button></p>
 
-    <div class="flex">
-      <div>
-        <button type="button" data-i18n="importPatterns"></button>
-        <button type="button" data-i18n="exportPatterns"></button>
+      <div class="flex">
+        <div>
+          <input type="file" id="file" accept=".json">
+          <label for="file" class="button" data-i18n="importPatterns"></label>
+          <button type="button" data-i18n="exportPatterns"></button>
+        </div>
+        <div style="text-align: right;">
+          <button type="button" class="alert" data-i18n="cancel"></button>
+          <button type="button" data-i18n="newWhite"></button>
+          <button type="button" data-i18n="newBlack"></button>
+          <button type="submit" data-i18n="save"></button>
+        </div>
       </div>
-      <div style="text-align: right;">
-        <button type="button" class="alert" data-i18n="cancel"></button>
-        <button type="button" data-i18n="newWhite"></button>
-        <button type="button" data-i18n="newBlack"></button>
-        <button type="submit" style="margin-right: 0;" data-i18n="save"></button>
-      </div>
-    </div>
 
+      <p id="result" class="prime small success hide"></p>
 
   </div>
 
 
-  <script src="scripts/vex.combined-4.1.0.js"></script>
-  <script src="scripts/const.js"></script>
+  <script src="scripts/common.js"></script>
   <script src="scripts/utils.js"></script>
   <script src="scripts/patterns.js"></script>
   </body>

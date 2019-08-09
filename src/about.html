@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles/app.css">
     <style>
       i.fa {
-        color: #f7941e;
+        color: #f90;
         display: inline-block;
         font-size: 1.3em;
         margin-right: 0.2em;
@@ -16,6 +16,8 @@
         width: 1em;
       }
       i.fa.fa-lock { color: #080; }
+      li.sub { margin-left: 2em; list-style-type: circle; }
+      li.sub + li:not(.sub) { margin-top: 1em; }
     </style>
   </head>
   <body>
@@ -58,23 +60,41 @@
 
       <h4>Versions 7.0</h4>
         <ul>
-          <li>Option to set active on|off on proxy Edit page</li>
-          <li>username/password are kept when adding new proxies for rapid creation of multiple proxies with same username/password</li>
-          <li>Log shows local date & time in local (browser) language</li>
-          <li>Log is not cleared when switching it off until ti is manually cleared</li>
-          <li>Log entries are numbered</li>
-          <li>Added size control to Log entries</li>
-          <li>Option to transfer preferences from <i>local</i> to <i>Sync</i> and vice versa</li>
-          <li>Options page shows <i class="fa fa-lock"></i>for proxies with username/password</li>
-          <li>Date is added to the export filename</li>
-          <li>Export auto-renames file if the same name exists</li>
-          <li>Import data max size set to 5mb</li>
-          <li>Mouseove on ellipsised text on patterns shows the full text</li>
+
+          <li>Options Page</li>
+          <li class="sub">Option to transfer preferences from <i>local</i> to <i>Sync</i> and vice versa</li>
+          <li class="sub">Options page shows <i class="fa fa-lock"></i>for proxies with username/password</li>
+          <li class="sub">Date is added to the export filename</li>
+          <li class="sub">Export auto-renames file if the same name exists</li>
+
+
+          <li>Patterns Page</li>
+          <li class="sub">New Inline-Editor</li>
+          <li class="sub">Patterns are checked and errors dispalyed</li>
+          <li class="sub"></li>
+
+
+          <li>Proxy Page</li>
+          <li class="sub">Option to set active on|off on proxy Edit page</li>
+          <li class="sub">username/password are kept when adding new proxies for rapid creation of multiple proxies with same username/password</li>
+
+
+          <li>Import Page</li>
+          <li class="sub">Import data max size set to 5mb</li>
+
+
+          <li>Log Page</li>
+          <li class="sub">Log shows local date & time in local (browser) language</li>
+          <li class="sub">Log is not cleared when switching it off until ti is manually cleared</li>
+          <li class="sub">Log entries are numbered</li>
+          <li class="sub">Added size control to Log entries</li>
+
+
           <li>Greatly streamlined</li>
           <li>Style/Code Improvement</li>
-        </ul>      
+        </ul>
 
-      
+
       <h4>Versions 6.4, 6.5, 6.6, 6.6.1, 6.6.2 (some versions unreleased)</h4>
       <ul>
         <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
@@ -110,10 +130,10 @@
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>
     </div>
-    
+
   </div>
-  
-  <script src="scripts/const.js"></script>
+
+  <script src="scripts/utils.js"></script>
   <script src="scripts/about.js"></script>
   </body>
 </html>
