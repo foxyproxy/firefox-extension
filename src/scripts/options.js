@@ -12,9 +12,9 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 const accounts = document.querySelector('#accounts');
 const mode = document.querySelector('#mode');
 const syncOnOff = document.querySelector('input[name="syncOnOff"]');
+const popup = document.querySelector('.popup');
+const popupMain = popup.children[0];
 
-vex.defaultOptions.className = 'vex-theme-default';
-vex.dialog.buttons.YES.className = 'button';
 let storageArea;
 
 // ----------------- User Preference -----------------------
@@ -35,9 +35,9 @@ function process() {
 
   switch (this.dataset.i18n) {
 
-    case 'add': 
+    case 'add':
       localStorage.removeItem('id');                        // clear localStorage
-      location.href = '/proxy.html'; 
+      location.href = '/proxy.html';
       break;
     case 'export': Utils.exportFile(); break;
     case 'import': location.href = '/import.html'; break;
@@ -55,50 +55,58 @@ function process() {
       break;
 
     case 'deleteBrowserData':
-      vex.dialog.confirm({
-        message: `${chrome.i18n.getMessage('deleteBrowserData')}`,
-        input: `
-        <h3>${chrome.i18n.getMessage('deleteNot')}</h3>
-        <p>${chrome.i18n.getMessage('deleteBrowserDataNotDescription')}</p>
-        <h3>${chrome.i18n.getMessage('delete')}</h3>
-        <p>${chrome.i18n.getMessage('deleteBrowserDataDescription')}</p>`,
-        callback: function(data) {
-          if (data) {
-            // Not cancelled
-            chrome.browsingData.remove({}, {
-              //appcache: true,
-              cache: true,
-              cookies: true,
-              downloads: false,
-              //fileSystems: true,
-              formData: false,
-              history: false,
-              indexedDB: true,
-              localStorage: true,
-              pluginData: true,
-              //passwords: true,
-              //webSQL: true,
-              //serverBoundCertificates: true,
-              serviceWorkers: true
-            }, () => Utils.notify(chrome.i18n.getMessage('done')));
-          }
-        }
-      });
+
+      const h4 = document.createElement('h4');
+      const p = document.createElement('p');
+      popupMain.children[0].textContent = chrome.i18n.getMessage('deleteBrowserData');
+      let h = h4.cloneNode();
+      h.textContent = chrome.i18n.getMessage('deleteNot');
+      let p1 = p.cloneNode();
+      p1.textContent = chrome.i18n.getMessage('deleteBrowserDataNotDescription');
+      popupMain.children[1].appendChild(h);
+      popupMain.children[1].appendChild(p1);
+
+      h = h4.cloneNode();
+      h.textContent = chrome.i18n.getMessage('delete');
+      p1 = p.cloneNode();
+      p1.textContent = chrome.i18n.getMessage('deleteBrowserDataDescription');
+      popupMain.children[1].appendChild(h);
+      popupMain.children[1].appendChild(p1);
+
+      popupMain.children[2].children[0].addEventListener('click', closePopup);
+      popupMain.children[2].children[1].addEventListener('click', () =>             // Not cancelled
+        chrome.browsingData.remove({}, {
+          //appcache: true,
+          cache: true,
+          cookies: true,
+          downloads: false,
+          //fileSystems: true,
+          formData: false,
+          history: false,
+          indexedDB: true,
+          localStorage: true,
+          pluginData: true,
+          //passwords: true,
+          //webSQL: true,
+          //serverBoundCertificates: true,
+          serviceWorkers: true
+        }, () => Utils.notify(chrome.i18n.getMessage('done'))));
+      showPopup();
       break;
   }
 }
 
 // ----- add Listeners for initial elements
-mode.addEventListener('change', selectMode); 
+mode.addEventListener('change', selectMode);
 function selectMode() {
-  
+
   // set color
-  mode.style.color = mode.children[mode.selectedIndex].style.color; 
-  
+  mode.style.color = mode.children[mode.selectedIndex].style.color;
+
   // we already know the state of sync | this is set when manually changing the select
   this && storageArea.set({mode: mode.value});
-  
-  // --- change the state of success/secondary 
+
+  // --- change the state of success/secondary
   // change all success -> secondary
   document.querySelectorAll('.success').forEach(item => item.classList.replace('success', 'secondary'));
 
@@ -107,7 +115,7 @@ function selectMode() {
     case 'patterns':
       document.querySelectorAll('input[name="onOff"]:checked').forEach(item => {
           const node = item.parentNode.parentNode;
-          node.classList.replace('secondary', 'success'); // FF49, Ch 61 
+          node.classList.replace('secondary', 'success'); // FF49, Ch 61
       });
       break;
 
@@ -137,7 +145,7 @@ syncOnOff.addEventListener('change', () => {
   else if (!useSync && confirm(chrome.i18n.getMessage('confirmTransferToLocal'))) {
     showSpinner();
     chrome.storage.sync.get(null, result => {               // get source
-      result.sync = false;                                  // set sync = false                              
+      result.sync = false;                                  // set sync = false
       chrome.storage.local.set(result, hideSpinner);        // save to target
     });
   }
@@ -163,7 +171,7 @@ function processOptions(pref) {
   const temp = document.querySelector('.template');
 
   // --- working directly with DB format
-  
+
   // add default lastresort if not there
   pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
@@ -186,7 +194,7 @@ function processOptions(pref) {
     node[0].style.backgroundColor = item.color;
     node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
     node[2].textContent = item.address; // ellipsis is handled by CSS
-    item.username && item.password && node[3].classList.remove('hide');
+    item.username && item.password && node[3].classList.add('on');
     node[4].id = id + '-onoff';
     node[4].checked = item.active;
     node[5].setAttribute('for', node[4].id);
@@ -246,6 +254,12 @@ function processOptions(pref) {
   hideSpinner();
 }
 
+
+
+
+
+
+
 function processButton() {
 
   const parent = this.parentNode.parentNode;
@@ -254,10 +268,11 @@ function processButton() {
   switch (this.dataset.i18n) {
 
     case 'help|title':
-      vex.dialog.alert({
-        message: chrome.i18n.getMessage('syncSettings') + '',
-        input: chrome.i18n.getMessage('syncSettingsHelp') + ''
-      });
+      popupMain.children[0].textContent = chrome.i18n.getMessage('syncSettings');
+      popupMain.children[1].textContent = chrome.i18n.getMessage('syncSettingsHelp');
+      popupMain.children[2].children[0].style.visibility = 'hidden';
+      popupMain.children[2].children[1].addEventListener('click', closePopup);
+      showPopup();
       break;
 
     case 'edit':
@@ -273,7 +288,7 @@ function processButton() {
     case 'delete|title':
       if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
         parent.style.opacity = 0;
-        setTimeout(() => { parent.remove(); }, 600);          // remove row 
+        setTimeout(() => { parent.remove(); }, 600);          // remove row
         storageArea.remove(id, () => console.log('delete single completed'));
       }
       break;
@@ -287,14 +302,36 @@ function processButton() {
       setTimeout(() => { parent.classList.remove('on'); }, 600);
       storageArea.get(null, result => {
         const fromIndex = result[id].index;
-        const toIndex = result[target.id].index; 
+        const toIndex = result[target.id].index;
         result[id].index = toIndex;
         result[target.id].index = fromIndex;
         storageArea.set(result);
-      }); 
+      });
       break;
   }
 }
+
+function showPopup() {
+
+  popup.style.display = 'flex';
+  window.getComputedStyle(popup).opacity;
+  window.getComputedStyle(popup.children[0]).transform;
+  popup.classList.add('on');
+}
+
+function closePopup() {
+
+  popup.classList.remove('on');
+  setTimeout(() => { 
+    popup.style.display = 'none'; 
+    // reset
+    popupMain.children[0].textContent = '';
+    popupMain.children[1].textContent = '';
+    popupMain.children[2].children[0].style.visibility = 'visible';
+    popupMain.replaceChild(popupMain.children[2].cloneNode(true), popupMain.children[2]); // cloning to remove listeners  
+  }, 600);
+}
+
 
 // ----------------- Helper functions ----------------------
 const spinner = document.querySelector('#spinner');

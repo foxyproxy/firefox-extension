@@ -9,13 +9,12 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // --- global
+const url = document.querySelector('#url');
+const pattern = document.querySelector('#pattern');
+const type = document.querySelector('#type');
+const protocols = document.querySelector('#protocols');
 const result = document.querySelector('#result');
 
-  
-const pattern = document.querySelector('#pattern');
-const protocols = document.querySelector('#protocols');
-const type = document.querySelector('#type');
-const urlInput = document.querySelector('#url');
 
 document.querySelector('button[data-i18n="test"]').addEventListener('click', testPattern);
 
@@ -27,135 +26,52 @@ if (pat) {
   pattern.value = pat;
   type.value = localStorage.getItem('type');
   protocols.value = localStorage.getItem('protocols');
-  
+
   localStorage.removeItem('pattern');
   localStorage.removeItem('type');
-  localStorage.removeItem('protocols');  
+  localStorage.removeItem('protocols');
 }
 
 
 function testPattern() {
 
   // --- reset
-  urlInput.classList.remove('invalid');
-  result.classList.remove('success', 'alert');
+  url.classList.remove('invalid');
+  pattern.classList.remove('invalid');
+  result.classList.add('hide');
+  result.classList.remove('alert');
+
+  // --- trim text values
+  [url, pattern].forEach(item => item.value = item.value.trim());
   
+  // --- URL check
   let parsedURL;
-
-  try { parsedURL = new URL(urlInput.value); }
+  try { parsedURL = new URL(url.value); }
   catch (e) {
-    console.error(e);
-    urlInput.classList.add('invalid');
-    return false;
-  }
-
-  if (!validateInput()) { return; }
-
-  // There are 3 possible states that we report:
-  // 1. protocols do not match OR
-  // 2. pattern does not match OR
-  // 3. pattern matches
-  // In each case, we show/hide the appropriate HTML blocks. We have to do
-  // this each time testPattern() is called because this funciton many be
-  // called multiple times without the HTML resetting -- yet the user may have
-  // changed the inputs. So we just hide everything in the beginning and show
-  // the appropriate block each execution of testPattern().
-
-  
-
-  const patternTest = pattern.value;
-  const typeTest = parseInt(type.value);
-  const protocolsTest = parseInt(protocols.value);
-  let schemeNum;
-  console.log(patternTest, typeTest, protocolsTest);
-
-  // Check protocol first
-  if (parsedURL.protocol === 'https:') { schemeNum = PROTOCOL_HTTPS; }
-  else if (parsedURL.protocol === 'http:') { schemeNum = PROTOCOL_HTTP; }
-
-
-  if (protocolsTest !== PROTOCOL_ALL && protocolsTest !== schemeNum) {
-    result.classList.add('alert');
-    result.textContent = 'Protocols do not match.';
-    result.classList.remove('hide');
+    url.classList.add('invalid');
+    showResult(e.message, true);
     return;
   }
 
-  const regExp = typeTest === PATTERN_TYPE_WILDCARD ?
-    safeRegExp(Utils.wildcardToRegExp(patternTest)) :
-    safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
+  // --- protocol check
+  const protocolSet = {                                     // converting to meaningful terms
+    '1': ['http:', 'https:'],
+    '2': ['http:'],
+    '4': ['https:']
+  };
 
-  if (regExp.test(parsedURL.host)) {
-    result.classList.add('success');
-    result.textContent = 'Pattern matches URL!';
-  }
-  else {
-    result.classList.add('alert');
-    result.textContent = 'Pattern does not match URL.';
-  }
-
-  result.classList.remove('hide');
-}
-
-
-
-function validateInput() {
-  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
-  return markInputErrors();
-}
-
-// Return false if any item in the selector is empty or doesn't have only nums when
-// |numbersOnly| is true
-function markInputErrors() {
-
-  const patInput = document.querySelector('#pattern');
-  patInput.classList.remove('invalid'); // reset
-  const pat = patInput.value;
-
-  if (!pat) {
-    patInput.classList.add('invalid');
-    return false;
+  if (!protocolSet[protocols.value].includes(parsedURL.protocols)) {
+    showResult(chrome.i18n.getMessage('errorProtocol'), true);
+    return;
   }
 
-  const type = parseInt(document.querySelector('#type').value);
-  switch (true) {
 
-    case type === PATTERN_TYPE_WILDCARD && pat.includes('/'):
-      alert(chrome.i18n.getMessage('errorSlash'));
-      patInput.classList.add('invalid');
-      return false;
+  // --- pattern check  
+  const regex = checkPattern(pattern, type);
+  if (!regex) { return; }
+  
+  // --- pattern on URL check (pattern is valid)
+  regex.test(parsedURL.host) ? showResult(chrome.i18n.getMessage('patternMatch')) : 
+                                showResult(chrome.i18n.getMessage('patternNotMatch'), true);
 
-    case type === PATTERN_TYPE_REGEXP:
-      try { new RegExp(pat); }
-      catch (e) {
-        console.error(e);
-        patInput.classList.add('invalid');
-        return false;
-      }
-      break;
-
-    default:
-      try { new RegExp(Utils.wildcardToRegExp(pat)); }
-      catch (e) {
-        console.error(e);
-        patInput.classList.add('invalid');
-        return false;
-      }
-  }
-
-  return true;
-}
-
-
-
-function safeRegExp(str) {
-    
-  try {
-    return new RegExp(str);
-  }
-  catch(e) {
-    console.error(e, 'safeRegExp(): Error creating regexp for pattern: ' + JSON.stringify(str));
-    Utils.notify('Error creating regular expression for pattern: ' + regExpStr);
-    return new RegExp('a^'); // match nothing
-  }
 }

@@ -41,8 +41,8 @@ function processOptions(pref) {
       li.classList.remove('template');
       li.id = id;
       li.style.color = item.color;
-      li.children[1].textContent = item.title || `${item.address}:${item.port}`;
-      li.children[2].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
+      li.children[0].textContent = item.title || `${item.address}:${item.port}`;
+      li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);
     }
