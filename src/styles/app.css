@@ -2,10 +2,14 @@ body {
   background: #630;
   color: #333;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-weight: normal;
-  line-height: 1.5;
   margin: 0;
   padding: 1em;
+  animation: fadein 0.3s ease-in-out;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 * {
@@ -26,7 +30,7 @@ img {
 
 
 a {
-  color: #f7941e;
+  color: #f90;
   text-decoration: none;
 }
 
@@ -47,6 +51,7 @@ th {
   background-color: #eee;
   padding: 0.4em;
   text-align: left;
+  border-bottom: 1px solid #fff;
 }
 
 tr{
@@ -70,8 +75,13 @@ td {
   white-space: nowrap;
 }
 
-button {
-  background: #f7941e;
+input[type="file"] {
+  display: none;
+}
+
+
+button, .button {
+  background: #f90;
   border-radius: 3px;
   border: 0;
   color: #fff;
@@ -87,9 +97,10 @@ button {
   vertical-align: middle;
   -webkit-appearance: none;
   -moz-appearance: none;
+  line-height: normal;
 }
 
-button:not(.plain):hover {
+button:not(.plain):hover, .button:hover {
   background: #e37f08;
   box-shadow: 0px 1px 5px rgba(0,0,0,0.3);
 }
@@ -226,6 +237,9 @@ select[multiple] {
 }
 
 
+
+
+
 /* --- onOff switch --- */
 .switch-input {
   opacity: 0;
@@ -266,7 +280,7 @@ input + .switch-paddle {
 }
 
 input:checked ~ .switch-paddle {
-  background: #f7941e;
+  background: #f90;
 }
 
 input:checked ~ .switch-paddle::after {
@@ -297,7 +311,7 @@ input:checked + label > .switch-active {
 
 .switch-inactive {
   right: 15%;
-  color: #f7941e;
+  color: #f90;
   
 }
 
@@ -332,20 +346,24 @@ input:checked + label > .switch-inactive {
 
 .prime.alert {
   background-color: #fce6e2;
+  border: 1px solid #ccc;
 }
 
 .prime.warning {
   background-color: #fff3d9;
+  border: 1px solid #ccc;
 }
 
 .prime.small {
     padding: 0.5em;
+    border: 1px solid #ccc;
 }
 
 .prime.tiny {
   margin: 0;
   padding: 0.1em;
   font-size: 0.8em;
+  border: 1px solid #ccc;
 }
 
 .show-for-sr,
@@ -369,7 +387,7 @@ input:checked + label > .switch-inactive {
 }
 
 .fp-orange {
-  color: #f7941e;
+  color: #f90;
 }
 
 .fp-color-blob {
@@ -400,6 +418,7 @@ input:checked + label > .switch-inactive {
 
 .unsupported {
   background-color: #fce6e2;
+  border: 1px solid #ccc;
 }
 
 .unsupported:hover {
@@ -407,36 +426,35 @@ input:checked + label > .switch-inactive {
   color: #fff;
 }
 
-.fp-fontawsome-border-for-text {
-  /* for rtl languages, this should be margin-left */
-  margin-right: 0.5em;
-}
 
 .header {
   color: #c60;
   font-size: 1.5em;
   font-weight: bold;
-  padding: 0.5em !important;
+  padding: 0.5em;
   margin: 0 0 0.5rem 0;
 }
 
 .header::before {
-  content: url(/images/icon.svg);
+  content: '';
+  background-image: url(/images/icon.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
   vertical-align: middle;
-  margin: 0 0.5em -0.3em 0;
-  padding: 0;
+  margin-right: 0.5em;
   display: inline-block;
+  width: 48px;
+  height: 48px;
 }
 
-.header.popup {
+.header.browserPopup {
   font-size: 1.4em;
-  padding: 0em !important;
-  margin: 0 0 0.4rem 0;
+  padding: 0.4em;
 }
 
-.header.popup::before {
-  transform: scale(0.7);
-  margin: 0 0em -0.3em 0;
+.header.browserPopup::before {
+  width: 36px;
+  height: 36px;
 }
 
 .scroll {
@@ -449,7 +467,7 @@ input:checked + label > .switch-inactive {
 #spinner {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.8);
-  color: #f7941e;
+  color: #f90;
   display: flex;
   font-size: 20em;
   height: 100%;
@@ -470,27 +488,93 @@ input:checked + label > .switch-inactive {
 
 
 /* --- fa --- */
-
-.fa-trash, .fa-caret-up, .fa-sort-desc, .fa-pencil {
-  color: #ccc;
-  transition: all 0.3s ease-in-out;
+i.fa { 
+  color: #ccc; 
+  display: inline-block;
+  font-size: 1.5em;  
+  transition: all 0.5s ease-in-out;
+}
+i.fa:hover { 
+  color: #f90; 
+}
+a i.fa { 
+  color: inherit; 
+  font-size: inherit;  
+}
+a i.fa:hover { 
+  color: inherit; 
 }
 
-.fa-trash:hover, .fa-caret-up:hover, .fa-sort-desc:hover, .fa-pencil:hover {
-  color: #f7941e;
+
+
+/* ----- Popup ----- */
+.popup {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 10000;
+  transition: all 0.5s ease-in-out;
 }
 
-.fa-star, .fa-eye, .fa-download {
-  color: #f7941e;
+.popup.on {
+  opacity: 1;
+}
+.popup.on div:first-child {
+  transform: scale(1);
 }
 
+.popup div:first-child {
+  display: inline-block;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.2), 0 10px 15px 0 rgba(0, 0, 0, 0.3);
+  transform: scale(0.8);
+  transition: all 0.5s ease-in-out;
+  width: 50vw;
+}
 
+.popup div div {
+  margin: 1em;
+}
 
+.popup h3 {
+  color: #fff;
+  background-color: #f80;
+  margin: 0 0 1em;
+  padding: 0.5em;
+  border-radius: 10px 10px 0 0 ;
+}
 
-/* --- vex --- */
-.vex h3 {
+.popup h3::before {
+  content: '';
+  background-image: url(/images/icon.svg);
+  background-size: contain;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+}
+
+.popup h4 {
   margin-bottom: 0;
 }
-.vex p {
-  margin-top: 0;
+
+.popup p {
+  margin: 0;
 }
+
+.popup button:first-of-type {
+  background: none;
+  border: none;
+  color: #f90;
+}
+/* ----- /Popup ----- */
