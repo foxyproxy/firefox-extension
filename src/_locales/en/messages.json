@@ -54,6 +54,7 @@
   
   "errorWas": { "message": "There was an error. Please try again." },
   "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
+  "errorEmpty": { "message": "Filed can not be empty." },
 
 //  "exportEnd": { "message": "Export finished" },
   "importEnd": { "message": "Import finished" },
@@ -73,9 +74,16 @@
   "name": { "message": "Name" },
   "pattern": { "message": "Pattern" },
   "type": { "message": "Type" },
+  "protocol": { "message": "Protocol" },
   "whitePatterns": { "message": "White Patterns" },
   "blackPatterns": { "message": "Black Patterns" },
   "importedPattern": { "message": "This pattern was imported from an older version of FoxyProxy and changed during import. Here is the original, unchanged pattern:" },
+
+
+  "patternMatch": { "message": "Pattern matches URL!" },
+  "patternNotMatch": { "message": "Pattern does not match URL." },
+  "errorProtocol": { "message": "Protocol does not match." },
+
 
 
   "proxyType": { "message": "Proxy Type" },
@@ -91,8 +99,19 @@
   "patternHelp": { "message": "Pattern Help" },
   "welcome": { "message": "Welcome" },
   "options": { "message": "Options" },
+  "enterUrl": { "message": "Enter URL to test" },
+  "enterUrlNote": { "message": "(paths and query parameters are ignored)" },
+  "patternDetail": { "message": "Enter pattern details." },
+  "patternNote": { "message": "(no paths, no query parameters)" },
+  "clickTest": { "message": "Click 'Test' when ready" },
+  
 
-//  "ok": { "message": "OK" },
+  
+  
+  
+  
+
+  "ok": { "message": "OK" },
   "clear": { "message": "Clear" },
   "refresh": { "message": "Refresh" },
   "cancel": { "message": "Cancel" },
