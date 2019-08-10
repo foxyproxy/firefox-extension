@@ -18,7 +18,7 @@ const header = document.querySelector('.header');           // dynamic header
 setHeader();
 
 // ----- check for Edit
-const id = localStorage.getItem('id');
+let id = localStorage.getItem('id');
 const sync = localStorage.getItem('sync') === 'true';
 const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
 if (id) {                                                   // This is an edit operation
