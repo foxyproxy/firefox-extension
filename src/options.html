@@ -8,9 +8,15 @@
     <link rel="stylesheet" href="styles/app.css">
     <style>
       nav { width: 14em; margin-right: 0.5em; }
-      nav i { margin-right: 0.4em; font-size: 1.6em !important; }
+      nav i.fa { margin-right: 0.4em; font-size: 1.6em; }
       nav a { display: block; padding: 0.2em 0.5em; border-radius: 0 50px 50px 0; transition: all 0.5s ease-in-out; }
       nav a:hover { background-color: #ffebcd; }
+      button i.fa { font-size: 1.8em; color: #ccc; }
+      button i.fa:hover { color: #f90; }
+      i.fa-lock { color: #ccc; font-size: 1.3em; vertical-align: middle; margin-right: 0.3em; }
+      i.fa.fa-lock.on, i.fa-lock.on:hover { color: #080; }
+
+
       
       select { max-width: 25em; }
       .rightColumn { padding: 1em; flex-grow: 1;   border: 1px solid #ccc; border-radius: 5px; }
@@ -26,9 +32,7 @@
       .address { max-width: 10em; }
       #accounts button.small { margin-left: 0.2em; }
       .default :not([data-i18n="edit"]) { visibility: hidden; }
-      #accounts button i.fa { font-size: 1.8em; }
-      .fa-lock { font-size: 1.3em; vertical-align: middle; margin-right: 0.3em; }
-      .fa-lock.on, .fa-lock.on:hover { color: #080; }
+
       .scroll { max-height: 40vh; padding-right: 0.2em; }
     </style>
 

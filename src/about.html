@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
+      h3 { border-bottom: 1px solid #ddd; max-width: 20em; }
+      h3:not(:first-of-type) { margin-top: 2em; }
+      h4 { margin-bottom: 0.5em; }
+      p, img { margin-left: 1em; }
       i.fa {
         color: #f90;
         display: inline-block;
@@ -52,8 +56,8 @@
       <h3>Support Me</h3>
       <p>Please <a href="https://www.paypal.me/ericjung2/9.99" target="_blank">donate</a> or <a href="https://getfoxyproxy.org/order/" target="_blank">buy dedicated VPN/Proxy Servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
       <p><strong>Thank you for using FoxyProxy!</strong></p>
-      <img src="/images/ericjung.png" alt="">
-      <p>-- <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
+      <img src="/images/ericjung.png" alt=""><br>
+      <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
 
 
       <h3>Release Notes for Recent Releases</h3>
@@ -72,11 +76,12 @@
           <li class="sub">New Inline-Editor</li>
           <li class="sub">Patterns are checked and errors dispalyed</li>
           <li class="sub">Proxy title & Date is added to the export filename</li>
+          <li class="sub">Import data max size set to 5mb</li>
 
 
           <li>Proxy Page</li>
           <li class="sub">Option to set active on|off on proxy Edit page</li>
-          <li class="sub">username/password are kept when adding new proxies for rapid creation of multiple proxies with same username/password</li>
+          <li class="sub">username/password/port are kept when adding new proxies to ease creation of multiple proxies with same username/password</li>
 
 
           <li>Import Page</li>
@@ -85,7 +90,7 @@
 
           <li>Log Page</li>
           <li class="sub">Log shows local date & time in local (browser) language</li>
-          <li class="sub">Log is not cleared when switching it off until ti is manually cleared</li>
+          <li class="sub">Log is not cleared when switching it off until it is manually cleared</li>
           <li class="sub">Log entries are numbered</li>
           <li class="sub">Added size control to Log entries</li>
 
