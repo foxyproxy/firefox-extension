@@ -132,6 +132,8 @@
   "saveAdd": { "message": "Save & Add Another" },
   "saveEditPattern": { "message": "Save & Edit Patterns" },
   "imported": { "message": "Imported" },
+  "addBlacklistTip": { "message": "Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
 
 
 
