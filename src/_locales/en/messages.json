@@ -94,6 +94,11 @@
   "username": { "message": "Username (optional)" },
   "password": { "message": "Password (optional)" },
   "togglePW": { "message": "Toggle Password" },
+  
+  "addWhitelist": { "message": "Add whitelist pattern to match all URLs" },
+  "noLocal": { "message": "Do not use for localhost and intranet/private IP addresses" },
+  
+  
 
   "patternTester": { "message": "Pattern Tester" },
   "patternHelp": { "message": "Pattern Help" },
