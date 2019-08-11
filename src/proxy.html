@@ -111,7 +111,7 @@
   
           <div class="flex onOff notForBasic">
             <label><span data-i18n="noLocal"></span>
-             <span class="has-tip" title="Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*" data-i18n="help"></span></label>
+             <div class="tooltip" data-i18n="help"><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
   
             <div>
               <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
@@ -122,6 +122,8 @@
               </label>
             </div>
           </div>
+          
+          
   
           <!-- SOCKS5 -->
           <div class="flex onOff dns">

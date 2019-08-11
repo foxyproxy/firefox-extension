@@ -38,6 +38,7 @@
         padding: 0.1em;
       }
       #result { margin: 1em 0 0; }
+      label[for="file"] { margin: 0; }
     </style>
   </head>
   <body>
@@ -127,9 +128,11 @@
       </div>
 
 
-      <p style="margin-top: 1em; text-align: center;">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
-      <span class="has-tip" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
-       <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button></p>
+      <div style="margin: 1em 0 2em; text-align: center; font-size: 0.9em;">
+        <span data-i18n="addBlacklist"></span>
+        <div class="tooltip" data-i18n="help"><span class="tooltiptext center" data-i18n="addBlacklistTip"></span></div>
+        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button>
+      </div>
 
       <div class="flex">
         <div>
