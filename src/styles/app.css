@@ -487,23 +487,7 @@ input:checked + label > .switch-inactive {
 }
 
 
-/* --- fa --- */
-i.fa { 
-  color: #ccc; 
-  display: inline-block;
-  font-size: 1.5em;  
-  transition: all 0.5s ease-in-out;
-}
-i.fa:hover { 
-  color: #f90; 
-}
-a i.fa { 
-  color: inherit; 
-  font-size: inherit;  
-}
-a i.fa:hover { 
-  color: inherit; 
-}
+
 
 
 
@@ -578,3 +562,22 @@ a i.fa:hover {
   color: #f90;
 }
 /* ----- /Popup ----- */
+
+
+/* --- fa --- */
+i.fa { 
+  color: #ccc; 
+  display: inline-block;
+  font-size: 1.5em;  
+  transition: all 0.5s ease-in-out;
+}
+i.fa:hover { 
+  color: #f90; 
+}
+a i.fa { 
+  color: inherit; 
+  font-size: inherit;  
+}
+a i.fa:hover { 
+  color: inherit; 
+}
