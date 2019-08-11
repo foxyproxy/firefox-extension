@@ -201,6 +201,7 @@ function validateInput() {
 function resetOptions() {
   
   localStorage.removeItem('id');
+  id = null;
 
   // to help entering sets quickly, some fields are kept
   [proxyTitle, proxyAddress].forEach(item => item.value = '');

@@ -222,31 +222,16 @@ function testPattern(pattern, type) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function exportPatterns() {
 
   const tmpObject = {whitePatterns: proxy.whitePatterns, blackPatterns: proxy.blackPatterns};
   const blob = new Blob([JSON.stringify(tmpObject, null, 2)], {type : 'text/plain'});
-  const filename = 'foxyproxy-patterns.json';
+  const filename = 'foxyproxy' + (proxy.title ? '-' + proxy.title : '')  + '-patterns' + '_' + new Date().toISOString().substring(0, 10) + '.json';
   chrome.downloads.download({
     url: URL.createObjectURL(blob),
     filename,
-    saveAs: true
+    saveAs: true,
+    conflictAction: 'uniquify'
   }, () => console.log('Export/download finished'));        // wait for it to complete before returning
 }
 
