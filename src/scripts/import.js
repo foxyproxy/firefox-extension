@@ -9,14 +9,14 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // addEventListener for all buttons & handle together
-document.querySelectorAll('#cancel, #export').forEach(item => item.addEventListener('click', process));
-document.querySelectorAll('#importJson, #importXml').forEach(item => item.addEventListener('change', process));
+document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
+document.querySelectorAll('input[type="file"]').forEach(item => item.addEventListener('change', process));
 
 function process(e) {
 
-  switch (this.id) {
+  switch (this.id || this.dataset.i18n) {
     // click
-    case 'cancel': location.href = '/options.html'; break;
+    case 'back': location.href = '/options.html'; break;
     case 'export': Utils.exportFile(); break;
 
     // change

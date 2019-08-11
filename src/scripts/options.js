@@ -255,11 +255,6 @@ function processOptions(pref) {
 }
 
 
-
-
-
-
-
 function processButton() {
 
   const parent = this.parentNode.parentNode;
@@ -289,7 +284,7 @@ function processButton() {
       if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
         parent.style.opacity = 0;
         setTimeout(() => { parent.remove(); }, 600);          // remove row
-        storageArea.remove(id, () => console.log('delete single completed'));
+        storageArea.remove(id);
       }
       break;
 
@@ -301,10 +296,8 @@ function processButton() {
       parent.classList.add('on');
       setTimeout(() => { parent.classList.remove('on'); }, 600);
       storageArea.get(null, result => {
-        const fromIndex = result[id].index;
-        const toIndex = result[target.id].index;
-        result[id].index = toIndex;
-        result[target.id].index = fromIndex;
+        // re-index
+        [...accounts.children].forEach((item, index) => item.id !== LASTRESORT && (result[item.id].index = index));
         storageArea.set(result);
       });
       break;

@@ -57,7 +57,7 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
 });
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-  // used only for log from PAC
+  // used only for log from PAC, will be removed in the next API update
   message.type === 'log' && logger && logger.active && logger.add(message);
 });
 
