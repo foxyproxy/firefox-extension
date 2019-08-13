@@ -7,44 +7,43 @@
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
-      .main > div:nth-child(1) { flex: 2;  margin-right: 1em; }
-      .main > div:nth-child(2) { flex: 3; }
+      .main > div:nth-child(1) { flex: 1;  margin-right: 1em; }
+      .main > div:nth-child(2) { flex: 1; }
       .main label { display: inline-block; }
-      
-      i.fa-eye { font-size: 1.2em; }
-      i.fa-eye:hover { color: #f50; }
 
       .onOff > label { flex: 4;  margin-right: 1em; }
       .onOff > div { flex: 1 !important; }
-      .unsupported { margin-top: 1.5em; }
-      .onOff, .pac, .unsupported { display: none; }
+      .na { margin-top: 1.5em; }
+      .onOff, .pac, .na { display: none; }
       input[name="nav"] { display: none; }
-      #http:checked ~ div div.onOff:not(.dns),
-      #https:checked ~ div div.onOff:not(.dns),
-      #socks4:checked ~ div div.onOff:not(.dns) {
+      
+      #http:checked ~ div .onOff:not(.dns),
+      #https:checked ~ div .onOff:not(.dns),
+      #socks4:checked ~ div .onOff:not(.dns) {
         display: flex;
       }
-      #socks5:checked ~ div div.onOff { display: flex; }
-      #pac:checked ~ div div.pac,
-      #wpad:checked ~ div div.pac {
+      #socks5:checked ~ div .onOff { display: flex; }
+      
+      #pac:checked ~ div .pac,
+      #wpad:checked ~ div .pac {
         display: block;
       }
-      #pac:checked ~ div div.unsupported,
-      #wpad:checked ~ div div.unsupported,
-      #system:checked ~ div div.unsupported  {
+      #pac:checked ~ div div.na,
+      #wpad:checked ~ div div.na,
+      #system:checked ~ div div.na  {
         display: block;
       }
-      #pac:checked ~ div div.rightData,
-      #wpad:checked ~ div div.rightData,
-      #system:checked ~ div div.rightData,
+      
+      #pac:checked ~ div .proxyData,
+      #wpad:checked ~ div .proxyData,
+      #system:checked ~ div .proxyData,
+      #direct:checked ~ div div.proxyData,
       #pac:checked ~ div button:not(:first-of-type),
       #wpad:checked ~ div button:not(:first-of-type),
       #system:checked ~ div button:not(:first-of-type) {
         display: none;
       }
-      #direct:checked ~ div div.proxyData {
-        display: none;
-      }
+
 
     </style>
   </head>
@@ -70,17 +69,8 @@
   
         <!-- left column -->
         <div>
-          <label data-i18n="proxyType"></label>
-          <select id="proxyType">
-            <option value="1" selected>HTTP</option>
-            <option value="2">HTTPS/SSL</option>
-            <option value="3">SOCKS5</option>
-            <option value="4">SOCKS4</option>
-            <option value="6">PAC script or PAC URL</option>
-            <option value="7">WPAD</option>
-            <option value="8">Use system settings</option>
-            <option value="5">No Proxy (direct internet connection)</option>
-          </select>
+          <label class="" data-i18n="title"></label>
+          <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
   
           <label data-i18n="color"></label>
           <input id="colorChooser" type="text" style="text-align: center;">
@@ -111,7 +101,7 @@
   
           <div class="flex onOff notForBasic">
             <label><span data-i18n="noLocal"></span>
-             <div class="tooltip" data-i18n="help"><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
+             <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
   
             <div>
               <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
@@ -138,11 +128,7 @@
             </div>
           </div>
   
-          <!-- PAC/WPAD -->
-          <div class="pac">
-            <label>URL</label> <i class="fa fa-star"></i>
-            <input id="pacURL" type="text">
-          </div>
+
   
   
         </div>
@@ -150,9 +136,19 @@
         <!-- right column -->
         <div>
           <div class="rightData">
-            <label class="supported" data-i18n="title"></label>
-            <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
-  
+          <label data-i18n="proxyType"></label>
+          <select id="proxyType">
+            <option value="1" selected>HTTP</option>
+            <option value="2">HTTPS/SSL</option>
+            <option value="3">SOCKS5</option>
+            <option value="4">SOCKS4</option>
+            <option value="6">PAC script or PAC URL</option>
+            <option value="7">WPAD</option>
+            <option value="8">System (use system settings)</option>
+            <option value="5">Direct (no proxy)</option>
+          </select>
+
+
             <div class="proxyData">
               <label data-i18n="ip"></label> <i class="fa fa-star"></i>
               <input id="proxyAddress" type="text" spellcheck="false" placeholder="111.111.111.111, www.example.com">
@@ -168,10 +164,17 @@
               <input id="proxyPassword" type="password" spellcheck="false" placeholder="*****">
             </div>
           </div>
+
+          <!-- PAC/WPAD -->
+          <div class="pac">
+            <label>URL</label> <i class="fa fa-star"></i>
+            <input id="pacURL" type="text" placeholder="PAC URL">
+          </div>
+
   
-          <div class="prime alert small unsupported">
+          <div class="prime alert small na">
             <h3>Not supported</h3>
-            <p>Due to several Firefox bugs, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485">PAC</a>, <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630">System Settings</a> are not yet supported.</p>
+            <p>Due to Firefox limitation, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485" target="_blank">PAC</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630"  target="_blank">System Settings</a> are currently not supported, but they are due to be added.</p>
           </div>
         </div>
       </div>

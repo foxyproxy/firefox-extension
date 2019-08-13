@@ -12,11 +12,8 @@
       h4 { margin-bottom: 0; display: inline-block; }
       p, img { margin-left: 1em; }
       i.fa {
-        color: #f90;
-        display: inline-block;
         font-size: 1.3em;
-        margin-right: 0.2em;
-        text-align: center;
+        margin-right: 0.4em;
         width: 1em;
       }
       i.fa.fa-lock { color: #080; }
@@ -46,11 +43,11 @@
 
       <h3>Help</h3>
       <p>
-        <i class="fa fa-question"></i><a href="https://support.getfoxyproxy.org/" target="_blank">Open a Support Ticket </a><i>(no registration required)</i><br>
-        <i class="fa fa-envelope-o"></i><a href="mailto:support@getfoxyproxy.org">Email Support</a><br>
-        <i class="fa fa-users"></i><a href="https://forums.getfoxyproxy.org/" target="_blank">Community Support Forums</a><br>
-        <i class="fa fa-flask"></i><a href="/pattern-tester.html">Pattern Test</a> &amp; <a href="/pattern-help.html">Pattern Help</a> <i class="fa fa-question-circle"></i><i>(no internet connection required)</i><br>
-        <i class="fa fa-globe"></i><a href="https://getfoxyproxy.org/geoip/" target="_blank">What's my IP Address?</a>
+        <a href="https://support.getfoxyproxy.org/" target="_blank"><i class="fa fa-question"></i>Open a Support Ticket </a><i>(no registration required)</i><br>
+        <a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o"></i>Email Support</a><br>
+        <a href="https://forums.getfoxyproxy.org/" target="_blank"><i class="fa fa-users"></i>Community Support Forums</a><br>
+        <a href="/pattern-tester.html"><i class="fa fa-flask"></i>Pattern Test</a> &amp; <a href="/pattern-help.html"><i class="fa fa-question-circle"></i>Pattern Help</a> <i>(no internet connection required)</i><br>
+        <a href="https://getfoxyproxy.org/geoip/" target="_blank"><i class="fa fa-globe"></i>What's my IP Address?</a>
       </p>
 
       <h3>Support Me</h3>
@@ -62,14 +59,15 @@
 
       <h3>Release Notes for Recent Releases</h3>
 
-      <h4>Versions 7.0</h4>
+      <h4>Version 7.0</h4>
         <ul>
 
           <li>Options Page</li>
           <li class="sub">Option to transfer preferences from <i>local</i> to <i>Sync</i> and vice versa</li>
-          <li class="sub">Options page shows <i class="fa fa-lock"></i>for proxies with username/password</li>
+          <li class="sub">Options page shows <i class="fa fa-lock"></i>for proxies with saved username/password</li>
           <li class="sub">Date is added to the export filename</li>
           <li class="sub">Export auto-renames file if the same name exists</li>
+          <li class="sub">Country flag and mouseover information added for proxies imported from FoxyProxy account</li>
 
 
           <li>Patterns Page</li>
@@ -85,7 +83,10 @@
 
 
           <li>Import Page</li>
+          <li class="sub">Added option to import proxies from FoxyProxy account</li>
           <li class="sub">Import data max size set to 5mb</li>
+          <li class="sub">Added spinner for import duration</li>
+          <li class="sub">Import will save the data to the storage set in the imported preference (sync vs local)</li>
 
 
           <li>Log Page</li>
@@ -93,14 +94,16 @@
           <li class="sub">Log is not cleared when switching it off until it is manually cleared</li>
           <li class="sub">Log entries are numbered</li>
           <li class="sub">Added size control to Log entries</li>
+          <li class="sub">Default is set to log off and size 100 entries</li>
 
 
+          <li>Removed JQuery, Clusterize & Vex Libraries</li>
           <li>Greatly streamlined</li>
           <li>Style/Code Improvement</li>
         </ul>
 
 
-      <h4>Versions 6.4, 6.5, 6.6, 6.6.1, 6.6.2</h4> <i>(some versions unreleased)</i>
+      <h4>Versions 6.4 &mdash; 6.6.2</h4>
       <ul>
         <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
         <li>Import/Export patterns to and from files (previously you could only import/export all settings, including patterns)</li>
