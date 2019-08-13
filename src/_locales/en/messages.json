@@ -13,6 +13,7 @@
   "import": { "message": "Import" },
   "log": { "message": "Log" },
   "myIP": { "message": "What's My IP?" },
+  "deleteAllmessage": { "message": "All data deleted" },
   
   "authError": { "message": "$1 is refusing connections:\n \u00A0\u2022 Check your proxy settings\n \u00A0\u2022 Contact your network administrator" },
   
@@ -56,10 +57,13 @@
   "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
   "errorEmpty": { "message": "Filed can not be empty." },
 
-//  "exportEnd": { "message": "Export finished" },
-  "importEnd": { "message": "Import finished" },
+
+  "importEnd": { "message": "Settings were successfully imported" },
   "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns to be sure the edits are acceptable." },
   "importEndSlash": { "message": "Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any." },
+  "errorUserPass": { "message": "Please fill both Username & Password." },
+  "errorFetch": { "message": "There was an error with the operation" },
+
 
   "errorPattern": { "message": "Please enter a pattern" },
   "importBW": { "message": "Imported $1 white and $2 black patterns." },
