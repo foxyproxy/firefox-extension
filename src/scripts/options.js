@@ -27,6 +27,20 @@ chrome.storage.local.get(null, result => {
 });
 // ----------------- /User Preference ----------------------
 
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('#spinner');
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
 
 
 // ----- add Listeners for menu
@@ -40,7 +54,10 @@ function process() {
       location.href = '/proxy.html';
       break;
     case 'export': Utils.exportFile(); break;
-    case 'import': location.href = '/import.html'; break;
+    case 'import': 
+      
+      location.href = '/import.html'; 
+      break;
     case 'log': location.href = '/log.html'; break;
     case 'about': location.href = '/about.html'; break;
 
@@ -49,13 +66,13 @@ function process() {
         showSpinner();
         chrome.storage.local.clear(() => chrome.storage.sync.clear(() => {
           hideSpinner();
-          console.log('delete all completed');
+          Utils.notify(chrome.i18n.getMessage('deleteAllmessage'));
+          location.href = '/options.html';
         }));
       }
       break;
 
     case 'deleteBrowserData':
-
       const h4 = document.createElement('h4');
       const p = document.createElement('p');
       popupMain.children[0].textContent = chrome.i18n.getMessage('deleteBrowserData');
@@ -173,7 +190,7 @@ function processOptions(pref) {
   // --- working directly with DB format
 
   // add default lastresort if not there
-  pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
+  //pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
@@ -188,16 +205,21 @@ function processOptions(pref) {
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
     div.classList.remove('template');
-    id === LASTRESORT && div.children[1].classList.add('default');
+    //id === LASTRESORT && div.children[1].classList.add('default');
 
     div.id = id;
     node[0].style.backgroundColor = item.color;
     node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
     node[2].textContent = item.address; // ellipsis is handled by CSS
-    item.username && item.password && node[3].classList.add('on');
-    node[4].id = id + '-onoff';
-    node[4].checked = item.active;
-    node[5].setAttribute('for', node[4].id);
+    if (item.cc) {
+      node[3].classList.remove('hide');
+      node[3].textContent = getFlag(item.cc);
+      node[3].title = item.country;
+    }
+    item.username && item.password && node[4].classList.add('on');
+    node[5].id = id + '-onoff';
+    node[5].checked = item.active;
+    node[6].setAttribute('for', node[5].id);
 
     FOXYPROXY_BASIC && (node[0].style.display = 'none');
 
@@ -244,7 +266,6 @@ function processOptions(pref) {
 
   document.querySelectorAll('input[name="onOff"]').forEach(item => item.addEventListener('change', function() {
     const id = this.parentNode.parentNode.id;
-    console.log('toggle on/off', id, this.checked);
     storageArea.get(id, result => {
       result[id].active = this.checked;
       storageArea.set(result);
@@ -254,6 +275,11 @@ function processOptions(pref) {
   hideSpinner();
 }
 
+function getFlag(cc) {
+
+  cc = /^[A-Z]{2}$/i.test(cc) && cc.toUpperCase();
+  return cc && String.fromCodePoint(...[...cc].map(c => c.charCodeAt() + 127397));
+}
 
 function processButton() {
 
@@ -297,7 +323,8 @@ function processButton() {
       setTimeout(() => { parent.classList.remove('on'); }, 600);
       storageArea.get(null, result => {
         // re-index
-        [...accounts.children].forEach((item, index) => item.id !== LASTRESORT && (result[item.id].index = index));
+        //[...accounts.children].forEach((item, index) => item.id !== LASTRESORT && (result[item.id].index = index));
+        [...accounts.children].forEach((item, index) => result[item.id].index = index);
         storageArea.set(result);
       });
       break;
@@ -324,19 +351,3 @@ function closePopup() {
     popupMain.replaceChild(popupMain.children[2].cloneNode(true), popupMain.children[2]); // cloning to remove listeners  
   }, 600);
 }
-
-
-// ----------------- Helper functions ----------------------
-const spinner = document.querySelector('#spinner');
-function hideSpinner() {
-
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600);
-}
-
-function showSpinner() {
-
-  spinner.style.display = 'flax';
-  spinner.classList.add('on');
-}
-// ----------------- /Helper functions ---------------------

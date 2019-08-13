@@ -11,7 +11,7 @@ let logger;
 function getLog() { return logger; }
 class Logger {
 
-  constructor(size = 500, active = true) {
+  constructor(size = 100, active = false) {
     this.size = size;
     this.list = [];
     this.active = active;
@@ -81,9 +81,9 @@ function process(settings) {
     settings = {
       mode: 'disabled',
       logging: {
-        size: 500,
-        active: true
-      },
+        size: 100,
+        active: false
+      }/*,
       [LASTRESORT]: {
         id: LASTRESORT,
         active: true,
@@ -93,7 +93,7 @@ function process(settings) {
         type: PROXY_TYPE_NONE, // const PROXY_TYPE_NONE = 5; // DIRECT
         whitePatterns: [PATTERN_ALL_WHITE],
         blackPatterns: []
-      }
+      }*/
     };
     update = true;
   }
@@ -102,7 +102,7 @@ function process(settings) {
   if(settings.hasOwnProperty('whiteBlack')) {               // check for pre v5.0 storage, it had a whiteBlack property
 
     delete settings.whiteBlack;
-    settings[LASTRESORT] = DEFAULT_PROXY_SETTING;           // 5.0 didn't have a default proxy setting
+    ///settings[LASTRESORT] = DEFAULT_PROXY_SETTING;           // 5.0 didn't have a default proxy setting
     update = true;
   }
 
@@ -123,10 +123,7 @@ function process(settings) {
   update && storageArea.set(settings);                      // update storage
 
   chrome.storage.onChanged.addListener(storageOnChanged);   // add Change Listener after above updates
-
-  const size = settings.logging ? settings.logging.size : 500; // default 500
-  const active = settings.logging ? settings.logging.active : true; // default true
-  logger = new Logger(size, active);
+  logger = new Logger(settings.logging && settings.logging.size, settings.logging && settings.logging.active);
   sendToPAC(settings);
   console.log('background.js: loaded proxy settings from storage.');
 }
@@ -140,7 +137,7 @@ function storageOnChanged(changes, area) {
   }
 
   // update logger from log
-  if (changes.logging) { return; }
+  if (Object.keys(changes).length === 1 && changes.logging) { return; }
 
 
   // mode change from bg

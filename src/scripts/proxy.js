@@ -26,12 +26,12 @@ if (id) {                                                   // This is an edit o
   storageArea.get(id, result => {
 
     if (!Object.keys(result).length) {
-
+/*
       if (id === LASTRESORT) {                              // error prevention
         proxy = DEFAULT_PROXY_SETTING;
         processOptions();
         return;
-      }
+      }*/
       console.error('Unable to edit saved proxy (could not get existing settings)')
       return;
     }
@@ -120,6 +120,7 @@ function processOptions() {
 
     // select
     proxyType.value = proxy.type;
+    nav[proxyType.value -1].checked = true;
 
     // checkbox
     proxyActive.checked = proxy.active;

@@ -8,6 +8,21 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('#spinner');
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
+
 // ----- global
 let logger;
 const onOff = document.querySelector('#onOff');
@@ -21,14 +36,6 @@ chrome.runtime.getBackgroundPage(bg => {
   renderLog(); // log content will be shown if there are any, regardless of onOff
   hideSpinner();
 });
-
-function hideSpinner() {
-
-  const spinner = document.querySelector('#spinner');
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600);
-}
-
 
 onOff.addEventListener('change', (e) => {
 

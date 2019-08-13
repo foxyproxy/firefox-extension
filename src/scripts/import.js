@@ -8,6 +8,22 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('#spinner');
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
+hideSpinner();
+
 // addEventListener for all buttons & handle together
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
 document.querySelectorAll('input[type="file"]').forEach(item => item.addEventListener('change', process));
@@ -19,35 +35,57 @@ function process(e) {
     case 'back': location.href = '/options.html'; break;
     case 'export': Utils.exportFile(); break;
 
+    case 'togglePW|title':
+      const inp = this.previousElementSibling;
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      break;
+
     // change
+    case 'importFP':
+      showSpinner();
+      foxyProxyImport();
+      break;
+
     case 'importJson':
+      showSpinner();
       Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*5, 'json', importJson); // 5mb
       break;
     case 'importXml':
+      showSpinner();
       Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*5, 'xml', importXml);  // 5mb
       break;
   }
 }
 
-function importJson(pref) {
+function importJson(result) {
 
-  // --- if change agreed, convert pre v7.0 export to db format
-  if (pref.hasOwnProperty('proxySettings')) {
-    pref = prepareForStorage(pref);
+  // --- convert pre v7.0 export to db format
+  if (result.hasOwnProperty('proxySettings')) {
+    result = prepareForStorage(result);
   }
 
-  // get storage
-  chrome.storage.local.get('sync', result => {
-    // sync is NOT set or it is false, use this result
-    // delete all then save to target storage
-    // if sync is set, leave storage.local as it is
-    !result.sync ? chrome.storage.local.clear(() => chrome.storage.local.set(pref, end)) :
-                    chrome.storage.sync.clear(() => chrome.storage.sync.set(pref, end));
-  });
+  save(result, end);
 }
 
-function end() {
+function save(result, callback) {
 
+  const  storageArea = result.sync ? chrome.storage.sync : chrome.storage.local;
+
+  // clear the storages and set new
+  chrome.storage.local.clear(() => chrome.storage.sync.clear(() => {
+
+    if (result.sync) {
+      chrome.storage.local.set({sync: true});               // save sync state
+      delete result.sync;
+    }
+
+    storageArea.set(result, callback);                      // save to target
+  }));
+}
+
+
+function end() {
+  hideSpinner();
   Utils.notify(chrome.i18n.getMessage('importEnd'));
   location.href = '/options.html';
 }
@@ -60,8 +98,8 @@ function importXml(doc) {
   const pref = {
     mode: 'disabled',
     logging: {
-      size: 500,
-      active: true
+      size: 100,
+      active: false
     }
   };
 
@@ -70,9 +108,9 @@ function importXml(doc) {
     Utils.notify('There is an error with the XML file (missing <foxyproxy ....>)');
     return;
   }
+
   const mode = FP.getAttribute('mode');
   mode && (pref.mode = mode);
-
 
   const badModes = [];
 
@@ -234,18 +272,12 @@ function importXml(doc) {
 
   if (!lastResortFound) { pref[LASTRESORT] = DEFAULT_PROXY_SETTING; }
 
-  // get storage
-  chrome.storage.local.get('sync', result => {
-    // sync is NOT set or it is false, use this result
-    // delete all then save to target storage
-    // if sync is set, leave storage.local as it is
-    !result.sync ? chrome.storage.local.clear(() => chrome.storage.local.set(pref, () => endXML(patternsEdited))) :
-                    chrome.storage.sync.clear(() => chrome.storage.sync.set(pref, () => endXML(patternsEdited)));
-  });
+  save(pref, () => endXML(patternsEdited));
 }
 
 function endXML(patternsEdited) {
 
+  hideSpinner();
   if (patternsEdited) { Utils.notify(chrome.i18n.getMessage('patternsChanged')); }
   else {
     Utils.notify(chrome.i18n.getMessage('importEndSlash'));
@@ -299,6 +331,63 @@ function prepareForStorage(settings) {
 
   });
   if (!lastResortFound) { ret[LASTRESORT] = def; }          // Fix data integrity, Copy but without id
- 
+
   return ret;
-} 
+}
+
+
+// ----------------- FoxyProxy Import ----------------------
+function foxyProxyImport() {
+
+  // ---  check user/pass
+  const username = document.querySelector('#username').value.trim();
+  const password = document.querySelector('#password').value.trim();
+  if (!username || !password) {
+    hideSpinner();
+    alert(chrome.i18n.getMessage('errorUserPass'));
+    return;
+  }
+console.log(`https://getfoxyproxy.org/webservices/get-accounts.php?username=${username}&password=${password}`);
+
+  // --- fetch data
+  fetch(`https://getfoxyproxy.org/webservices/get-accounts.php?username=${username}&password=${password}`)
+  .then(response => response.json())
+  .then(response => {
+console.log(response);
+    if (!Array.isArray(response) || !response[0] || !response[0].hostname) {
+      hideSpinner();
+      Utils.notify(chrome.i18n.getMessage('errorFetch'));
+      return;
+    }
+
+    const sync = localStorage.getItem('sync') === 'true';
+    const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
+    storageArea.get(null, result => {
+
+      response.forEach(item => {
+
+        // --- creating proxy
+        result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
+          index: -1,
+          active: item.active,
+          title: '',
+          color: '#ff9900',
+          type: 2,                                          // HTTPS
+          address: item.hostname,
+          port: item.ssl_port,
+          username: item.username,
+          password: item.password,
+          cc: item.country_code,
+          country: item.country,
+          whitePatterns: [],
+          blackPatterns: []
+        };
+      });
+
+      storageArea.set(result, end);                         // save to target
+    });
+  })
+  .catch(error => notify(error));
+
+}
+// ----------------- /FoxyProxy Import ---------------------

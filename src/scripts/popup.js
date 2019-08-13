@@ -23,14 +23,14 @@ function processOptions(pref) {
   const temp = document.querySelector('li.template');
 
   // add default lastresort if not there
-  pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
+  //pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
   
-  pref.mode = pref.mode || 'patterns';                      // defaults to patterns
-  
+  pref.mode = pref.mode || 'disabled';                      // defaults to disabled
+  let foundPattern;
   prefKeys.forEach(id => {
 
     const item = pref[id];
@@ -45,24 +45,19 @@ function processOptions(pref) {
       li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);
+    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
     }
   });
 
   docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
 
-  // <span id="patternsSelected"></span>
-  // no need to replace node, using CSS on the same node
-  // HTML is set to the exact patterns/disabled so no need to re-evalute
-  // default set to 'patterns'
   const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number
   node.classList.add('on');
 
-  FOXYPROXY_BASIC && document.querySelectorAll('h4, #patterns').forEach(item => item.classList.add('hide'));
+  if (FOXYPROXY_BASIC || !foundPattern) { document.querySelector('#patterns').classList.add('hide'); } // hide option
 
   // add Listeners
   document.querySelectorAll('li, button').forEach(item => item.addEventListener('click', process));
-
-  document.querySelector('#optionsRow').classList.remove('hide');
 }
 
 function process() {

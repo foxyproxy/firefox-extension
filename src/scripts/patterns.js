@@ -8,6 +8,21 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('#spinner');
+function hideSpinner() {
+
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
+
+function showSpinner() {
+
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
+
 // ----- global
 let proxy = {};
 const header = document.querySelector('.header');
@@ -44,12 +59,12 @@ if (id) {                                                   // This is an edit o
   storageArea.get(id, result => {
 
     if (!Object.keys(result).length) {
-
+/*
       if (id === LASTRESORT) {                              // error prevention
         proxy = DEFAULT_PROXY_SETTING;
         processOptions();
         return;
-      }
+      }*/
       console.error('Unable to edit saved proxy (could not get existing settings)')
       return;
     }
@@ -131,7 +146,7 @@ function makeRow(pat, index, bw) {
   td[2].children[0].value = pat.type;
   td[3].children[0].value = pat.protocols;
   td[4].children[0].checked = pat.active ? 'On' : 'Off';
-  pat.importedPattern && td[6].children[0].classList.remove('hide');
+  pat.importedPattern && td[5].children[0].classList.remove('hide');
 
   // add Listeners();
   [...td[5].children].forEach(item => item.addEventListener('click', processEdit));
@@ -248,18 +263,3 @@ function processFileSelect(e) {
     Utils.notify(chrome.i18n.getMessage('importBW', [proxy.whitePatterns.length, proxy.blackPatterns.length]));
   });
 }
-
-// ----------------- Helper functions ----------------------
-const spinner = document.querySelector('#spinner');
-function hideSpinner() {
-
-  spinner.classList.remove('on');
-  setTimeout(() => { spinner.style.display = 'none'; }, 600);
-}
-
-function showSpinner() {
-
-  spinner.style.display = 'flax';
-  spinner.classList.add('on');
-}
-// ----------------- /Helper functions ---------------------

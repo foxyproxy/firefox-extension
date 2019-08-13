@@ -178,7 +178,10 @@ class Utils {
   static exportFile() {
 
     chrome.storage.local.get(null, result => {
-      !result.sync ? Utils.saveAs(result) : chrome.storage.sync.get(null, Utils.saveAs);
+      !result.sync ? Utils.saveAs(result) : chrome.storage.sync.get(null, result => { 
+        result.sync = true;                                 // storing syn value
+        Utils.saveAs(result);
+      });
     });
   }
   // exportFile helper
@@ -195,7 +198,7 @@ class Utils {
     });
   }
 
-  // utils only used for export now
+  // utils only used for export, will be removed as DB format export is adapted
   static prepareForSettings(settings = {}) {
 
     //if (settings && !settings.mode) { }// 5.0 settings
