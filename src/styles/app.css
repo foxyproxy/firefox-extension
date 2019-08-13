@@ -1,10 +1,25 @@
 body {
-  background: #630;
+  background: #630 /*url('/images/logo.svg') no-repeat fixed right 1em bottom 1em*/;
   color: #333;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   margin: 0;
   padding: 1em;
   animation: fadein 0.3s ease-in-out;
+}
+
+body::after {
+  content: '';
+  background-image: url('/images/logo.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+  display: inline-block;
+  width: 128px;
+  height: 128px;
+  opacity: 0.3;
+  z-index: -1;
 }
 
 @keyframes fadein {
@@ -32,6 +47,7 @@ img {
 a {
   color: #f90;
   text-decoration: none;
+  transition: all 0.5s ease-in-out;
 }
 
 a:hover {
@@ -40,6 +56,17 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
   color: #c60;
+}
+
+fieldset {
+  border-radius: 10px;
+  margin-bottom: 1em;
+  border: 1px solid #ccc;
+}
+
+legend {
+  color: #c60;
+  font-size: 1.1em;
 }
 
 table {
@@ -302,7 +329,7 @@ input:checked ~ .switch-paddle::after {
 
 .switch-active {
   left: 8%;
-  display: none; 
+  display: none;
   color: #fff;
 }
 input:checked + label > .switch-active {
@@ -312,7 +339,7 @@ input:checked + label > .switch-active {
 .switch-inactive {
   right: 15%;
   color: #f90;
-  
+
 }
 
 input:checked + label > .switch-inactive {
@@ -379,14 +406,21 @@ input:checked + label > .switch-inactive {
   color: #f90;
 }
 
-.fp-color-blob {
+.fp-color-blob{
   width: 2em;
   height: 1.1em;
   display: inline-block;
   border-radius: 5px;
   border: 2px solid #fff;
   box-shadow: 0px 2px 3px #777;
-  vertical-align: super;
+}
+
+.flag {
+  font-size: 1.5em;
+  cursor: help;
+  width: 1em;
+  display: inline-block;
+  margin-left: 0.5em;
 }
 
 .success {
@@ -426,7 +460,7 @@ input:checked + label > .switch-inactive {
 
 .header::before {
   content: '';
-  background-image: url(/images/icon.svg);
+  background-image: url('/images/icon.svg');
   background-repeat: no-repeat;
   background-size: contain;
   vertical-align: middle;
@@ -452,6 +486,8 @@ input:checked + label > .switch-inactive {
   scrollbar-color: #ddd #f5f5f5;
   scrollbar-width: thin;
 }
+
+
 
 #spinner {
   align-items: center;
@@ -528,7 +564,7 @@ input:checked + label > .switch-inactive {
 
 .popup h3::before {
   content: '';
-  background-image: url(/images/icon.svg);
+  background-image: url('/images/icon.svg');
   background-size: contain;
   vertical-align: middle;
   margin-right: 0.5em;
@@ -554,29 +590,34 @@ input:checked + label > .switch-inactive {
 
 
 /* ----- fa ----- */
-i.fa { 
-  color: #f90; 
+i.fa {
+  color: #f90;
   display: inline-block;
+  text-align: center;
   transition: all 0.5s ease-in-out;
 }
-i.fa:hover { 
+i.fa:hover {
 
 }
 
-a i.fa { 
-  color: inherit; 
+a i.fa {
+  color: inherit;
+}
+
+i.fa.fa-eye { 
+  color: #f90;
+  font-size: 1.2em; 
+}
+i.fa.fa-eye:hover { 
+  color: #f50; 
+  font-size: 1.2em;
 }
 
 /* ----- tooltip ----- */
 .tooltip {
   position: relative;
-  border-bottom: dotted 1px #aaa;
   cursor: help;
   display: inline-block;
-  font-weight: bold;
-  margin: 0 0.2em !important;
-  padding: 0 0.5em !important;
-  color: #08f;
 }
 
 .tooltip .tooltiptext {
@@ -621,4 +662,13 @@ a i.fa {
 
 .tooltiptext.center::after {
   left: 50%;
+}
+
+.tooltip i.fa {
+  font-size: 1.5em;
+  color: #ccc;
+}
+
+.tooltip i.fa:hover {
+  color: #f90;
 }
