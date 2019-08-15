@@ -11,8 +11,8 @@
       .main > div:nth-child(2) { flex: 1; }
       .main label { display: inline-block; }
 
-      .onOff > label { flex: 4;  margin-right: 1em; }
-      .onOff > div { flex: 1 !important; }
+      .onOff > label { flex: 0; flex-grow: 1; margin-right: 1em; }
+      .onOff > div { flex: 0; }
       .na { margin-top: 1.5em; }
       .onOff, .pac, .na { display: none; }
       input[name="nav"] { display: none; }
@@ -50,8 +50,8 @@
   <body>
 
     <!-- Navigation -->
-    <input type="radio" name="nav" id="http" checked>
-    <input type="radio" name="nav" id="https">
+    <input type="radio" name="nav" id="http">
+    <input type="radio" name="nav" id="https" checked>
     <input type="radio" name="nav" id="socks5">
     <input type="radio" name="nav" id="socks4">
     <input type="radio" name="nav" id="direct">
@@ -104,7 +104,7 @@
              <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
   
             <div>
-              <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox" checked>
+              <input name="onOff" class="switch-input" id="onOffBlackAll" type="checkbox">
               <label class="switch-paddle" for="onOffBlackAll">
                 <span class="show-for-sr">On/Off</span>
                 <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
@@ -138,11 +138,11 @@
           <div class="rightData">
           <label data-i18n="proxyType"></label>
           <select id="proxyType">
-            <option value="1" selected>HTTP</option>
-            <option value="2">HTTPS/SSL</option>
+            <option value="1">HTTP</option>
+            <option value="2" selected>HTTPS/SSL</option>
             <option value="3">SOCKS5</option>
             <option value="4">SOCKS4</option>
-            <option value="6">PAC script or PAC URL</option>
+            <option value="6">PAC URL</option>
             <option value="7">WPAD</option>
             <option value="8">System (use system settings)</option>
             <option value="5">Direct (no proxy)</option>
