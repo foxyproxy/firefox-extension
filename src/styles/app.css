@@ -235,15 +235,14 @@ label.middle {
 }
 
 select {
-  background-color: #fafafa;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="24" viewBox="0 0 32 24"><polygon points="0,0 32,0 16,24" style="fill: rgb(51, 51, 51)"></polygon></svg>');
+  background-color: #f8f8ff;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="24" viewBox="0 0 32 24" fill="rgb(255, 153, 0)"><polygon points="0,0 32,0 16,24"></polygon></svg>');
   background-position: right 0.5em center;
   background-repeat: no-repeat;
-  background-size: 9px 6px;
+  background-size: 14px;
   border-radius: 5px;
-  border: 1px solid #cacaca;
-  color: #8a8a8a;
-  font-family: inherit;
+  border: 1px solid #ccc;
+  color: #999;
   font-size: 1em;
   height: 2.5em;
   line-height: normal;
@@ -605,13 +604,17 @@ a i.fa {
 }
 
 i.fa.fa-eye { 
-  color: #f90;
   font-size: 1.2em; 
 }
-i.fa.fa-eye:hover { 
-  color: #f50; 
-  font-size: 1.2em;
+
+input[type="password"] + button i.fa.fa-eye {
+  color: #f90;
 }
+input[type="text"] + button i.fa.fa-eye {
+  color: #ccc;
+}
+
+
 
 /* ----- tooltip ----- */
 .tooltip {
