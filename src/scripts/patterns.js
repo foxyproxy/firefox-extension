@@ -194,7 +194,6 @@ function processEdit() {
 
 function checkOptions() {
   
-
   // use for loop to be able to return early on error
   for (const item of document.querySelectorAll('tr[data-idx]')) {
     

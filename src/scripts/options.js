@@ -196,11 +196,13 @@ function processOptions(pref) {
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
 
-  pref.mode = pref.mode || 'patterns';                      // defaults to patterns
-
+  pref.mode = pref.mode || 'disabled';                      // defaults to disabled
+  let foundPattern;
   prefKeys.forEach(id => {
 
     const item = pref[id];
+    
+    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
 
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
@@ -221,7 +223,7 @@ function processOptions(pref) {
     node[5].checked = item.active;
     node[6].setAttribute('for', node[5].id);
 
-    FOXYPROXY_BASIC && (node[0].style.display = 'none');
+    FOXYPROXY_BASIC && (node[8].style.display = 'none');
 
     // setting div colors
     switch (true) {
@@ -254,6 +256,11 @@ function processOptions(pref) {
 
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
+
+  if (FOXYPROXY_BASIC || (pref.mode === 'patterns' && !foundPattern)) {  
+    mode.children[0].classList.add('hide');                 // hide by pattern option
+    pref.mode = 'disabled';
+  }
 
   const opt = mode.querySelector(`option[value="${pref.mode}"]`);
   if (opt) {

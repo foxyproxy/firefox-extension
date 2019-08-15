@@ -9,9 +9,8 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 const manifest = chrome.runtime.getManifest();
-
 document.querySelector('#version').textContent = manifest.version;
-document.querySelector('#edition').textContent = FOXYPROXY_BASIC ? 'FoxyProxy Basic' : 'FoxyProxy Standard';
+document.querySelector('#edition').textContent = chrome.i18n.getMessage('extensionName');
 document.querySelector('button').addEventListener('click', () => location.href = '/options.html');
 
 

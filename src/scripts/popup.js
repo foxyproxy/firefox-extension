@@ -35,6 +35,8 @@ function processOptions(pref) {
 
     const item = pref[id];
     
+    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
+    
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
       const li = temp.cloneNode(true);
@@ -45,17 +47,19 @@ function processOptions(pref) {
       li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);
-    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
     }
   });
 
   docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
 
+  if (FOXYPROXY_BASIC || (pref.mode === 'patterns' && !foundPattern)) { 
+    temp.parentNode.children[0].classList.add('hide'); // hide by pattern option
+    pref.mode = 'disabled';
+  } 
+  
   const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number
   node.classList.add('on');
-
-  if (FOXYPROXY_BASIC || !foundPattern) { document.querySelector('#patterns').classList.add('hide'); } // hide option
-
+  
   // add Listeners
   document.querySelectorAll('li, button').forEach(item => item.addEventListener('click', process));
 }

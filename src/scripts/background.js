@@ -99,31 +99,32 @@ function process(settings) {
   }
 
   // ----------------- migrate -----------------------------
-  if(settings.hasOwnProperty('whiteBlack')) {               // check for pre v5.0 storage, it had a whiteBlack property
+  // The initial WebExtension version, which was disabled after a couple of days, was called 5.0
+  if(settings.hasOwnProperty('whiteBlack')) {               // check for v5.0 storage, it had a whiteBlack property
 
     delete settings.whiteBlack;
     ///settings[LASTRESORT] = DEFAULT_PROXY_SETTING;           // 5.0 didn't have a default proxy setting
     update = true;
   }
 
-  const ids = prefKeys.filter(item => !['mode', 'logging', 'sync'].includes(item));
   // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
   // imported this property as a string rather than boolean.
-  ids.forEach(item => {
+  if (prefKeys.find(item => settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string')) {
+    prefKeys.forEach(item => {
 
-    if (settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string') {
-      settings[item].proxyDNS = settings[item].proxyDNS === 'true' ? true : false;
-      update =  true;
-    }
+      if (settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string') {
+        settings[item].proxyDNS = settings[item].proxyDNS === 'true' ? true : false;
+      }
+    });
+    update = true;
+  }
+  // ----------------- /migrate ----------------------------
 
-    [settings[item].blackPatterns, update] = checkPatterns(settings[item].blackPatterns);
-    [settings[item].whitePatterns, update] = checkPatterns(settings[item].whitePatterns);
-  });
+  // update storage then add Change Listener
+  update ? storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged)) :
+                                            chrome.storage.onChanged.addListener(storageOnChanged);
 
-  update && storageArea.set(settings);                      // update storage
-
-  chrome.storage.onChanged.addListener(storageOnChanged);   // add Change Listener after above updates
-  logger = new Logger(settings.logging && settings.logging.size, settings.logging && settings.logging.active);
+  logger = settings.logging ? new Logger(settings.logging.size, settings.logging.active) : new Logger();
   sendToPAC(settings);
   console.log('background.js: loaded proxy settings from storage.');
 }
@@ -151,7 +152,6 @@ function storageOnChanged(changes, area) {
 }
 
 
-
 function sendToPAC(settings) {
 
   const pref = settings;
@@ -168,24 +168,14 @@ function sendToPAC(settings) {
     setDisabled();
   }
 
-  else if (['patterns', 'random', 'roundrobin'].includes(mode)) { // we only support 'patterns' now
+  else if (['patterns', 'random', 'roundrobin'].includes(mode)) { // we only support 'patterns' ATM
 
     const active = {
       mode,
       proxySettings: []
     }
 
-    // filter out the inactive & prepare RegEx
-    prefKeys.forEach(id => {
-
-      if (pref[id].active) {
-
-        [pref[id].blackPatterns] = checkPatterns(pref[id].blackPatterns); // returns [a, b]
-        [pref[id].whitePatterns] = checkPatterns(pref[id].whitePatterns);
-        active.proxySettings.push(pref[id]);
-      }
-    });
-
+    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id])); // filter out the inactive & prepare RegEx
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
     browser.proxy.register(pacURL).then(() => {
@@ -236,40 +226,6 @@ function setDisabled(isError) {
   });
 }
 
-// Returns an array of patterns or []
-function checkPatterns(patterns = []) {
-
-  let update = false;
-  const ret = patterns.map(item => {
-
-    const re = item.regEx;                                  // cache
-    // Build regEx from patterns
-    if (item.type === PATTERN_TYPE_WILDCARD) {              // const PATTERN_TYPE_WILDCARD = 1;
-
-      item.regEx = checkRE(Utils.wildcardToRegExp(item.pattern));
-    }
-    else if (item.type == PATTERN_TYPE_REGEXP) {            // const PATTERN_TYPE_REGEXP = 2;
-      item.regEx = checkRE(item.pattern);
-    }
-    if (re !== item.regEx) { update = true; }
-
-    return item;
-  });
-
-  return [ret, update];
-}
-
-function checkRE(str) {
-
-  try {
-    new RegExp(str);
-    return str;
-  }
-  catch(e) {
-    console.error('Regular Expression Error', str, e.message);
-    return 'a^';
-  }
-}
 
 
 // ----------------- Proxy Authentication ------------------

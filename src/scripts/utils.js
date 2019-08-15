@@ -31,8 +31,8 @@ const PATTERN_ALL_WHITE = {
   title: 'all URLs',
   active: true,
   pattern: '*',
-  type: PATTERN_TYPE_WILDCARD,
-  protocols: PROTOCOL_ALL
+  type: 1,                    // PATTERN_TYPE_WILDCARD,
+  protocols: 1                // PROTOCOL_ALL
 };
 
 // patterns | proxy
@@ -51,14 +51,14 @@ const blacklistSet = [
     pattern: "^(?:[^:@/]+(?::[^@/]+)?@)?[\\w-]+(?::\\d+)?(?:/.*)?$"
   }
 ].map (item => {
-  item.avtive = true;
-  item.type = 2,            //PATTERN_TYPE_REGEXP,
-  item.protocols = 1        // PROTOCOL_ALL  
+  item.active = true;
+  item.type = 2;              // PATTERN_TYPE_REGEXP,
+  item.protocols = 1;         // PROTOCOL_ALL  
   return item;
 });
 
 
-
+/*
 const LASTRESORT = 'k20d21508277536715';
 const DEFAULT_PROXY_SETTING = {
   //id: Number.MAX_SAFE_INTEGER, // Not here so we dont save it to disk as an object property but instead as a key
@@ -72,7 +72,7 @@ const DEFAULT_PROXY_SETTING = {
   whitePatterns: [PATTERN_ALL_WHITE],
   blackPatterns: []
 }
-
+*/
 
 
 // ----------------- Utils ---------------------------------
@@ -198,6 +198,7 @@ class Utils {
     });
   }
 
+/*
   // utils only used for export, will be removed as DB format export is adapted
   static prepareForSettings(settings = {}) {
 
@@ -258,4 +259,6 @@ class Utils {
 
     return ret;
   }
+*/  
+
 }
