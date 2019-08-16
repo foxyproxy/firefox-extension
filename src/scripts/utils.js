@@ -137,7 +137,7 @@ class Utils {
     }
 
     // Check MIME type // note chrome file.type for JSON is blank ... type: ""
-    if (file.type && !mimeTypeArr.includes(file.type)) {
+    if (!mimeTypeArr.includes(file.type)) {
       alert('Unsupported file format');
       return;
     }
@@ -168,6 +168,7 @@ class Utils {
         return;
       }
       if (settings && confirm('This will overwite existing proxy settings. Are you sure?')) { callback(settings); }
+      else { callback(); }
 
     };
     reader.onerror = () => { alert('Error reading file'); };

@@ -59,6 +59,11 @@ function process(e) {
 
 function importJson(result) {
 
+  if (!result) {                                            // user cancelled
+    hideSpinner();
+    return;
+  }
+  
   // --- convert pre v7.0 export to db format
   if (result.hasOwnProperty('proxySettings')) {
     result = prepareForStorage(result);

@@ -52,9 +52,7 @@ function processOptions(pref) {
 
   docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
   
-
-
-  if (FOXYPROXY_BASIC || !foundPattern) { console.log(' called');
+  if (FOXYPROXY_BASIC || !foundPattern) {
     temp.parentNode.children[0].classList.add('hide');      // hide by pattern option
     pref.mode === 'patterns' && (pref.mode = 'disabled');
   } 
