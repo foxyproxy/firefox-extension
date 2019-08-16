@@ -203,7 +203,6 @@ select {
   border: 1px solid #ccc;
   color: #999;
   font-size: 1em;
-  height: 2.5em;
   margin: 0 0 1em;
   padding: 0.5em;
   width: 100%;
@@ -419,7 +418,7 @@ input.switch:checked + label::after {
   background-color: rgba(255, 255, 255, 0.8);
   color: #f90;
   display: flex;
-  font-size: 20em;
+  font-size: 14em;
   height: 100%;
   justify-content: center;
   left: 0;
