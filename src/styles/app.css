@@ -102,9 +102,7 @@ td {
   white-space: nowrap;
 }
 
-input[type="file"] {
-  display: none;
-}
+
 
 
 button, .button {
@@ -124,7 +122,6 @@ button, .button {
   vertical-align: middle;
   -webkit-appearance: none;
   -moz-appearance: none;
-  line-height: normal;
 }
 
 button:not(.plain):hover, .button:hover {
@@ -154,85 +151,47 @@ button.plain {
 
 button[type="submit"] {
   background-color: #4682b4;
-  opacity: 1;
 }
 
 button[type="submit"]:hover {
   background-color: #05a;
 }
 
-button[type="submit"].off {
-  opacity: 0;
+
+
+label {
+/*  font-size: 0.9em;*/
 }
+
 
 input::placeholder {
   font-style: italic;
 }
 
-[type="file"],
-[type="checkbox"],
-[type="radio"] {
-  margin: 0 0 1em;
+input[type="file"] {
+  display: none;
 }
 
-[type="checkbox"] + label,
-[type="radio"] + label {
-  display: inline-block;
-  margin-left: 0.5em;
-  margin-right: 1em;
-  margin-bottom: 0;
-  vertical-align: baseline;
-}
-
-[type="text"], [type="password"], [type="date"], [type="datetime"], [type="datetime-local"],
-[type="month"], [type="week"], [type="email"], [type="number"], [type="search"],
-[type="tel"], [type="time"], [type="url"], [type="color"],
-textarea {
+[type="text"], [type="password"], textarea {
   background-color: #fefefe;
   border-radius: 5px;
-  border: 1px solid #cacaca;
+  border: 1px solid #ccc;
   box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-  color: #8a8a8a;
-  display: block;
+  color: #999;
+  display: inline-block;
   font-size: 1em;
-  height: 2.4em;
   margin: 0 0 1em;
   padding: 0.5em;
-  transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+  transition: all 0.5s;
   width: 100%;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
-[type="text"]:focus, [type="password"]:focus, [type="date"]:focus, [type="datetime"]:focus,
-[type="datetime-local"]:focus, [type="month"]:focus, [type="week"]:focus,
-[type="email"]:focus, [type="number"]:focus, [type="search"]:focus,
-[type="tel"]:focus, [type="time"]:focus, [type="url"]:focus, [type="color"]:focus,
-textarea:focus {
-  border: 1px solid #8a8a8a;
-  background: #fefefe;
-  outline: none;
+[type="text"]:focus, [type="password"]:focus, textarea:focus {
+  border: 1px solid #999;
   box-shadow: 0 0 5px #cacaca;
 }
 
-label > [type="checkbox"],
-label > [type="label"] {
-  margin-right: 0.5em;
-}
 
-label {
-  display: block;
-  margin: 0;
-  font-size: 0.85em;
-  font-weight: normal;
-  line-height: 1.8;
-  color: #0a0a0a;
-}
-
-label.middle {
-  margin: 0 0 1em;
-  padding: 0.5em 0;
-}
 
 select {
   background-color: #f8f8ff;
@@ -245,7 +204,6 @@ select {
   color: #999;
   font-size: 1em;
   height: 2.5em;
-  line-height: normal;
   margin: 0 0 1em;
   padding: 0.5em;
   width: 100%;
@@ -262,89 +220,65 @@ select[multiple] {
   height: auto;
 }
 
-
-
-
-
-/* --- onOff switch --- */
-.switch-input {
-  opacity: 0;
-  position: absolute;
+/* ----- switch ----- */
+input.switch {
+  display: none;
 }
 
-.switch-paddle {
-  background: #cacaca;
+input.switch + label {
+  background: #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
   cursor: pointer;
-  display: block;
-  position: relative;
-  width: 3.5em;
+  display: inline-block;
   height: 1.5em;
-  transition: all 0.25s ease-out;
-  border-radius: 3px;
-  color: inherit;
-  font-weight: inherit;
-  vertical-align: middle !important;
+  margin-right: 0.5em;
+  position: relative;
+  text-align: left;
+  transition: all 0.5s ease-in-out;
+  vertical-align: middle;
+  width: 3.5em;
+  font-size: 0.9em;
 }
 
-input + .switch-paddle {
-  margin: 0;
-}
-
-.switch-paddle::after {
-  background: #fefefe;
+input.switch + label::before {
+  background: #ccc;
+  border-radius: 5px;
+  box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
   content: '';
   display: block;
+  height: 1.1em;
+  left: 0.2em;
   position: absolute;
-  height: 1em;
-  left: 0.25em;
-  top: 0.25em;
-  width: 1em;
-  transition: all 0.25s ease-out;
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-  border-radius: 3px;
+  top: 0.2em;
+  transition: all 0.5s ease-in-out;
+  width: 1.1em;
 }
 
-input:checked ~ .switch-paddle {
+input.switch:checked + label {
   background: #f90;
 }
 
-input:checked ~ .switch-paddle::after {
-  left: 2.25em;
+input.switch:checked + label::before {
+  left: 2.2em;
+  background: #fff;
 }
 
-[data-whatinput='mouse'] input:focus ~ .switch-paddle {
-  outline: 0;
-}
-
-.switch-active, .switch-inactive {
-  font-weight: bold;
-  position: absolute;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-          transform: translateY(-50%);
-}
-
-.switch-active {
-  left: 8%;
-  display: none;
+input.switch + label::after {
+  display: inline-block;
+  content: 'Off';
   color: #fff;
-}
-input:checked + label > .switch-active {
-  display: block;
-}
-
-.switch-inactive {
-  right: 15%;
-  color: #f90;
-
+  margin-left: 1.8em;
+  transition: all 0.5s ease-in-out;
+  font-weight: bold;
+  vertical-align: middle;
 }
 
-input:checked + label > .switch-inactive {
-  display: none;
+input.switch:checked + label::after {
+  content: 'On';
+  margin-left: 0.2em;
 }
-/* --- /onOff switch --- */
+/* ----- /switch ----- */
 
 .template {
   display: none !important;
@@ -392,14 +326,7 @@ input:checked + label > .switch-inactive {
   border: 1px solid #ccc;
 }
 
-.show-for-sr,
-.show-on-focus {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-}
+
 
 .fp-orange {
   color: #f90;
@@ -407,7 +334,6 @@ input:checked + label > .switch-inactive {
 
 .fp-color-blob{
   width: 2em;
-  height: 1.1em;
   display: inline-block;
   border-radius: 5px;
   border: 2px solid #fff;
@@ -488,7 +414,7 @@ input:checked + label > .switch-inactive {
 
 
 
-#spinner {
+.spinner {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.8);
   color: #f90;
@@ -506,7 +432,7 @@ input:checked + label > .switch-inactive {
   z-index: 10000;
 }
 
-#spinner.on {
+.spinner.on {
   opacity: 0.5;
 }
 
@@ -641,7 +567,6 @@ input[type="text"] + button i.fa.fa-eye {
   font-weight: normal;
   box-shadow: 0px 1px 5px rgba(0,0,0,0.5);
   font-size: 0.9rem;
-  line-height: normal;
 }
 
 .tooltip .tooltiptext::after {
