@@ -331,13 +331,6 @@ input.switch:checked + label::after {
   color: #f90;
 }
 
-.fp-color-blob{
-  width: 2em;
-  display: inline-block;
-  border-radius: 5px;
-  border: 2px solid #fff;
-  box-shadow: 0px 2px 3px #777;
-}
 
 .flag {
   font-size: 1.5em;
