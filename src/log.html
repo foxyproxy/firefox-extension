@@ -30,12 +30,10 @@
          font-size: 0.7em;
       }
       
-      label {
-        display: inline-block; 
+     label[data-i18n] {
         margin: 0 0.5em 0 1em; 
-        font-size: 1em;      
       }
-      
+    
       input[type="text"] {
         display: inline-block;
         width: 5em;
@@ -52,23 +50,18 @@
 
 
     <!-- spinner --> <!-- options, patterns, log -->
-    <div id="spinner" class="on"><i class="fa fa-refresh fa-spin"></i></div>
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
 
 
     <!-- main -->
     <div class="prime">
 
         <div style="text-align: right;">
-          <!-- <h3 style="display: inline-block; margin: 0 0.5em 0 0;" data-i18n="log"></h3> -->
-          <label style="display: inline-block; margin-right: 0.5em;" data-i18n="log"></label>
-          <input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
-          <label class="switch-paddle" for="onOff">
-            <span class="show-for-sr">On/Off</span>
-            <span class="switch-active" aria-hidden="true" data-i18n="on"></span>
-            <span class="switch-inactive" aria-hidden="true" data-i18n="off"></span>
-          </label>
-   
-          <label style="display: inline-block; margin-right: 0.5em;" data-i18n="logSize"></label>
+
+          <label data-i18n="log"></label>
+          <input type="checkbox" class="switch" id="onOff"><label for="onOff"></label>
+
+          <label data-i18n="logSize"></label>
           <input id="logSize" type="text">
  
       </div>      
