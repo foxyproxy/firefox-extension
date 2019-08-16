@@ -9,7 +9,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----------------- Spinner -------------------------------
-const spinner = document.querySelector('#spinner');
+const spinner = document.querySelector('.spinner');
 function hideSpinner() {
 
   spinner.classList.remove('on');

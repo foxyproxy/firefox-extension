@@ -155,8 +155,8 @@ function makeProxy() {
     proxy.password = proxyPassword.value;
   }
 
-  proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#onOffWhiteAll').checked ? [PATTERN_ALL_WHITE] : []);
-  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#onOffBlackAll').checked ? blacklistSet : []);
+  proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#whiteAll').checked ? [PATTERN_ALL_WHITE] : []);
+  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#blackAll').checked ? blacklistSet : []);
   proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
 
   id = id || getUniqueId();                                 // global

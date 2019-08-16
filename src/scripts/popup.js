@@ -51,10 +51,12 @@ function processOptions(pref) {
   });
 
   docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
+  
 
-  if (FOXYPROXY_BASIC || (pref.mode === 'patterns' && !foundPattern)) { 
-    temp.parentNode.children[0].classList.add('hide'); // hide by pattern option
-    pref.mode = 'disabled';
+
+  if (FOXYPROXY_BASIC || !foundPattern) { console.log(' called');
+    temp.parentNode.children[0].classList.add('hide');      // hide by pattern option
+    pref.mode === 'patterns' && (pref.mode = 'disabled');
   } 
   
   const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number

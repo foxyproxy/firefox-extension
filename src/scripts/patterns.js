@@ -9,7 +9,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----------------- Spinner -------------------------------
-const spinner = document.querySelector('#spinner');
+const spinner = document.querySelector('.spinner');
 function hideSpinner() {
 
   spinner.classList.remove('on');
@@ -145,7 +145,11 @@ function makeRow(pat, index, bw) {
   td[1].children[0].value = pat.pattern;                                
   td[2].children[0].value = pat.type;
   td[3].children[0].value = pat.protocols;
-  td[4].children[0].checked = pat.active ? 'On' : 'Off';
+  td[4].children[0].checked = pat.active;
+  td[4].children[0].id = bw + index;
+  td[4].children[1].setAttribute('for', td[4].children[0].id);
+  console.log(td[4].children[0], pat.active);
+  
   pat.importedPattern && td[5].children[0].classList.remove('hide');
 
   // add Listeners();

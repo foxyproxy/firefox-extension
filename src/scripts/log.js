@@ -9,7 +9,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----------------- Spinner -------------------------------
-const spinner = document.querySelector('#spinner');
+const spinner = document.querySelector('.spinner');
 function hideSpinner() {
 
   spinner.classList.remove('on');
@@ -30,7 +30,7 @@ const logSize = document.querySelector('#logSize');
 
 chrome.runtime.getBackgroundPage(bg => {
 
-  logger = bg.getLog();
+  logger = bg.getLog();console.log(bg);
   onOff.checked = logger.active;
   logSize.value = logger.size;
   renderLog(); // log content will be shown if there are any, regardless of onOff

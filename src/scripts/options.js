@@ -11,7 +11,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----- global
 const accounts = document.querySelector('#accounts');
 const mode = document.querySelector('#mode');
-const syncOnOff = document.querySelector('input[name="syncOnOff"]');
+const syncOnOff = document.querySelector('#syncOnOff');
 const popup = document.querySelector('.popup');
 const popupMain = popup.children[0];
 
@@ -28,7 +28,7 @@ chrome.storage.local.get(null, result => {
 // ----------------- /User Preference ----------------------
 
 // ----------------- Spinner -------------------------------
-const spinner = document.querySelector('#spinner');
+const spinner = document.querySelector('.spinner');
 function hideSpinner() {
 
   spinner.classList.remove('on');
