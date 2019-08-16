@@ -28,7 +28,7 @@
   "about": { "message": "About" },
   "syncSettings": { "message": "Synchronize Settings" },
   "syncSettingsHelp": { "message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local." },
-  "onOff": { "message": "On/Off" },
+//  "onOff": { "message": "On/Off" },
   "on": { "message": "On" },
   "off": { "message": "Off" },
   "confirmTransferToLocal": { "message": "Would you like to transfer the synced settings to your local profile?\nExisting Data will be merged." },
