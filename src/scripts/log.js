@@ -30,7 +30,7 @@ const logSize = document.querySelector('#logSize');
 
 chrome.runtime.getBackgroundPage(bg => {
 
-  logger = bg.getLog();console.log(bg);
+  logger = bg.getLog();
   onOff.checked = logger.active;
   logSize.value = logger.size;
   renderLog(); // log content will be shown if there are any, regardless of onOff
