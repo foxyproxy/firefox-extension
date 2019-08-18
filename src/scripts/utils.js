@@ -136,7 +136,7 @@ class Utils {
       return;
     }
 
-    // Check MIME type // note chrome file.type for JSON is blank ... type: ""
+    // Check MIME type // Ch65 no filetype for JSON
     if (!mimeTypeArr.includes(file.type)) {
       alert('Unsupported file format');
       return;
