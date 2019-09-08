@@ -1,67 +1,77 @@
 'use strict';
 
-document.querySelector('#test').addEventListener('click', testPattern);
-document.querySelector('#help').addEventListener('click', () => browser.tabs.create({url: '/pattern-help.html'}));
+// ----------------- Internationalization ------------------
+document.querySelectorAll('[data-i18n]').forEach(node => {
+  let [text, attr] = node.dataset.i18n.split('|');
+  text = chrome.i18n.getMessage(text);
+  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
+});
+// ----------------- /Internationalization -----------------
 
-const patternObj = Utils.urlParamsToJsonMap().patternObj;
-if (patternObj) {
-  document.querySelector('#pattern').value = patternObj.pattern;
-  document.querySelector('#protocols').value = patternObj.protocols;
-  document.querySelector('#type').value = patternObj.type;
-  document.querySelector('#url').value = '';
+// --- global
+const url = document.querySelector('#url');
+const pattern = document.querySelector('#pattern');
+const type = document.querySelector('#type');
+const protocols = document.querySelector('#protocols');
+const result = document.querySelector('#result');
+
+
+document.querySelector('button[data-i18n="test"]').addEventListener('click', testPattern);
+
+
+// ----- check for Edit
+const pat = localStorage.getItem('pattern');
+if (pat) {
+
+  pattern.value = pat;
+  type.value = localStorage.getItem('type');
+  protocols.value = localStorage.getItem('protocols');
+
+  localStorage.removeItem('pattern');
+  localStorage.removeItem('type');
+  localStorage.removeItem('protocols');
 }
 
 
 function testPattern() {
 
-  const urlInput = document.querySelector('#url');
-  urlInput.classList.remove('is-invalid-input');  // reset
+  // --- reset
+  url.classList.remove('invalid');
+  pattern.classList.remove('invalid');
+  result.classList.add('hide');
+  result.classList.remove('alert');
+
+  // --- trim text values
+  [url, pattern].forEach(item => item.value = item.value.trim());
+  
+  // --- URL check
   let parsedURL;
-
-  try { parsedURL = new URL(urlInput.value); }
+  try { parsedURL = new URL(url.value); }
   catch (e) {
-    console.error(e);
-    urlInput.classList.add('is-invalid-input');
-    return false;
-  }
-
-  if (!validateInput()) { return; }
-
-  // There are 3 possible states that we report:
-  // 1. protocols do not match OR
-  // 2. pattern does not match OR
-  // 3. pattern matches
-  // In each case, we show/hide the appropriate HTML blocks. We have to do
-  // this each time testPattern() is called because this funciton many be
-  // called multiple times without the HTML resetting -- yet the user may have
-  // changed the inputs. So we just hide everything in the beginning and show
-  // the appropriate block each execution of testPattern().
-
-  document.querySelectorAll('#match,#noMatch,#noProtocolMatch').forEach(item =>
-    item.classList.add('hide-unimportant'));
-
-  const pattern = document.querySelector('#pattern').value;
-  const type = parseInt(document.querySelector('#type').value);
-  const protocols = parseInt(document.querySelector('#protocols').value);
-  let schemeNum;
-
-  // Check protocol first
-  if (parsedURL.protocol === 'https:') { schemeNum = PROTOCOL_HTTPS; }
-  else if (parsedURL.protocol === 'http:') { schemeNum = PROTOCOL_HTTP; }
-
-  if (protocols !== PROTOCOL_ALL && protocols !== schemeNum) {
-    document.querySelector('#noProtocolMatch').classList.remove('hide-unimportant');
+    url.classList.add('invalid');
+    showResult(e.message, true);
     return;
   }
 
-  const regExp = type === PATTERN_TYPE_WILDCARD ?
-    Utils.safeRegExp(Utils.wildcardStringToRegExpString(pattern)) :
-    Utils.safeRegExp(pattern); // TODO: need to notify user and not match this to zilch.
+  // --- protocol check
+  const protocolSet = {                                     // converting to meaningful terms
+    '1': ['http:', 'https:'],
+    '2': ['http:'],
+    '4': ['https:']
+  };
 
-  if (regExp.test(parsedURL.host)) {
-    document.querySelector('#match').classList.remove('hide-unimportant');
+  if (!protocolSet[protocols.value].includes(parsedURL.protocols)) {
+    showResult(chrome.i18n.getMessage('errorProtocol'), true);
+    return;
   }
-  else {
-    document.querySelector('#noMatch').classList.remove('hide-unimportant');
-  }
+
+
+  // --- pattern check  
+  const regex = checkPattern(pattern, type);
+  if (!regex) { return; }
+  
+  // --- pattern on URL check (pattern is valid)
+  regex.test(parsedURL.host) ? showResult(chrome.i18n.getMessage('patternMatch')) : 
+                                showResult(chrome.i18n.getMessage('patternNotMatch'), true);
+
 }
