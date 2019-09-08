@@ -1,61 +1,106 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="log">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      tbody tr:hover a { color: #a0522d; }
+      tbody td { padding: 0em 0.2em; overflow-x: auto; text-overflow: ellipsis; white-space: nowrap; scrollbar-color: #ddd #f5f5f5; scrollbar-width: thin; }
+      td:nth-child(1) { max-width: 20em; }
+      td:nth-child(2) { max-width: 5em; }
+      td:nth-child(3) { width: 2em; border-radius: 5px; border: 2px solid #fff; }
+      td:nth-child(4) { max-width: 8em; }
+      td:nth-child(5) { max-width: 8em; }
+      td:nth-child(6) { max-width: 14em; }
+      .prime.warning {  font-size: 0.9em; padding: 0.5em;}
+      tbody { counter-reset: n; }
+      tbody tr td:first-child::before {
+         display: inline-block;
+         color: #aaa;
+         min-width: 1.5em;
+         text-align: right;
+         vertical-align: middle;
+         margin-right: 0.4em;
+         pointer-events: none;
+         counter-increment: n;
+         content: counter(n);
+         font-size: 0.7em;
+      }
+      
+     label[data-i18n] {
+        margin: 0 0.5em 0 1em; 
+      }
+    
+      input[type="text"] {
+        display: inline-block;
+        width: 5em;
+        padding: 0.2em;
+        height: auto;
+      }
+      i.fa, i.fa:hover { color: inherit; font-size: inherit; }
+    </style>
   </head>
-  <body style="margin: 2rem">
+  <body>
 
-    <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row column callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
+    <!-- header -->
+    <div class="prime header" data-i18n="log"></div>
+
+
+    <!-- spinner --> <!-- options, patterns, log -->
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
+
+
+    <!-- main -->
+    <div class="prime">
+
+        <div style="text-align: right;">
+
+          <label data-i18n="log"></label>
+          <input type="checkbox" class="switch" id="onOff"><label for="onOff"></label>
+
+          <label data-i18n="logSize"></label>
+          <input id="logSize" type="text">
+ 
+      </div>      
+
+      <div class="prime warning"><strong>Failed URLs display here, too!</strong><br>
+        A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.
       </div>
+
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="url"></th><th data-i18n="proxyTitle"></th><th data-i18n="color"></th>
+              <th data-i18n="proxyAddress"></th><th data-i18n="matchPattern"></th><th data-i18n="timestamp"></th>
+             </tr>
+            <!-- template -->
+            <tr class="template">
+               <td><a href="" target="_blank"></a></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 1em; text-align: right;">
+        <button type="button" data-i18n="back">&#x25c1; </button>
+        <button type="button" data-i18n="refresh"><i class="fa fa-refresh"></i> </button>
+        <button type="button" class="alert" data-i18n="clear"><i class="fa fa-trash"></i> </button>
+      </div>
+
     </div>
 
-    <div id="logRow" class="row hide-unimportant" style="margin: 0.5rem">
-      <div class="row callout"><div class="small-12 columns"><img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2></div></div>
-      <div class="row callout">
-        <div class="small-12 columns">
-          <h3 style="display:inline">Log</h3>
-          <span style="float: right">
-            <input id="clearBtn1" type="button" class="button" value="Clear">
-            <input id="refreshBtn1" type="button" class="button" value="Refresh">
-            <input id="okBtn1" type="button" class="button" value="Ok">
-          </span><br>
-          <input name="onOff" class="switch-input" id="onOff" type="checkbox" checked>
-          <label class="switch-paddle" for="onOff">
-            <span class="show-for-sr">On/Off</span>
-            <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-            <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-          </label>
-        </div>
-        <div class="small-12 columns">
-            <div class="row callout"><strong>Failed URLs display here, too!</strong> A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.</div>
-        </div>
-        <div class="small-12 columns">
-          <div class="row">
-            <table id="logTable">
-              <thead><tr><th>URL</th><th>Proxy Title</th><th>Proxy Color</th><th>Proxy Address</th><th>Match Pattern</th><th>Timestamp</th></thead>
-              <tbody id="rows"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="small-12 columns">
-          <span style="float: right">
-            <input id="clearBtn2" type="button" class="button" value="Clear">
-            <input id="refreshBtn2" type="button" class="button" value="Refresh">
-            <input id="okBtn2" type="button" class="button" value="Ok">
-          </span>
-        </div>
-      </div>
-    </div>
-  </body>
-  <script src="scripts/jquery-3.4.1.js"></script>
-  <script src="scripts/const.js"></script>
   <script src="scripts/utils.js"></script>
-  <script src="scripts/storage.js"></script>
   <script src="scripts/log.js"></script>
+  </body>
 </html>

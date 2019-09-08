@@ -1,102 +1,155 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="patterns">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
-    <link rel="stylesheet" href="styles/vex-4.1.0.css"/>
-    <link rel="stylesheet" href="styles/vex-theme-default-4.1.0.css"/>
-		<link rel="stylesheet" href="styles/clusterize-0.18.0.css"/>
+    <style>
+      td i.fa { font-size: 1.5em; color: #ccc; }
+      td i.fa:hover { font-size: 1.5em; color: #f90; }
+      tr { opacity: 1; transition: all 0.5s ease-in-out; }
+      td { padding: 0.2em 0.5em; }
+      td:nth-of-type(1), td:nth-of-type(2) { min-width: 10em; max-width: 15em; padding: 0 0.5em; }
+      td:nth-of-type(3), td:nth-of-type(4), td:nth-of-type(5) { width: 5em; text-align: center; }
+      td:nth-of-type(6) { width: 7em; }
+      
+      input[type="text"], input[type="text"]:focus {
+        background-color: transparent;
+        box-shadow: none;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        border: 1px solid transparent;
+      }
+      input[type="text"]:focus {
+        background-color: #f8f8ff;
+      }      
+      input:invalid, input:invalid:focus {
+        background-color: #fff;
+        border-color: #f90;
+      }
+      select {
+        background: #f5fffa;
+        font-size: 0.9em;
+        height: auto;
+        margin: 0;
+        padding: 0.1em;
+      }
+      #result { margin: 1em 0 0; }
+      label[for="file"] { margin: 0; }
+    </style>
   </head>
-  <body style="margin: 1rem">
+  <body>
 
-  <div class="row callout"><div class="small-12 columns">
-      <img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="windowTitle"style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy</h2></div></div>
-  <div class="callout">
+    <!-- header -->
+    <div class="prime header" data-i18n="editPatterns"></div>
 
-    <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
-      </div>
+    <!-- spinner --> <!-- options, patterns, log -->
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
+
+    <!-- error -->
+    <div id="error" class="prime hide">
+      <h3 data-i18n="errorWas"></h3>
+      <button type="button" data-i18n="back">&#x25c1; </button>
     </div>
 
-    <div id="errorRow" class="row hide-unimportant">
-      <div class="small-12 small-centered columns">
-        <div class="row">
-          <h4>There was an error. Please try again.</h4>
+    <!-- main -->
+    <div class="prime main">
+      <div style="text-align: right;">
+        <a href="/pattern-help.html" target="_blank"><span data-i18n="patternHelp"></span> <i class="fa fa-question-circle"></i></a> |
+        <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>
+      </div>
+
+      <h3 data-i18n="whitePatterns"></h3>
+      <!-- table template -->
+      <div class="scroll" style="margin-bottom: 2em;">
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th data-i18n="name"></th><th data-i18n="pattern"></th><th data-i18n="type"></th>
+              <th>HTTP/s</th><th data-i18n="active"></th><th data-i18n="edit"></th>
+            </tr>
+            <!-- template -->
+            <tr class="template">
+              <td><input type="text" spellcheck="false"></td>
+              <td><input type="text" spellcheck="false" required></td>
+              <td>
+                <select name="type">
+                  <option value="1">Wildcard</option>
+                  <option value="2">Reg Exp</option>
+                </select>
+              </td>
+              <td>
+                <select name="protocol">
+                  <option value="1">all</option>
+                  <option value="2">http</option>
+                  <option value="4">https</option>
+                </select>
+              </td>
+              <td>
+                <input type="checkbox" class="switch" id=""><label for=""></label>
+              </td>
+              <td style="text-align: right;">
+                <button type="button" class="plain hide" data-i18n="imported|title"><i class="fa fa-download"></i></button>
+                <button type="button" class="plain" data-i18n="patternTester|title"><i class="fa fa-flask"></i></button>
+                <!-- <button type="button" class="plain" data-i18n="edit|title"><i class="fa fa-pencil"></i></button> -->
+                <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+
+
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+
+
+      <h3 data-i18n="blackPatterns"></h3>
+      <div class="scroll">
+
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th data-i18n="name"></th><th data-i18n="pattern"></th><th data-i18n="type"></th>
+              <th>HTTP/s</th><th data-i18n="active"></th><th data-i18n="edit"></th>
+             </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+
+
+      <div style="margin: 1em 0 2em; text-align: center; font-size: 0.9em;">
+        <span data-i18n="addBlacklist"></span>
+        <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext center" data-i18n="addBlacklistTip"></span></div>
+        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button>
+      </div>
+
+      <div class="flex">
+        <div>
+          <input type="file" id="file" accept=".json">
+          <label for="file" class="button" data-i18n="importPatterns"></label>
+          <button type="button" data-i18n="exportPatterns"></button>
         </div>
-        <div class="row">
-          <input id="errorOkButton" type="button" class="button" value="Ok">
+        <div style="text-align: right;">
+          <button type="button" class="alert" data-i18n="cancel"></button>
+          <button type="button" data-i18n="newWhite"></button>
+          <button type="button" data-i18n="newBlack"></button>
+          <button type="submit" data-i18n="save"></button>
         </div>
       </div>
-    </div>
 
-    <div id="patternsRow" class="row hide-unimportant" style="margin: 0.5rem">
-        <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
-        <a href="/pattern-tester.html" target="_blank">Pattern Tester</a>
+      <p id="result" class="prime small success hide"></p>
 
-        <div id="whitePatternTitle" class="row small-12 columns"><h5>White Patterns</h5></div>
-        <div class="row">
-          <div class="small-3 columns pattern-row-header">Name</div>
-          <div class="small-3 columns pattern-row-header">Pattern</div>
-          <div class="small-2 columns pattern-row-header">Type</div>
-          <div class="small-1 columns pattern-row-header">http(s)</div>
-          <div class="small-1 columns pattern-row-header">On/Off</div>
-          <div class="small-2 columns pattern-row-header"> </div>
-        </div>
-				<div id="whitePatternScrollArea" class="clusterize-scroll">
-				  <div id="whitePatternContentArea" class="clusterize-content">
-				    <div class="clusterize-no-data">Loading data...</div>
-				  </div>
-				</div>
-        <br>
-        <div id="blackPatternTitle" class="row small-12 columns"><h5>Black Patterns</h5></div>
-        <div class="row">
-          <div class="small-3 columns pattern-row-header">Name</div>
-          <div class="small-3 columns pattern-row-header">Pattern</div>
-          <div class="small-2 columns pattern-row-header">Type</div>
-          <div class="small-1 columns pattern-row-header">http(s)</div>
-          <div class="small-1 columns pattern-row-header">On/Off</div>
-          <div class="small-2 columns pattern-row-header"> </div>
-        </div>
-				<div id="blackPatternScrollArea" class="clusterize-scroll">
-				  <div id="blackPatternContentArea" class="clusterize-content">
-				    <div class="clusterize-no-data">Loading data...</div>
-				  </div>
-				</div>
-				<br>
-        <div class="small-9 columns">
-          <span style="float: right">Add black patterns to prevent this proxy being used for localhost and intranet/private IP addresses
-						<span data-tooltip aria-haspopup="true" class="has-tip" data-disable-hover="false" title="Adds blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, and 10.*.*.*">Help</span>
-					</span>
-        </div>
-        <div class="small-3 columns">
-          <input id="addLocal" type="button" class="tiny button" value="Add">
-        </div>
+  </div>
 
-        <div class="small-12 columns"><br>
-					<span style="float: left">
-            <input id="export" type="button" class="button" value="Export Patterns">
-            <input id="import" type="button" class="button" value="Import Patterns">
-          </span>
-          <span style="float: right">
-            <input id="cancel" type="button" class="button alert" value="Cancel">
-            <input id="newBlack" type="button" class="button" value="New Black">
-            <input id="newWhite" type="button" class="button" value="New White">
-            <input id="save" type="button" class="button" value="Save">
-          </span>
-        </div>
-      </div>
-    </div>
 
-  </body>
-  <script src="scripts/const.js"></script>
-  <script src="scripts/jquery-3.4.1.js"></script>
-  <script src="scripts/vex.combined-4.1.0.js"></script>
-  <script src="scripts/patterns.js"></script>
-  <script src="scripts/storage.js"></script>
+  <script src="scripts/common.js"></script>
   <script src="scripts/utils.js"></script>
-	<script src="scripts/clusterize-0.18.0.js"></script>
+  <script src="scripts/patterns.js"></script>
+  </body>
 </html>

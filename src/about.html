@@ -1,73 +1,153 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="about">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      h3 { border-bottom: 1px solid #ddd; max-width: 20em; }
+      h3:not(:first-of-type) { margin-top: 2em; }
+      h4 { margin-bottom: 0; display: inline-block; }
+      p, img { margin-left: 1em; }
+      i.fa {
+        font-size: 1.3em;
+        margin-right: 0.4em;
+        width: 1em;
+      }
+      i.fa.fa-lock { color: #080; }
+      li.sub { margin-left: 2em; list-style-type: circle; }
+      li.sub + li:not(.sub) { margin-top: 1em; }
+    </style>
   </head>
-  <body style="margin: 1rem">
+  <body>
 
-    <div class="row">
-      <div class="small-12 columns">
-        <div class="row callout">
-            <img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">FoxyProxy - About</h2>
+    <!-- header -->
+    <div class="prime header" data-i18n="about"></div>
+
+    <!-- main -->
+    <div class="prime">
+
+      <!-- welcome on install/update -->
+      <div class="welcome hide">
+        <h3>Welcome!</h3>
+        <p>FoxyProxy has been the around for almost 15 years. So if you're upgrading from a legacy version, and your proxy settings are missing, please <a href="/import.html">import</a> them.<br>
+        <i>(This message only appears after FoxyProxy has upgraded or is first installed.)</i></p>
       </div>
 
-      <div class="row callout">
-        <div class="small-12 columns">
-          <h4>Info</h4>
-          <p><strong>Edition:</strong> <span id="edition"></span><br>
-          <strong>Version:</strong> <span id="version"></span>
-          <br><a target="_blank" href="https://github.com/foxyproxy/firefox-extension">Source Code</a></p>
-          <h4>Help</h4>
-          <p>
-            <a target="_blank" href="https://support.getfoxyproxy.org/"><i class="fa fa-question fp-orange"></i></a> Open a Support Ticket (no registration required)<br>
-						<a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o fp-orange"></i></a> Email Support<br>
-            <a target="_blank" href="https://forums.getfoxyproxy.org/"><i class="fa fa-users fp-orange"></i></a> Community Support Forums<br>
-            <a href="/pattern-help.html"><i class="fa fa-flask fp-orange"></i></a> Pattern Help (no internet connection required)<br>
-            <a id="whereamiButton" target="_blank" href="https://getfoxyproxy.org/geoip/"><i class="fa fa-globe fp-orange"></i></a> What's my IP Address?
-          </p>
-					<h4>Support Me</h4>
-					<p>Please <a target="_blank" href="https://www.paypal.me/ericjung2/9.99">donate</a> or <a target="_blank" href="https://getfoxyproxy.org/order/">buy dedicated VPN/proxy servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
-					<strong>Thank you for using FoxyProxy!</strong></p><img src="/images/ericjung.png"><p>-- <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
+      <h3>Info</h3>
+      <p><strong>Edition:</strong> <span id="edition"></span><br>
+      <strong>Version:</strong> <span id="version"></span><br>
+      <strong>Source Code:</strong> <a target="_blank" href="https://github.com/foxyproxy/firefox-extension">Code</a></p>
 
-          <h4>Release Notes for Recent Releases</h4>
+      <h3>Help</h3>
+      <p>
+        <a href="https://support.getfoxyproxy.org/" target="_blank"><i class="fa fa-question"></i>Open a Support Ticket </a><i>(no registration required)</i><br>
+        <a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o"></i>Email Support</a><br>
+        <a href="https://forums.getfoxyproxy.org/" target="_blank"><i class="fa fa-users"></i>Community Support Forums</a><br>
+        <a href="/pattern-tester.html"><i class="fa fa-flask"></i>Pattern Test</a> &amp; <a href="/pattern-help.html"><i class="fa fa-question-circle"></i>Pattern Help</a> <i>(no internet connection required)</i><br>
+        <a href="https://getfoxyproxy.org/geoip/" target="_blank"><i class="fa fa-globe"></i>What's my IP Address?</a>
+      </p>
 
-					<h6>Versions 6.4, 6.5, 6.6, 6.6.1, 6.6.2 (some versions unreleased)</h6>
-					<ul>
-						<li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
-						<li>Import/Export patterns to and from files (previously you could only import/export all settings, including patterns)</li>
-						<li>Replaced paging on the patterns page with infinite scroll</li>
-						<li>Replaced the inline editing on the patterns page with a modal dialog</li>
-						<li>Several UI improvements; for example, rounded containers are now less round, message after successful export, etc.</li>
-						<li>Removed all minified code for Mozilla; change filenames of 3rd-party libs to include version number</li>
-						<li>Security fixes with jQuery</li>
-						<li>Minor UI fixes to the toolbar popup window</li>
-						<li>Initial i18n support with 1 page localized</li>
-						<li>Removed several jQuery plugins towards the day when jQuery will be completely removed. Upgraded jQuery from 2.2.4 to 3.4.1 per Mozilla regulations.</li>
-						<li>Removed cruft</li>
-						<li>Minor updates to About and First Install pages</li>
-						<li>Added link on About Page to the now public github repository for source code</li>
-					</ul>
+      <h3>Support Me</h3>
+      <p>Please <a href="https://www.paypal.me/ericjung2/9.99" target="_blank">donate</a> or <a href="https://getfoxyproxy.org/order/" target="_blank">buy dedicated VPN/Proxy Servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
+      <p><strong>Thank you for using FoxyProxy!</strong></p>
+      <img src="/images/ericjung.png" alt=""><br>
+      <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
 
-          <h6>Version 6.3</h6>
 
-          <ul><li>Turn Firefox Sync on/off - much requested feature.</li>
-          <li>Some further input validation</li></ul>
+      <h3>Release Notes for Recent Releases</h3>
 
-          <h6>Version 6.2</h6>
+      <h4>Version 7.0</h4>
+        <ul>
 
-          <ul><li>Ability to turn logging on/off -- much requested feature that was in legacy FoxyProxy</li>
-          <li>New icon on main page for "What's my IP address?", previously only in the About page.</li></ul>
+          <li>Toolbar Popup</li>
+          <li class="sub">"By Pattern" option is removed if there are no patterns set</li>
 
-          <span style="float: right">
-            <input id="okBtn" type="button" class="button" value="OK">
-          </span>
-        </div>
-      </div>
+
+          <li>Options Page</li>
+          <li class="sub">Option to transfer preferences from <i>local</i> to <i>Sync</i> and vice versa</li>
+          <li class="sub">Options page shows <i class="fa fa-lock"></i>for proxies with saved username/password</li>
+          <li class="sub">Date is added to the export filename</li>
+          <li class="sub">Export auto-renames file if the same name exists</li>
+          <li class="sub">Country flag and mouseover information added for proxies imported from FoxyProxy account</li>
+          <li class="sub">"By Pattern" option is removed if there are no patterns set</li>
+
+          <li>Patterns Page</li>
+          <li class="sub">New Inline-Editor</li>
+          <li class="sub">Patterns are checked and errors dispalyed</li>
+          <li class="sub">Proxy title & Date is added to the export filename</li>
+          <li class="sub">Import data max size set to 5mb</li>
+
+
+          <li>Proxy Page</li>
+          <li class="sub">Option to set active on|off on proxy Edit page</li>
+          <li class="sub">username/password/port are kept when adding new proxies to ease creation of multiple proxies with same username/password</li>
+          <li class="sub">Default Proxy Type is set to HTTPS/SSL</li>
+          <li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
+
+
+          <li>Import Page</li>
+          <li class="sub">Added option to import proxies from FoxyProxy account</li>
+          <li class="sub">Import data max size set to 5mb</li>
+          <li class="sub">Added spinner for import duration</li>
+          <li class="sub">Import will save the data to the storage set in the imported preference (sync vs local)</li>
+
+
+          <li>Log Page</li>
+          <li class="sub">Log shows local date & time in local (browser) language</li>
+          <li class="sub">Log is not cleared when switching it off until it is manually cleared</li>
+          <li class="sub">Log entries are numbered</li>
+          <li class="sub">Added size control to Log entries</li>
+          <li class="sub">Default is set to log off and size 100 entries</li>
+
+          <li>i18n support</li>
+          <li>Removed JQuery, Clusterize & Vex Libraries</li>
+          <li>Greatly streamlined</li>
+          <li>Style/Code Improvement</li>
+        </ul>
+
+
+      <h4>Versions 6.4 &mdash; 6.6.2</h4>
+      <ul>
+        <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
+        <li>Import/Export patterns to and from files (previously you could only import/export all settings, including patterns)</li>
+        <li>Replaced paging on the patterns page with infinite scroll</li>
+        <li>Replaced the inline editing on the patterns page with a modal dialog</li>
+        <li>Several UI improvements; for example, rounded containers are now less round, message after successful export, etc.</li>
+        <li>Removed all minified code for Mozilla; change filenames of 3rd-party libs to include version number</li>
+        <li>Security fixes with jQuery</li>
+        <li>Minor UI fixes to the toolbar popup window</li>
+        <li>Initial i18n support with 1 page localized</li>
+        <li>Removed several jQuery plugins towards the day when jQuery will be completely removed. Upgraded jQuery from 2.2.4 to 3.4.1 per Mozilla regulations.</li>
+        <li>Removed cruft</li>
+        <li>Minor updates to About and First Install pages</li>
+        <li>Added link on About Page to the now public github repository for source code</li>
+      </ul>
+
+      <h4>Version 6.3</h4>
+
+      <ul>
+        <li>Turn Firefox Sync on/off - much requested feature.</li>
+        <li>Some further input validation</li>
+      </ul>
+
+      <h4>Version 6.2</h4>
+
+      <ul>
+        <li>Ability to turn logging on/off -- much requested feature that was in legacy FoxyProxy</li>
+        <li>New icon on main page for "What's my IP address?", previously only in the About page.</li>
+      </ul>
+
+
+    <div style="text-align: right;">
+      <button type="button" class="button" data-i18n="back">&#x25c1; </button>
     </div>
 
-    <script src="scripts/const.js"></script>
-    <script src="scripts/about.js"></script>
+  </div>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/about.js"></script>
   </body>
 </html>
