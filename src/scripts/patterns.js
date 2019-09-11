@@ -141,25 +141,24 @@ function makeRow(pat, index, bw) {
   const td = tr.children;
 
 
-  td[0].children[0].value = pat.title;                               
-  td[1].children[0].value = pat.pattern;                                
+  td[0].children[0].value = pat.title;
+  td[1].children[0].value = pat.pattern;
   td[2].children[0].value = pat.type;
   td[3].children[0].value = pat.protocols;
   td[4].children[0].checked = pat.active;
   td[4].children[0].id = bw + index;
   td[4].children[1].setAttribute('for', td[4].children[0].id);
-  console.log(td[4].children[0], pat.active);
-  
+
   pat.importedPattern && td[5].children[0].classList.remove('hide');
 
   // add Listeners();
   [...td[5].children].forEach(item => item.addEventListener('click', processEdit));
-  
+
   return tr;
 }
 
 function addNew(parent, bw) {
-  
+
   const tr = makeRow(defaultPattern, proxy[bw].length, bw);
   parent.appendChild(tr);
   tr.children[1].children[0].focus();
@@ -197,10 +196,10 @@ function processEdit() {
 
 
 function checkOptions() {
-  
+
   // use for loop to be able to return early on error
   for (const item of document.querySelectorAll('tr[data-idx]')) {
-    
+
     const td = item.children;
 
     // --- trim text values
@@ -208,20 +207,20 @@ function checkOptions() {
 
     // test pattern
     const regex = testPattern(td[1].children[0], td[2].children[0]);
-    if (!regex) { return; }  
-    
+    if (!regex) { return; }
+
     const bw = item.dataset.bw;
-    const idx = item.dataset.idx; 
+    const idx = item.dataset.idx;
     proxy[bw][idx] = {
       title: td[0].children[0].value,
       pattern: td[1].children[0].value,
       type: td[2].children[0].value *1,
       protocols: td[3].children[0].value *1,
       active: td[4].children[0].checked,
-      'regExp': regex
+      'regExp': regex.source
     };
   }
-  
+
   // all patterns passed
   storageArea.set({[id]: proxy}, () => location.href = '/options.html');
 }

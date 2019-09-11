@@ -131,7 +131,7 @@ function process(settings) {
 
 // Update the PAC script whenever stored settings change
 function storageOnChanged(changes, area) {
-    console.log(changes);
+//    console.log(changes);
   // update storageArea on sync on/off change from options
   if (changes.hasOwnProperty('sync') && changes.sync.newValue !== changes.sync.oldValue) {
     storageArea = changes.sync.newValue ? chrome.storage.sync : chrome.storage.local;
@@ -175,7 +175,7 @@ function sendToPAC(settings) {
       proxySettings: []
     }
 
-    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id])); // filter out the inactive & prepare RegEx
+    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id])); // filter out the inactive
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
     browser.proxy.register(pacURL).then(() => {

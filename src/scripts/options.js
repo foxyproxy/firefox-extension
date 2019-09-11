@@ -107,7 +107,11 @@ function process() {
           //webSQL: true,
           //serverBoundCertificates: true,
           serviceWorkers: true
-        }, () => Utils.notify(chrome.i18n.getMessage('done'))));
+        }, () => {
+            Utils.notify(chrome.i18n.getMessage('done'));
+            closePopup();
+          }
+        ));
       showPopup();
       break;
   }

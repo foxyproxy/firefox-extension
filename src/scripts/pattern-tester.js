@@ -60,7 +60,7 @@ function testPattern() {
     '4': ['https:']
   };
 
-  if (!protocolSet[protocols.value].includes(parsedURL.protocols)) {
+  if (!protocolSet[protocols.value].includes(parsedURL.protocol)) {
     showResult(chrome.i18n.getMessage('errorProtocol'), true);
     return;
   }
