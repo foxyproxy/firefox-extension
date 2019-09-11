@@ -7,7 +7,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
   attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
 });
 // ----------------- /Internationalization -----------------
-document.querySelector('#filename').textContent = chrome.i18n.getMessage('extensionName') + '_YYYY-MM-DD';
+
 
 // ----------------- Spinner -------------------------------
 const spinner = document.querySelector('.spinner');
