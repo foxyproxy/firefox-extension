@@ -61,17 +61,17 @@
       
       
       <fieldset>
-        <legend>Import Settings from FoxyProxy 6.0+</legend>
+        <legend>Import Settings from FoxyProxy 5.0+</legend>
         
-        <p>FoxyProxy can use <a href="https://support.mozilla.org/products/firefox/sync" target="_blank">Firefox Sync</a> to synchronize settings across different installations of Firefox. But if you don't use Firefox Sync or want to share your settings with friends,<button type="button" class="button small" data-i18n="export"><i class="fa fa-upload"></i> </button> FoxyProxy settings. Then use this page to import those settings. By default, the file is called <i>foxyproxy.json</i>.<br><br>
+        <p>FoxyProxy can use <a href="https://support.mozilla.org/products/firefox/sync" target="_blank">Firefox Sync</a> to synchronize settings across different installations of Firefox. But if you don't use Firefox Sync or want to share your settings with friends,<button type="button" class="button small" data-i18n="export"><i class="fa fa-upload"></i> </button> FoxyProxy settings. Then use this page to import those settings. By default, the file is called <i id="filename"></i>.<br><br>
         <input type="file" id="importJson" accept=".json">
         <label for="importJson" class="button" data-i18n="import"><i class="fa fa-download"></i> </label>
       </fieldset>        
 
       <fieldset>
-        <legend>Import Settings from older FoxyProxy versions</legend>
+        <legend>Import Settings from FoxyProxy 4.x and earlier</legend>
 
-        <p>If you have upgraded from an older version of FoxyProxy, Firefox has completely changed the addon system since the previous FoxyProxy version. Older FoxyProxy versions used a pop-up window. It looked a little different on Windows, Mac, and Linux, but the essence was like the image blllow.</p>
+        <p>Firefox has completely changed the addon system since FoxyProxy 4.x and earlier. Older FoxyProxy versions used a pop-up window. It looked a little different on Windows, Mac, and Linux, but the essence was like the image below.</p>
 
         <p>Unfortunately, due to Firefox 57+ limitations, we cannot read your FoxyProxy settings automatically. However, they are not lost. To import your old settings, please select the file <i>foxyproxy.xml</i> below. You can find it in the <a href="https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data#w_how-do-i-find-my-profile" target="_blank">Firefox profile directory</a>.<br><br>
         <input type="file" id="importXml" accept=".xml">
