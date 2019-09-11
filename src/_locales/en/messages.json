@@ -72,7 +72,7 @@
   "down": { "message": "move down" },
 
   "disabled": { "message": "Disabled" },
-  "active": { "message": "Active" },
+  "active": { "message": "Enabled for patterns and priorities mode" },
 
 
   "name": { "message": "Name" },

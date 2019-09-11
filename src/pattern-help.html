@@ -21,11 +21,12 @@
       <p><h3 style="display: inline-block;">TL;DR</h3>: <a href="#examples">show me the examples</a></p>
       
       <h3>What are they?</h3>
-      <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="prime tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same group of patterns) match a URL, the proxy is <strong>not</strong> used to load that URL.</p>
+      <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="prime tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same proxy) match a URL, that proxy is <strong>not</strong> used to load that URL.</p>
       <div class="prime small warning">Patterns are <strong>ignored</strong> unless FoxyProxy is set to <i>Use Enabled Proxies By Patterns and Priority</i>.</div>
       
       <h3>Ordering</h3>
-      <p>Every URL is compared with the patterns for each proxy. The white/black patterns for the top-most (first) proxy are checked first, then the next set of white/black patterns are checked, and on down the list of proxies until there is a match. If there is no match, the <i>Default</i> is used to load the URL. <i>Default</i> matches all URLs. You can re-order the proxies using the arrow buttons as you like. You cannot re-order the <i>Default</i> since it acts as a <i>catch-all</i>.</p>
+      <p>Every URL is compared with the patterns for each proxy. The white/black patterns for the top-most (first) proxy are checked first, then the next set of white/black patterns are checked, and on down the list of proxies until there is a match. If there is no match, Firefox's native proxy settings are used to load the URL. Older versions of FoxyProxy had a <i>Default</i> proxy that acted as a catch-all to matches all URLs. You may still have <i>Default</i> in FoxyProxy if you upgraded from a previous version.
+			<p>You can re-order the proxies using the arrow buttons as you like, but <strong>the white/black patterns for the top-most (first) proxy are checked first.</strong></p>
       <p>If a black pattern matches, the proxy is not used for that URL <i>even if a white pattern also matches</i>. The black pattern takes priority. The URL may, however, load through another proxy you've defined if that proxy has a matching whitelist pattern and no matching blacklist pattern.</p>
       <p>The order of white patterns and black patterns within a proxy do not matter.</p>
       
