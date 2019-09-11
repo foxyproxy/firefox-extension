@@ -93,7 +93,7 @@
   "proxyType": { "message": "Proxy Type" },
   "color": { "message": "Color" },
   "title": { "message": "Title or Description (optional)" },
-  "ip": { "message": "IP address, DNS name, server name" },
+  "ip": { "message": "Proxy IP address or DNS name" },
   "port": { "message": "Port" },
   "username": { "message": "Username (optional)" },
   "password": { "message": "Password (optional)" },
