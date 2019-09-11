@@ -1,38 +1,8 @@
 # 3rd-Party Libraries
 
-## jQuery 3.4.1
-
-https://code.jquery.com/jquery-3.4.1.js
-
-## Fork of jQuery Swapsies Plugin
-  Swap and move two DIVs smoothly.
-  **The only changes I made are so it is compatible with jQuery 3.x instead of jQuery 2.x.**
-
-Original Source (before fork): http://biostall.com/wp-content/uploads/2010/07/jquery-swapsies.js <br>
-Docs: http://biostall.com/swap-and-re-order-divs-smoothly-using-jquery-swapsie-plugin
-
 ## jscolor Color Picker
 A very nice color picker, much better than HTML's native <input type="color">. No jQuery dependency.
 
 Source: http://jscolor.com/release/latest.zip (Unfortunately, there is no specific URL for 2.0.5, the version I am using) <br>
 Docs:  http://jscolor.com/
 Renamed to jscolor-2.0.5.js
-
-## Vex
-Pretty dialogs with no jQuery dependency.
-
-Source: https://raw.githubusercontent.com/HubSpot/vex/v4.1.0/dist/js/vex.combined.js <br>
-Docs: https://github.hubspot.com/vex/
-Renamed to vex-combined-4.1.0.js
-
-## DOMPurify
-
-Source: https://raw.githubusercontent.com/cure53/DOMPurify/1.0.11/dist/purify.js <br>
-Docs: https://github.com/cure53/DOMPurify
-Renamed to dompurify-1.0.11.js
-
-## Clusterize
-
-Source: https://raw.githubusercontent.com/NeXTs/Clusterize.js/v0.18.0/clusterize.js <br>
-Docs: https://clusterize.js.org/
-Renamed to clusterize-0.18.0.js
