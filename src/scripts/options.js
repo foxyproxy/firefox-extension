@@ -261,9 +261,9 @@ function processOptions(pref) {
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
-  if (FOXYPROXY_BASIC || (pref.mode === 'patterns' && !foundPattern)) {  
+  if (FOXYPROXY_BASIC || !foundPattern) {  
     mode.children[0].classList.add('hide');                 // hide by pattern option
-    pref.mode = 'disabled';
+    pref.mode === 'patterns' &&  (pref.mode = 'disabled');
   }
 
   const opt = mode.querySelector(`option[value="${pref.mode}"]`);
