@@ -34,30 +34,28 @@ function FindProxyForURL(url, host) { // The URL being accessed. The path and qu
   }
 }
 
+const schemeSet = {  // converting to meaningful terms
+	all : 1,
+	http: 2,
+	https: 4
+};
 function findProxyMatch(url) {
-  // for loop is slightly faster than .forEach(), which calls a function and all the overhead with that
-  // note: we've already thrown out inactive settings and inactive patterns.
+  // note: we've already thrown out inactive settings and inactive patterns in background.js.
   // we're not iterating over them
 
   const [scheme, hostPort] = url.split('://');
-  const schemeSet = {                                       // converting to meaningful terms
-    all : 1,
-    http: 2,
-    https: 4
-  };
-  
   for (const proxy of settings.proxySettings) {
     
     // Check black patterns first
     const blackMatch = proxy.blackPatterns.find(item => 
-            item.active && (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+            item.protocols === schemeSet.all || item.protocols === schemeSet[scheme] &&
               new RegExp(item['regExp'], 'i').test(hostPort));
  
     //if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
     if (blackMatch) { continue; }                             // if blacklist matched move to the next proxy
 
     const whiteMatch = proxy.whitePatterns.find(item =>
-            item.active && (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+            item.protocols === schemeSet.all || item.protocols === schemeSet[scheme] &&
               new RegExp(item['regExp'], 'i').test(hostPort));
   
     if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here

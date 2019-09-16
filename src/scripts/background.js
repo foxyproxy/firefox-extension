@@ -175,8 +175,16 @@ function sendToPAC(settings) {
       proxySettings: []
     }
 
-    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id])); // filter out the inactive
+		// filter out the inactive proxy settings
+    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id]));
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
+
+		// Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
+		// is a little faster (doesn't even know about inative patterns)
+		for (const idx in active.proxySettings) {
+			active.proxySettings[idx].blackPatterns = active.proxySettings[idx].blackPatterns.filter(x => x.active);
+			active.proxySettings[idx].whitePatterns = active.proxySettings[idx].whitePatterns.filter(x => x.active);
+		}
 
     browser.proxy.register(pacURL).then(() => {
 
