@@ -35,10 +35,11 @@ function FindProxyForURL(url, host) { // The URL being accessed. The path and qu
 }
 
 const schemeSet = {  // converting to meaningful terms
-	all : 1,
-	http: 2,
-	https: 4
+  all : 1,
+  http: 2,
+  https: 4
 };
+
 function findProxyMatch(url) {
   // note: we've already thrown out inactive settings and inactive patterns in background.js.
   // we're not iterating over them
@@ -64,15 +65,15 @@ function findProxyMatch(url) {
   return null; // no black or white matches
 }
 
-function prepareSetting(url, proxy, matchedPattern) {
+const typeSet = {
+  1: 'http',    // PROXY_TYPE_HTTP
+  2: 'https',   // PROXY_TYPE_HTTPS
+  3: 'socks',   // PROXY_TYPE_SOCKS5
+  4: 'socks4',  // PROXY_TYPE_SOCKS4
+  5: 'direct'   // PROXY_TYPE_NONE
+};
 
-  const typeSet = {
-    1: 'http',    // PROXY_TYPE_HTTP
-    2: 'https',   // PROXY_TYPE_HTTPS
-    3: 'socks',   // PROXY_TYPE_SOCKS5
-    4: 'socks4',  // PROXY_TYPE_SOCKS4
-    5: 'direct'   // PROXY_TYPE_NONE
-  };
+function prepareSetting(url, proxy, matchedPattern) {
 
   const ret = {
     type: typeSet[proxy.type] || null, 
