@@ -66,8 +66,25 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 chrome.storage.local.get(null, result => {
   // browserVersion is not used & runtime.getBrowserInfo() is not supported on Chrome
   // sync is NOT set or it is false, use this result ELSE get it from storage.sync
-  storageArea = result.sync ? chrome.storage.sync : chrome.storage.local; // cache for subsequent use
-  !result.sync ? process(result) : chrome.storage.sync.get(null, process);
+  // check both storage on start-up
+  if (!Object.keys(result)[0]) {                            // local is empty, check sync
+
+    chrome.storage.sync.get(null, syncResult => {
+      if (!Object.keys(syncResult)[0]) {                    // sync is also empty
+        storageArea = chrome.storage.local;                 // set storage as local
+        process(result);
+      }
+      else {
+        chrome.storage.local.set({sync: true});             // save sync as true
+        storageArea = chrome.storage.sync;                  // set storage as sync
+        process(syncResult);
+      }
+    });
+  }
+  else {
+    storageArea = result.sync ? chrome.storage.sync : chrome.storage.local; // cache for subsequent use
+    !result.sync ? process(result) : chrome.storage.sync.get(null, process);
+  }
 });
 // ----------------- /User Preference ----------------------
 
