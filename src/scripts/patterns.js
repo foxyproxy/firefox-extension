@@ -214,7 +214,6 @@ function checkOptions() {
     if (!regex) { return; }
 
     const bw = item.dataset.bw;
-    //const idx = item.dataset.idx;
     pxy[bw].push({
       title: td[0].children[0].value,
       pattern: td[1].children[0].value,
