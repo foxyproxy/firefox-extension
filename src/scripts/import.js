@@ -299,24 +299,12 @@ function prepareForStorage(settings) {
     return null;
   }
 
-  let lastResortFound = false;
-
-  const def = {
-    active: true,
-    title: 'Default',
-    notes: 'These are the settings that are used when no patterns match a URL.',
-    color: '#0055E5',
-    type: PROXY_TYPE_NONE,
-    whitePatterns: [PATTERN_ALL_WHITE],
-    blackPatterns: []
-  }
-
   // base format
   const ret = {
     mode: 'disabled',
     logging: {
-      size: 500,
-      active: true
+      size: 100,
+      active: false
     }
   };
 
@@ -327,16 +315,10 @@ function prepareForStorage(settings) {
   settings.proxySettings.forEach(item => {
 
     const id = item.id;
-    if (id === LASTRESORT) {
-      lastResortFound = true;
-      item.index = Number.MAX_SAFE_INTEGER;
-    }
-    else { item.index = idx++; }
+    item.index = idx++;
     delete item.id;                                         // Don't need id
     ret[id] = item;
-
   });
-  if (!lastResortFound) { ret[LASTRESORT] = def; }          // Fix data integrity, Copy but without id
 
   return ret;
 }
@@ -363,16 +345,17 @@ function foxyProxyImport() {
 		formBody.push(encodedKey + "=" + encodedValue);
 	}
 	
-	// --- fetch data from server
-  fetch('https://bilestoad.com/webservices/get-accounts.php',
-		{	method: 'POST',
-			body: formBody.join("&"),
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-			}
+  // --- fetch data
+	fetch('https://getfoxyproxy.org/webservices/get-accounts.php',
+	{	method: 'POST',
+		body: formBody.join("&"),
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+		}
 	})
   .then(response => response.json())
   .then(response => {
+
     if (!Array.isArray(response) || !response[0] || !response[0].hostname) {
       hideSpinner();
       Utils.notify(chrome.i18n.getMessage('errorFetch'));
@@ -385,13 +368,14 @@ function foxyProxyImport() {
 
       response.forEach(item => {
 				const hostname = item.hostname.substring(0, item.hostname.indexOf('.getfoxyproxy.org'));
+				
         // --- creating proxy
         result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
           index: -1,
           active: item.active,
           title: hostname,
           color: '#ff9900',
-          type: 1,                                          // HTTPS
+          type: 1,                                          // HTTP
           address: item.ipaddress,
           port: item.port[0],
           username: item.username,

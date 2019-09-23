@@ -34,7 +34,7 @@
   "confirmTransferToLocal": { "message": "Would you like to transfer the synced settings to your local profile?\nExisting Data will be merged." },
   "confirmTransferToSync": { "message": "Would you like to transfer the local settings to your synced profile?\nExisting Data will be merged." },
   
-  "modePatterns": { "message": "Enabled Proxies By Patterns and Priority" },
+  "modePatterns": { "message": "Use Enabled Proxies By Patterns and Order" },
   "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
   "forAll": { "message": "for all URLs" },
 

@@ -100,17 +100,7 @@ function process(settings) {
       logging: {
         size: 100,
         active: false
-      }/*,
-      [LASTRESORT]: {
-        id: LASTRESORT,
-        active: true,
-        title: 'Default',
-        notes: 'These are the settings that are used when no patterns match a URL.',
-        color: '#0055E5',
-        type: PROXY_TYPE_NONE, // const PROXY_TYPE_NONE = 5; // DIRECT
-        whitePatterns: [PATTERN_ALL_WHITE],
-        blackPatterns: []
-      }*/
+      }
     };
     update = true;
   }

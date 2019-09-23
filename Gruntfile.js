@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 		      archive: 'target.zip'
 		    },
 		    files: [
-		      {src: ['*/**', '!node_modules/**', '!.DS_Store', '!archive/**'], dest: '/', filter: 'isFile'}
+		      {expand: true, cwd: 'src/', src: ['**/*', '!node_modules/**', '!.DS_Store', '!archive/**', '!tests/**'], dest: '/', filter: 'isFile'}
 		    ]
 		  }
 		}
