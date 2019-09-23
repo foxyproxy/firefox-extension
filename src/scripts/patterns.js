@@ -159,7 +159,7 @@ function makeRow(pat, index, bw) {
 
 function addNew(parent, bw) {
 
-  const tr = makeRow(defaultPattern, proxy[bw].length, bw);
+  const tr = makeRow(defaultPattern, parent.children.length, bw);
   parent.appendChild(tr);
   tr.children[1].children[0].focus();
 }
@@ -187,7 +187,6 @@ function processEdit() {
       break;
 
     case 'delete|title':
-      patternsArray.splice(idx, 1);
       parent.style.opacity = 0;
       setTimeout(() => { parent.remove(); }, 600);          // remove row
       break;
@@ -197,6 +196,11 @@ function processEdit() {
 
 function checkOptions() {
 
+  const pxy = {
+    whitePatterns: [],
+    blackPatterns: []
+  };
+  
   // use for loop to be able to return early on error
   for (const item of document.querySelectorAll('tr[data-idx]')) {
 
@@ -210,18 +214,19 @@ function checkOptions() {
     if (!regex) { return; }
 
     const bw = item.dataset.bw;
-    const idx = item.dataset.idx;
-    proxy[bw][idx] = {
+    pxy[bw].push({
       title: td[0].children[0].value,
       pattern: td[1].children[0].value,
       type: td[2].children[0].value *1,
       protocols: td[3].children[0].value *1,
       active: td[4].children[0].checked,
       'regExp': regex.source
-    };
+    });
   }
 
   // all patterns passed
+  proxy.whitePatterns = pxy.whitePatterns;
+  proxy.blackPatterns = pxy.blackPatterns;
   storageArea.set({[id]: proxy}, () => location.href = '/options.html');
 }
 
