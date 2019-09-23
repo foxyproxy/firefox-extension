@@ -33,7 +33,7 @@
       <div class="welcome hide">
         <h3>Welcome!</h3>
         <p>FoxyProxy has been around for almost 15 years. So if you're upgrading from a legacy version, and your proxy settings are missing, please <a href="/import.html">import</a> them.<br>
-        <i>(This message only appears after FoxyProxy has upgraded or is first installed.)</i></p>
+        <strong>(This message only appears after FoxyProxy has upgraded or is first installed.)</strong></p>
       </div>
 
       <h3>Info</h3>
@@ -84,14 +84,14 @@
           <li>Proxy Page</li>
           <li class="sub">Option to set active on|off on proxy Edit page</li>
           <li class="sub">username/password/port are kept when adding new proxies to ease creation of multiple proxies with same username/password</li>
-          <li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
+					<li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
 
 
           <li>Import Page</li>
           <li class="sub">Added option to import proxies from FoxyProxy account</li>
           <li class="sub">Import data max size set to 5mb</li>
           <li class="sub">Added spinner for import duration</li>
-          <li class="sub">Import will save the data to the storage set in the imported preference (sync vs local)</li>
+          <li class="sub">Import now saves the data to the storage set in the imported preference (sync vs local)</li>
 
 
           <li>Log Page</li>
@@ -101,10 +101,11 @@
           <li class="sub">Added size control to Log entries</li>
           <li class="sub">Default is set to log off and size 100 entries</li>
 
+					<li><strong>Default proxy</strong> is no longer created for new installations. Users can create this manually if they want it.</li>
           <li>i18n support</li>
-          <li>Removed JQuery, Clusterize & Vex Libraries</li>
-          <li>Greatly streamlined</li>
-          <li>Style/Code Improvement</li>
+          <li>Removed all but one external javascript libraries: JQuery, Clusterize & Vex</li>
+          <li>Greatly streamlined code</li>
+          <li>Style/Code Improvements</li>
         </ul>
 
 
@@ -131,14 +132,6 @@
         <li>Turn Firefox Sync on/off - much requested feature.</li>
         <li>Some further input validation</li>
       </ul>
-
-      <h4>Version 6.2</h4>
-
-      <ul>
-        <li>Ability to turn logging on/off -- much requested feature that was in legacy FoxyProxy</li>
-        <li>New icon on main page for "What's my IP address?", previously only in the About page.</li>
-      </ul>
-
 
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>
