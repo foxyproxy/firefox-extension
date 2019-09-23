@@ -1,284 +1,289 @@
-let proxyScriptLoaded = false, pacURL = "scripts/pac.js", activeSettings,
-  browserVersion;
+'use strict';
 
-// BEGIN: used in log.js
-// Use |var| not |let| so it's accessible from log.js
-var logg;
-function getLogg() {
-  return logg;
+// ----- global
+//const FF = typeof browser !== 'undefined'; // for later
+const pacURL = 'scripts/pac.js';
+let storageArea; // keeping track of sync
+let bgDisable = false;
+
+// ----------------- logger --------------------------------
+let logger;
+function getLog() { return logger; }
+class Logger {
+
+  constructor(size = 100, active = false) {
+    this.size = size;
+    this.list = [];
+    this.active = active;
+  }
+
+  clear() {
+    this.list = [];
+  }
+
+  add(item) {
+    this.list.push(item);                             // addds to the end
+    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+  }
+
+  updateStorage() {
+    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+    storageArea.set({logging: {size: this.size, active: this.active} });
+  }
 }
-
-// Use |var| not |let| so it's accessible from log.js
-var ignoreWrite = false;
-function ignoreNextWrite() {
-  ignoreWrite = true;
-}
-// END: used in log.js
+// ----------------- /logger -------------------------------
 
 
-// onProxyError will be renamed to onError
+// ----------------- Listeners ------------------
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1388619
-if ("onProxyError" in browser.proxy)
-  browser.proxy.onProxyError.addListener(e => console.error(`pac.js error: ${e.message}`));
-else
-  browser.proxy.onError.addListener(e => console.error(`pac.js error: ${e.message}`));
+// proxy.onProxyError has been deprecated and will be removed in Firefox 71. Use proxy.onError instead.
+// FF60+ proxy.onError | FF55-59 proxy.onProxyError
+browser.proxy['onError' || 'onProxyError'].addListener(e => console.error(`pac.js error: ${e.message}`));
 
-browser.runtime.onMessage.addListener((messageObj, sender) => {
-  if (messageObj == MESSAGE_TYPE_DELETING_ALL_SETTINGS) {
-    ignoreWrite = true;
-    return;
-  }
+// --- registering persistent listener
+// auth can only be sent for HTTP requests so '<all_urls>' is not needed
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 ...Resolution: --- ? WONTFIX
+chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['*://*/*']}, ['blocking']);
 
-  // Only handle our messages
-  if (sender.url != browser.extension.getURL(pacURL)) {
-    console.log("IGNORING MESSAGE");
-    return;
-  }
-  if (messageObj.type == MESSAGE_TYPE_CONSOLE) {
-    // browser.runtime.sendMessage({type: MESSAGE_TYPE_CONSOLE, message: str});
-    console.log("Message from PAC: " + messageObj.message);
-  }
-  else if (messageObj.type == MESSAGE_TYPE_LOG) {
-    //console.log("Got log message from PAC: " + JSON.stringify(messageObj));
-    // browser.runtime.sendMessage({type: MESSAGE_TYPE_LOG, url: url, matchedPattern: patternObj, proxySetting: proxySetting, error: true});
-    if (logg) logg.add(messageObj);
+chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
+  // reason: install | update | browser_update | shared_module_update
+  switch (true) {
 
-    browser.browserAction.setTitle({title: Utils.getNiceTitle(messageObj.proxySetting)});
-    browser.browserAction.setBadgeText({text: Utils.getNiceTitle(messageObj.proxySetting)});
-    browser.browserAction.setBadgeBackgroundColor({color: messageObj.proxySetting.color});
+    case details.reason === 'install':
+    case details.reason === 'update' && /^(3\.|4\.|5\.5|5\.6)/.test(details.previousVersion):
+      chrome.tabs.create({url: '/about.html?welcome'});
+      break;
   }
 });
 
-function provideCredentialsAsync(details) {
-  // details.url is scheme + url without path and query info; e.g. https://www.google.com/
-  // note ending slash. details.host is www.google.com
-  if (!details.isProxy || !activeSettings) return;
-  //console.log("provideCredentialsAsync(): " + JSON.stringify(activeSettings));
-  let ps;
-  if (activeSettings.mode == PATTERNS || activeSettings.mode == RANDOM || activeSettings.mode == ROUND_ROBIN) {
-    ps = Utils.findMatchingProxySetting(details.url, new URL(details.url).host, activeSettings.proxySettings); // return {proxySetting: proxySetting, patternObj: patternObj};
-    /*if (ps) {
-      console.log("provideCredentialsAsync(): returning " + JSON.stringify(ps));
-    }
-    else
-      console.log("provideCredentialsAsync(): returning null");*/
+chrome.runtime.onMessage.addListener((message, sender) => {
+  // used only for log from PAC, will be removed in the next API update
+  message.type === 'log' && logger && logger.active && logger.add(message);
+});
+
+
+// ----------------- User Preference -----------------------
+chrome.storage.local.get(null, result => {
+  // browserVersion is not used & runtime.getBrowserInfo() is not supported on Chrome
+  // sync is NOT set or it is false, use this result ELSE get it from storage.sync
+  // check both storage on start-up
+  if (!Object.keys(result)[0]) {                            // local is empty, check sync
+
+    chrome.storage.sync.get(null, syncResult => {
+      if (!Object.keys(syncResult)[0]) {                    // sync is also empty
+        storageArea = chrome.storage.local;                 // set storage as local
+        process(result);
+      }
+      else {
+        chrome.storage.local.set({sync: true});             // save sync as true
+        storageArea = chrome.storage.sync;                  // set storage as sync
+        process(syncResult);
+      }
+    });
   }
   else {
-    // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
-    // activeSettings.mode is set to the proxySettings id to use for all URLs. Use its credentials, if any.
-    // It's the only object in the activeSettings.proxySettings array.
-    ps = {proxySetting: activeSettings.proxySettings[0], matchedPattern: USE_PROXY_FOR_ALL_URLS};
+    storageArea = result.sync ? chrome.storage.sync : chrome.storage.local; // cache for subsequent use
+    !result.sync ? process(result) : chrome.storage.sync.get(null, process);
   }
-  if (ps) {
-    console.log("provideCredentialsAsync(): returning " + ps.proxySetting.username);
-  }
-  else  {
-    console.log("provideCredentialsAsync(): returning null");
-  }
-  return ps ? {authCredentials: {username: ps.proxySetting.username, password: ps.proxySetting.password}} : null;
-}
+});
+// ----------------- /User Preference ----------------------
 
-/**
- * Register the proxy script and send it the settings
- */
-function registerProxyScript() {
-  if (!proxyScriptLoaded) {
-    console.log("registering proxy script");
-    // Name changed in 56.0a1 https://bugzilla.mozilla.org/show_bug.cgi?id=1371879
-    // We're only compatible with Firefox 57+ now so no need to check this.
-    return browser.proxy.register(pacURL);
+function process(settings) {
+
+  let update;
+  let prefKeys = Object.keys(settings);
+
+  if (!settings || !prefKeys[0]) {                          // create default settings if there are no settings
+    // default
+    settings = {
+      mode: 'disabled',
+      logging: {
+        size: 100,
+        active: false
+      }/*,
+      [LASTRESORT]: {
+        id: LASTRESORT,
+        active: true,
+        title: 'Default',
+        notes: 'These are the settings that are used when no patterns match a URL.',
+        color: '#0055E5',
+        type: PROXY_TYPE_NONE, // const PROXY_TYPE_NONE = 5; // DIRECT
+        whitePatterns: [PATTERN_ALL_WHITE],
+        blackPatterns: []
+      }*/
+    };
+    update = true;
   }
-  else return new Promise((resolve) => resolve());
-}
 
+  // ----------------- migrate -----------------------------
+  // The initial WebExtension version, which was disabled after a couple of days, was called 5.0
+  if(settings.hasOwnProperty('whiteBlack')) {               // check for v5.0 storage, it had a whiteBlack property
 
-function unregisterProxyScript() {
-  if (proxyScriptLoaded) {
-    console.log("Unregistering proxy script");
-    // Did not exist prior to 56.0a1 https://bugzilla.mozilla.org/show_bug.cgi?id=1371879
-    // We're only compatible with Firefox 57+ now so no need to check this.
-    //if (browserVersion >= 56) {
-    return browser.proxy.unregister();
+    delete settings.whiteBlack;
+    ///settings[LASTRESORT] = DEFAULT_PROXY_SETTING;           // 5.0 didn't have a default proxy setting
+    update = true;
   }
-  else return new Promise((resolve) => resolve());
-}
 
-// Returns an array of active patterns. Returns a valid empty array if |p| is null or not an array.
-// Never return nulls.
-function filterAndValidatePatterns(patternObjArr) {
-  let ret = [];
-  if (patternObjArr && Array.isArray(patternObjArr)) {
-    for (let patternObj in patternObjArr) {
-      let pat = patternObjArr[patternObj];
-      if (pat.active) {
-        // Build regexp from patterns
-        if (pat.type == PATTERN_TYPE_WILDCARD)
-          pat.regExp = Utils.safeRegExp(Utils.wildcardStringToRegExpString(pat.pattern));
-        else if (pat.type == PATTERN_TYPE_REGEXP)
-          pat.regExp = Utils.safeRegExp(pat.pattern); // TODO: need to notify user and not match this to zilch. Go to disabled mode.
-        else {
-          //console.error("filterAndValidatePatterns(): Skipping pattern due to error (1): " + JSON.stringify(pat));
-          continue;
-        }
-        //console.log("filterAndValidatePatterns(): keeping pattern: " + JSON.stringify(pat.pattern));
-        ret.push(pat);
+  // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
+  // imported this property as a string rather than boolean.
+  if (prefKeys.find(item => settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string')) {
+    prefKeys.forEach(item => {
+
+      if (settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string') {
+        settings[item].proxyDNS = settings[item].proxyDNS === 'true' ? true : false;
       }
-      //else {
-        //console.error("filterAndValidatePatterns(): Skipping pattern because it's inactive " + JSON.stringify(pat));
-      //}
-    }
+    });
+    update = true;
   }
-  return ret;
+  // ----------------- /migrate ----------------------------
+
+  // update storage then add Change Listener
+  update ? storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged)) :
+                                            chrome.storage.onChanged.addListener(storageOnChanged);
+
+  logger = settings.logging ? new Logger(settings.logging.size, settings.logging.active) : new Logger();
+  sendToPAC(settings);
+  console.log('background.js: loaded proxy settings from storage.');
 }
 
-function sendSettingsToProxyScript(settings) {
-  if (!settings || !settings.mode || settings.mode == DISABLED || (FOXYPROXY_BASIC && settings.mode == PATTERNS))
+// Update the PAC script whenever stored settings change
+function storageOnChanged(changes, area) {
+//    console.log(changes);
+  // update storageArea on sync on/off change from options
+  if (changes.hasOwnProperty('sync') && changes.sync.newValue !== changes.sync.oldValue) {
+    storageArea = changes.sync.newValue ? chrome.storage.sync : chrome.storage.local;
+  }
+
+  // update logger from log
+  if (Object.keys(changes).length === 1 && changes.logging) { return; }
+
+
+  // mode change from bg
+  if(changes.mode && changes.mode.newValue === 'disabled' && bgDisable) {
+    bgDisable = false;
+    return;
+  }
+
+  // default: changes from popup | options
+  storageArea.get(null, sendToPAC);
+}
+
+
+function sendToPAC(settings) {
+
+  const pref = settings;
+  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
+
+  // --- cache credentials in authData (only those with user/pass)
+  prefKeys.forEach(id => pref[id].username && pref[id].password &&
+    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
+
+
+  const mode = settings.mode;
+
+  if (mode === 'disabled' || (FOXYPROXY_BASIC && mode === 'patterns')){
     setDisabled();
-  else if (settings.mode == PATTERNS || settings.mode == RANDOM || settings.mode == ROUND_ROBIN) {
-    registerProxyScript().then(() => {
-      proxyScriptLoaded = true;
-      // Right now we only support PATTERNS
-      browser.browserAction.setIcon({path: "/images/48x48.svg"});
-      browser.browserAction.setTitle({title: "Patterns"});
-      browser.browserAction.setBadgeText({text: ""});
-      // Remove inactive proxySetting objects and patterns. We also create empty arrays when necessary, never nulls.
-      if (settings.proxySettings && Array.isArray(settings.proxySettings)) {
-        settings.proxySettings = settings.proxySettings.filter(x => x.active);
-        settings.proxySettings.forEach((ps) => {
-          // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
-          // imported this property as a string rather than boolean.
-          if (ps.proxyDNS == "true") ps.proxyDNS = true;
-          else if (ps.proxyDNS == "false") ps.proxyDNS = false;
-          ps.whitePatterns = filterAndValidatePatterns(ps.whitePatterns);
-          ps.blackPatterns = filterAndValidatePatterns(ps.blackPatterns);
-        });
-        activeSettings = settings; // For provideCredentialsAsync()
-        //console.log("sorted, active proxy settings:");
-        //console.log(JSON.stringify(settings, null, 2));
-        browser.runtime.sendMessage(settings, {toProxyScript: true});
-      }
-      else {
-        setDisabled(true);
-        console.error(`Error: settings.mode is set to ${settings.mode} but settings.proxySettings is empty or not an array`);
-      }
+  }
+
+  else if (['patterns', 'random', 'roundrobin'].includes(mode)) { // we only support 'patterns' ATM
+
+    const active = {
+      mode,
+      proxySettings: []
+    }
+
+    // filter out the inactive proxy settings
+    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id]));
+    active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
+
+    // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
+    // is a little faster (doesn't even know about inative patterns)
+    for (const idx in active.proxySettings) {
+      active.proxySettings[idx].blackPatterns = active.proxySettings[idx].blackPatterns.filter(x => x.active);
+      active.proxySettings[idx].whitePatterns = active.proxySettings[idx].whitePatterns.filter(x => x.active);
+    }
+
+    browser.proxy.register(pacURL).then(() => {
+
+      chrome.browserAction.setIcon({path: '/images/icon.svg'});
+      chrome.browserAction.setTitle({title: chrome.i18n.getMessage('patterns')});
+      chrome.browserAction.setBadgeText({text: ''});
+      chrome.runtime.sendMessage(active, {toProxyScript: true});
     });
   }
   else {
     // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
-    // settings.mode is set to the proxySettings id to use for all URLs.
+    // mode is set to the proxySettings id to use for all URLs.
     // Find it and pass to the PAC as the only proxySetting.
-    registerProxyScript().then(() => {
-      proxyScriptLoaded = true;
-      let tmp = settings.proxySettings.find(function(e) {return e.id == settings.mode});
-      if (tmp) {
-        //browser.browserAction.setIcon({imageData: getColoredImage(tmp.color)});
-        browser.browserAction.setIcon({path: "/images/48x48.svg"});
-        browser.browserAction.setTitle({title: Utils.getNiceTitle(tmp)});
-        browser.browserAction.setBadgeText({text: Utils.getNiceTitle(tmp)});
-        browser.browserAction.setBadgeBackgroundColor({color: tmp.color});
-        activeSettings = {mode: settings.mode, proxySettings: [tmp]}; // For provideCredentialsAsync()
-        browser.runtime.sendMessage(activeSettings, {toProxyScript: true});
-      }
-      else {
-        setDisabled(true);
-        console.error(`Error: settings.mode is set to ${settings.mode} but no proxySetting is found with that id`);
-      }
-    });
+    if (settings[mode]) {
+
+      const tmp = settings[mode];
+      browser.proxy.register(pacURL).then(() => {
+
+        const title = tmp.title || `${tmp.address}:${tmp.port}`;
+        chrome.browserAction.setIcon({path: '/images/icon.svg'});
+        chrome.browserAction.setTitle({title});
+        chrome.browserAction.setBadgeText({text: title});
+        chrome.browserAction.setBadgeBackgroundColor({color: tmp.color});
+        chrome.runtime.sendMessage({mode, proxySettings: [settings[mode]]}, {toProxyScript: true});
+      });
+    }
+    else {
+      bgDisable = true;
+      storageArea.set({mode: 'disabled'});                  // only in case of error, otherwise mode is already set
+      setDisabled();
+      console.error(`Error: mode is set to ${mode} but no active proxySetting is found with that id. Disabling Due To Error`);
+    }
   }
 }
 
-const DISABLED_SETTINGS_OBJ = {mode: DISABLED, proxySettings: []};
+
 function setDisabled(isError) {
-  unregisterProxyScript().then(() => {
-    proxyScriptLoaded = false;
-    activeSettings = null; // For provideCredentialsAsync()
-    browser.browserAction.setIcon({path: "images/foxyproxy-disabled.svg"});
-    browser.browserAction.setTitle({title: "Disabled"});
-    browser.browserAction.setBadgeText({text:""});
-    browser.runtime.sendMessage(DISABLED_SETTINGS_OBJ, {toProxyScript: true}); // Is this needed? We're unregistered.
-    if (isError) {
-      console.log("DISABLING DUE TO ERROR!");
-      //Utils.displayNotification("There was an unspecified error. FoxyProxy is now disabled.");
-    }
-    // Update the proxies.html UI if it's open
-    browser.runtime.sendMessage(MESSAGE_TYPE_DISABLED);
-    ignoreWrite = true; // prevent infinite loop; next line writes to storage and we're already in storate write callback
-    console.log("******* disabled mode");
-    setMode(DISABLED);
+
+  chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
+
+  browser.proxy.unregister().then(() => {
+
+    chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
+    chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
+    chrome.browserAction.setBadgeText({text: ''});
+    console.log('******* disabled mode');
   });
 }
 
-function getColoredImage(color) {
-  // Modified from https://stackoverflow.com/a/30140386/3646737
 
-  // Update color
-  $("#stop2863,#stop2865,#stop2955,#stop2957,#stop2863,#stop2865,#stop2955,#stop2957,#stop2863,#stop2865,#stop2955,#stop2957").
-    css("stop-color", color);
 
-  // Update color
-  $("#path2907,#path2935,#path2939").css("fill", color);
+// ----------------- Proxy Authentication ------------------
+// ----- session global
+let authData = {};
+let authPending = {};
 
-  // Get the image, prepend header
-  let image64 = "data:image/svg+xml;base64," + btoa(new XMLSerializer().serializeToString(document.getElementById("fox")));
+async function sendAuth(request) {
 
-  // Set it as the source of the img element
-  $("#img").attr("src", image64);
-  let ctx = document.getElementById("canvas").getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  return ctx.getImageData(0, 0, 48, 48);
+  // --- already sent once and pending
+  if (authPending[request.requestId]) { return {cancel: true}; }
+
+  // --- authData credentials not yet populated from storage
+  if(!Object.keys(authData)[0]) { return {cancel: true}; }
+
+  // --- first authentication
+  if (authData[request.challenger.host]) {
+    authPending[request.requestId] = 1;                       // prevent bad authentication loop
+    return {authCredentials: authData[request.challenger.host]};
+  }
+  // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
-/**
- * After https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 is fixed, onAuthRequired() not needed.
- */
-browser.webRequest.onAuthRequired.addListener(provideCredentialsAsync,
-  {urls: ["<all_urls>"]},
-  ["blocking"]);
+function clearPending(request) {
 
-// Update the PAC script whenever stored settings change
-browser.storage.onChanged.addListener((oldAndNewSettings) => {
-  if (ignoreWrite) {
-    // Ignore this change to storage
-    ignoreWrite = false;
+  if(!authPending[request.requestId]) { return; }
+
+  if (request.error) {
+    const host = request.proxyInfo && request.proxyInfo.host ? request.proxyInfo.host : request.ip;
+    Utils.notify(chrome.i18n.getMessage('authError', host));
+    console.error(request.error);
     return;
   }
 
-  // Re-read them because oldAndNewSettings just gives us the deltas, not complete settings
-  getAllSettings().then((settings) => {
-      console.log("background.js: Re-read settings");
-      sendSettingsToProxyScript(settings)})
-    .catch(e => console.error(`getAllSettings() Error: ${e}`));
-});
-
-// Watch for new installs and updates to our addon
-browser.runtime.onInstalled.addListener((details) => {
-  console.log("browser.runtime.onInstalled.addListener(): " + JSON.stringify(details));
-  if (details.reason == "install")
-    browser.tabs.create({url: "/first-install.html", active: true});
-  else if (details.reason == "update") {
-    if (details.previousVersion == "5.0") {
-      // The initial WebExtension version, which was disabled after a couple of days, was called 5.0
-      // for both Standard and Basic. Update settings format.
-      updateSettingsFrom50().then(() => console.log("finished updateSettingsFrom50()"));
-    }
-    else if (details.previousVersion.startsWith("3.") || // FP Basic was 3.x
-        details.previousVersion.startsWith("4.") || // FP Standard was 4.x.
-        details.previousVersion.startsWith("5.5") || // To distinguish from the 5.0 above
-        details.previousVersion.startsWith("5.6")) { // I don't think there was a 5.6 but for a couple of users
-      browser.tabs.create({url: "/first-install.html", active: true});
-    }
-    //else browser.tabs.create({url: "/first-install.html", active: true});
-  }
-});
-
-// Get the current settings, then...
-getAllSettings().then((settings) => {
-  console.log(settings);
-  logg = new Logg(settings.logging.maxSize, settings.logging.active);
-  browser.runtime.getBrowserInfo().then((info) => {
-    browserVersion = parseFloat(info.version);
-    console.log(`background.js: loaded proxy settings from disk. browserVersion is ${browserVersion}`);
-    sendSettingsToProxyScript(settings);
-  })
-  .catch(e => console.error(`background.js: Error retrieving sendSettingsToProxyScript() or getBrowserInfo(): ${e}`))})
-.catch(e => console.error(`background.js: Error retrieving stored settings: ${e}`));
+  delete authPending[request.requestId];                    // no error
+}

@@ -1,14 +1,14 @@
 # FoxyProxy for Firefox
 
-The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times, but it is still maintained by the original developer, Eric H. Jung.
+The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, erosman is a primary developer.
 
-Originally for Firefox, a Chrome edition was released years ago as well. It does not share the same codebase (yet), so this project is strictly for the Firefox edition.
+Originally for Firefox, a Chrome edition was released years ago as well. It does not share the same codebase (yet), so this project is strictly for the Firefox edition. We hope they will share the same codebase sometime in 2020.
 
 Pre-Firefox 57 (Quantum) versions are not maintained here. They are stored in a private git repo which I will release to github when time permits.
 
 ## Editions
 
-FoxyProxy for Firefox comes in three flavors. Two of these flavors are in this repository.
+FoxyProxy for Firefox comes in three editions. Two of these editions are in this repository.
 
 ### [Standard](https://addons.mozilla.org/firefox/addon/foxyproxy-standard/)
 
@@ -24,19 +24,39 @@ No longer maintained since Firefox 57 dropped support for critical APIs. The sou
 
 ## Translations!
 
-FoxyProxy is partially internationalized and should be completed in July/August 2019. I look forward to your translation! Pre-Firefox 57 (Quantum) editions had 33 or 35 languages!
+FoxyProxy is internationalized! Translate [messages.json](https://github.com/foxyproxy/firefox-extension/blob/master/src/_locales/en/messages.json) then make a pull request or email the file to me. Pre-Firefox 57 (Quantum) editions had 33 or 35 languages!
+
+## Building
+
+FoxyProxy **Standard** edition is built by default. To build FoxyProxy **Basic** edition, set `FOXYPROXY_BASIC` to `true` in [utils.js](https://github.com/foxyproxy/firefox-extension/blob/master/src/scripts/utils.js) before building.
+
+### Building With Grunt
+
+[Install grunt](https://stackoverflow.com/questions/15703598/how-to-install-grunt-and-how-to-build-script-with-it), which requires npm and node.
+
+Run grunt in top-level directory. The add-on is packaged into target.zip
+
+### Building Without Grunt
+
+Zip the [src](https://github.com/foxyproxy/firefox-extension/tree/master/src) directory.
 
 ## Running a development instance
 
-TODO
+0. Clone this repository: `git clone https://github.com/foxyproxy/firefox-extension.git`
+1. In Firefox, navigate to `about:debugging#/runtime/this-firefox`
+2. Click `Load Temporary Add-on`
+3. Choose `manifest.json` in the cloned repository on your local system.
+
+Note some items are cached by Firefox. Please refer to other online documentation for complete development and debugging of add-ons.
 
 ## Authors
 
 * **Eric H. Jung** - [FoxyProxy](https://getfoxyproxy.org/team/)
-* **Your Name Here** if you contribute a language translation
+* **erosman** - https://github.com/erosman
+* **Your Name Here** if you contribute a language translation or other work
 
 
 ## License
 
-This project is licensed under the GPL 2.0 License
+This project is licensed under the GPL 2.0 License. Commercial re-licensing may be available on request.
 

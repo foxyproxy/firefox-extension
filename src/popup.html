@@ -1,50 +1,64 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      body {  padding: 0.4em; animation: none; min-width: 25em; }
+      ul.scroll { margin: 0; padding: 0;  max-height: 20em; }
+      li { cursor: pointer; border-radius: 10px; padding-left: 0.2em; }
+      li:hover { background-color: #ffebcd; }
+      li span { display: inline-block; vertical-align: text-bottom; }
+
+      li span:nth-of-type(1) { width: 10em; margin-right: 1em; }
+      li span:nth-of-type(2) { color: #aaa; font-style: italic; font-size: 0.9em;}
+      li:first-of-type { color: #f80; }
+      li:last-of-type { color: red; }
+      
+      li::before {
+        content: '\2714';
+        width: 1em;
+        display: inline-block;
+        vertical-align: text-bottom;
+        margin-right: 0.2em;
+        color: transparent;
+        font-weight: bold;
+      }
+      li.on::before {
+        color: inherit;
+      }
+    button:first-of-type { margin-left: 0; }
+    </style>
   </head>
-  <body style="margin: 0 .3rem">
-    <div class="row"><p><!-- spacer --></p></div>
+  <body>
 
-    <div id="spinnerRow" class="row">
-      <div class="small-12 small-centered columns">
-        <div class="row callout">
-          <i class="fa fa-refresh fa-spin fa-5x fa-fw fp-orange"></i>
-        </div>
-      </div>
-    </div>
+    <!-- header -->
+    <div class="prime header browserPopup">FoxyProxy</div>
 
-    <div id="errorRow" class="row hide-unimportant">
-      <div class="small-12 small-centered columns">
-        <div class="row callout">
-          <p>There was an error</p>
-        </div>
-      </div>
-    </div>
+    <!-- error -->
+    <div id="error" class="prime hide"><h5 data-i18n="errorWas"></h5></div>
 
-    <div id="optionsRow" class="callout hide-unimportant">
-        <img src="/images/48x48.svg" style="margin-bottom:1rem"><h2 style="display:inline;margin-left:.5rem">FoxyProxy</h2>
-        <ul id="fp-browserActionPopup" class="vertical menu">
-          <li id="patternsListItem"><a id="patterns" class="fp-orange" style="padding-left: 0 !important; margin-left: 0 !important; margin-bottom: .25rem"><span id="patternsSelected"></span>Use Enabled Proxies By Patterns and Priority</a></li>
-          <span id="menuInsertPoint"></span>
-          <!--<li> <a id="enable">&nbsp;Turn On All Proxies</a></li>-->
-          <li><a id="disabled" style="color: red;padding-left: 0 !important; margin-left: 0 !important; padding-top: .5rem !important"><span id="disabledSelected"></span>Turn Off FoxyProxy (Use Firefox Settings)</a></li>
-          <li><hr id="horizRule"/></li>
-          <li><a id="log">Log</a></li>
-          <li><a id="where">What's My IP?</a></link>
-          <li><a id="options">Options</a></li>
+
+    <!-- main -->
+    <div class="prime" style="margin: 0;">
+
+
+        <ul class="scroll">
+          <li id="patterns" data-i18n="modePatterns"></li>
+          
+          <!-- template -->
+          <li class="template ellipsis"><span class="ellipsis"></span><span class="ellipsis"></span></li>
+          
+          <li id="disabled" data-i18n="modeDisabled"></li>
         </ul>
+        <div style="margin-top: 1em; text-align: center;">
+          <button type="button" data-i18n="options"></button>
+          <button type="button" data-i18n="myIP"></button>
+          <button type="button" data-i18n="log"></button>
+        </div>
     </div>
 
-  <span class="hide-unimportant" id="modeOptionTemplate"><li class="fp-browserActionPopup"><a id="%idx" style="color: %color"><span id="%idxSelected"></span>Use proxy %title for all URLs (ignore patterns)</a></li></span>
-
-  <script src="scripts/jquery-3.4.1.js"></script>
-  <script src="scripts/const.js"></script>
-  <script src="scripts/storage.js"></script>
   <script src="scripts/utils.js"></script>
   <script src="scripts/popup.js"></script>
-	<script src="scripts/dompurify-1.0.11.js"></script>
   </body>
 </html>

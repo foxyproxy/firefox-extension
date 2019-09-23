@@ -1,149 +1,113 @@
-let logg;
+'use strict';
 
-/*
-months.long.1=January
-months.long.2=February
-months.long.3=March
-months.long.4=April
-months.long.5=May
-months.long.6=June
-months.long.7=July
-months.long.8=August
-months.long.9=September
-months.long.10=October
-months.long.11=November
-months.long.12=December
-days.long.1=Sunday
-days.long.2=Monday
-days.long.3=Tuesday
-days.long.4=Wednesday
-days.long.5=Thursday
-days.long.6=Friday
-days.long.7=Saturday
-timeformat=HH:nn:ss:zzz mmm dd, yyyy
-*/
-
-// TODO: i18n
-let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-document.addEventListener("DOMContentLoaded", function() {
-  browser.runtime.getBackgroundPage().then((page) => {
-    logg = page.getLogg();
-    console.log("logg active is " + logg.active);
-    if (logg.active) {
-      $("#onOff").prop("checked", true);
-      renderLog();
-    }
-    else {
-      $("#onOff").prop("checked", false);
-      $("#spinnerRow").hide();
-      $("#logRow").show();
-    }
-  });
+// ----------------- Internationalization ------------------
+document.querySelectorAll('[data-i18n]').forEach(node => {
+  let [text, attr] = node.dataset.i18n.split('|');
+  text = chrome.i18n.getMessage(text);
+  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
 });
+// ----------------- /Internationalization -----------------
 
-$("#onOff").on("click", () => {
-  let onOff = $("#onOff").prop("checked");
-  console.log("user changed logging to " + onOff);
-  browser.runtime.getBackgroundPage().then((page) => {
-    page.ignoreNextWrite(); // Don't propagate changes the PAC script
-    setLogging(500, onOff).then(() => {
-      if (!onOff) {
-        logg.active = false;
-        logg.clear();
-        renderLog();
-      }
-      else logg.active = true;
-      getAllSettings().then((s) => console.log(s));
-    });
-  });
-});
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('.spinner');
+function hideSpinner() {
 
-$("#okBtn1,#okBtn2").on("click", () => {
-  location.href = "/proxies.html";
-});
-
-$("#clearBtn1,#clearBtn2").on("click", () => {
-  logg.clear();
-  renderLog();
-});
-
-$("#refreshBtn1,#refreshBtn2").on("click", () => {
-  renderLog();
-});
-
-function renderLog() {
-  let rows = [];
-  for (let i=0; i<logg.length; i++) {
-    let item = logg.item(i), pattern;
-    if (item.matchedPattern) {
-      pattern = item.matchedPattern == USE_PROXY_FOR_ALL_URLS ? "Use proxy for all URLs" :
-        item.matchedPattern.pattern;
-    }
-    else pattern = "No matches";
-
-		// Build a row for this log entry
-		let row = document.createElement("tr");
-		row.setAttribute("class", item.matchedPattern ? "success" : "secondary");
-		let cell1 = document.createElement("td");
-		row.appendChild(cell1);
-		let a1 = document.createElement("a");
-		cell1.appendChild(a1);
-		a1.setAttribute("href", item.url);
-		a1.setAttribute("target", "_blank");
-		a1.appendChild(document.createTextNode(item.url));
-		let cell2 = document.createElement("td");
-		row.appendChild(cell2);
-		cell2.appendChild(document.createTextNode(item.proxySetting ? item.proxySetting.title : "No matches"));
-		let cell3 = document.createElement("td");
-		row.appendChild(cell3);
-		cell3.style.backgroundColor = item.proxySetting ? item.proxySetting.color : "blue";
-		cell3.setAttribute("class", "fp-color-blob-log");
-		let cell4 = document.createElement("td");
-		row.appendChild(cell4);
-		cell4.appendChild(document.createTextNode(item.proxySetting ? item.proxySetting.address : "No matches"));
-		let cell5 = document.createElement("td");
-		row.appendChild(cell5);
-		cell5.appendChild(document.createTextNode(pattern));
-		let cell6 = document.createElement("td");
-		row.appendChild(cell6);
-		cell6.appendChild(document.createTextNode(format(item.timestamp)));
-    rows.push(row);
-  }
-
-	let parent = document.getElementById("rows");
-	[...parent.childNodes].forEach(el => el.remove())
-	rows.forEach(row => parent.appendChild(row));
-  $("#spinnerRow").hide();
-  $("#logRow").show();
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
 }
 
-// Thanks for the inspiration, Tor2k (http://www.codeproject.com/jscript/dateformat.asp)
-function format(d) {
-  d = new Date(d);
-  if (!d.valueOf())
-    return ' ';
-  var self = this;
-  return "HH:nn:ss:zzz".replace(/yyyy|mmmm|mmm|mm|dddd|ddd|dd|hh|HH|nn|ss|zzz|a\/p/gi,
-    function($1) {
-      switch ($1) {
-        case 'yyyy': return d.getFullYear();
-        case 'mmmm': return months[d.getMonth()];
-        case 'mmm':  return months[d.getMonth()].substr(0, 3);
-        case 'mm':   return zf((d.getMonth() + 1), 2);
-        case 'dddd': return days[d.getDay()];
-        case 'ddd':  return days[d.getDay()].substr(0, 3);
-        case 'dd':   return zf(d.getDate(), 2);
-        case 'hh':   return zf(((h = d.getHours() % 12) ? h : 12), 2);
-        case 'HH':   return zf(d.getHours(), 2);
-        case 'nn':   return zf(d.getMinutes(), 2);
-        case 'ss':   return zf(d.getSeconds(), 2);
-        case 'zzz':  return zf(d.getMilliseconds(), 3);
-        case 'a/p':  return d.getHours() < 12 ? 'AM' : 'PM';
-      }
-    }
-  );
-  // My own zero-fill fcn, not Tor 2k's. Assumes (n==2 || n == 3) && c<=n.
-  function zf(c, n) { c=""+c; return c.length == 1 ? (n==2?'0'+c:'00'+c) : (c.length == 2 ? (n==2?c:'0'+c) : c); }
+function showSpinner() {
+
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
+
+// ----- global
+let logger;
+const onOff = document.querySelector('#onOff');
+const logSize = document.querySelector('#logSize');
+
+chrome.runtime.getBackgroundPage(bg => {
+
+  logger = bg.getLog();
+  onOff.checked = logger.active;
+  logSize.value = logger.size;
+  renderLog(); // log content will be shown if there are any, regardless of onOff
+  hideSpinner();
+});
+
+onOff.addEventListener('change', (e) => {
+
+  logger.active = onOff.checked;
+  logger.updateStorage();
+});
+
+logSize.addEventListener('change', (e) => {
+
+  logSize.value = logSize.value*1 || logger.size;           // defaults on bad number entry
+  if (logger.size !== logSize.value) {                      // update on change
+    logger.size = logSize.value;
+    logger.updateStorage();
+  }
+});
+
+document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
+
+function process () {
+
+  switch (this.dataset.i18n) {
+
+    case 'back': location.href = '/options.html'; break;
+    case 'refresh': renderLog(); break;
+    case 'clear':
+      logger.clear();
+      renderLog();
+      break;
+  }
+}
+
+function renderLog() {
+
+  // ----- templates & containers
+  const docfrag = document.createDocumentFragment();
+  const tr = document.querySelector('tr.template');
+  const tbody = tr.parentNode.nextElementSibling;
+  tbody.textContent = ''; // clearing the content
+
+  const forAll = chrome.i18n.getMessage('forAll');;
+
+  logger.list.forEach(item => {
+
+    const pattern = item.matchedPattern ?
+      (item.matchedPattern === 'all' ? forAll : item.matchedPattern.pattern) : 'No matches';
+
+    // Build a row for this log entry by cloning the tr containing 6 td
+    const row = tr.cloneNode(true);
+    row.className = item.matchedPattern ? 'success' : 'secondary'; // this will rest class .tamplate as well
+    const td = row.children;
+
+    const a = td[0].children[0];
+    a.href = item.url;
+    a.textContent = item.url;
+
+    td[1].textContent = item.title || 'n/a';
+    td[2].style.backgroundColor = item.color || 'blue';
+    td[3].textContent = item.address || 'n/a';
+    td[4].textContent = pattern;
+    td[5].textContent = formatInt(item.timestamp);
+
+    docfrag.appendChild(row);
+  });
+
+  tbody.appendChild(docfrag);
+}
+
+function formatInt(d) {
+  // International format based on user locale
+  // you can delete the other function if you like this
+  // you can adjust the content via the object properties
+  return new Intl.DateTimeFormat(navigator.language,
+                  {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false}).format(new Date(d));
 }

@@ -1,119 +1,151 @@
 {
-    "app_name_foxyproxy_standard": {
-        "message": "FoxyProxy Standard",
-        "description": "The full name of the FoxyProxy Standard"
-    },
-    "app_description_foxyproxy_standard": {
-        "message": "Proxy switching by URL, made easy!",
-        "description": "The description of FoxyProxy Standard"
-    },
-    "app_name_foxyproxy_basic": {
-        "message": "FoxyProxy Basic",
-        "description": "The full name of the FoxyProxy Basic"
-    },
-    "app_description_foxyproxy_basic": {
-        "message": "Quick on/off proxy switching with no URL patterns",
-        "description": "The description of FoxyProxy Basic"
-    },
-		"error": {
-				"message": "Error",
-				"description": "General error title"
-		},
-		"no_settings_found": {
-				"message": "No settings could be found. Please re-install FoxyProxy.",
-				"description": "Stored settings not found, not even the default one created at installation."
-		},
-    "proxy_add": {
-      "message": "Add",
-      "description": "Add new proxy button"
-    },
-		"proxy_delete_all": {
-			"message": "Delete All",
-			"description": "Delete all proxies button"
-		},
-		"export": {
-			"message": "Export",
-			"description": "Export proxies button"
-		},
-		"import": {
-			"message": "Import",
-			"description": "Import proxies button"
-		},
-		"log": {
-			"message": "Log",
-			"description": "Display log button"
-		},
-		"whats_my_ip": {
-			"message": "What's My IP?",
-			"description": "Display IP address button"
-		},
-		"delete_browser_data": {
-			"message": "Delete Browser Data",
-			"description": "Delete browser data button"
-		},
-		"delete_browser_data_to_not_delete_heading": {
-			"message": "Do Not Delete"
-		},
-		"delete_browser_data_to_not_delete_description": {
-			"message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates.",
-			"description": "Description of what is NOT to be deleted"
-		},
-		"delete_browser_data_to_delete_heading": {
-			"message": "Delete"
-		},
-		"delete_browser_data_to_delete_description": {
-			"message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data.",
-			"description": "Description of what is to be deleted"
-		},
-		"delete_browser_data_done": {
-			"message": "Done!",
-			"description": "Message displayed after delete browser data is finished"
-		},
-		"about": {
-			"message": "About",
-			"description": "Display About page button"
-		},
-		"synchronize_settings": {
-			"message": "Synchronize Settings",
-			"description": "Toggle settings synchronization button"
-		},
-		"synchronize_settings_help": {
-			"message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local."
-		},
-		"on_off": {
-			"message": "On/Off",
-			"description": "On/Off toggle text"
-		},
-		"on": {
-			"message": "On"
-		},
-		"off": {
-			"message": "Off"
-		},
-		"mode_patterns_and_priority": {
-			"message": "Use Enabled Proxies By Patterns and Priority",
-			"description": "Switching mode that uses white and black patterns as you have ordered them"
-		},
-		"mode_disabled": {
-			"message": "Turn Off FoxyProxy (Use Firefox Settings)",
-			"description": "Completely disable FoxyProxy and revert to using Firefox proxy settings, if any"
-		},
-		"mode_dedicated": {
-			"message": "Use proxy %title for all URLs (ignore patterns)",
-			"description": "Use selected proxy for all URLS, regardless of any patterns"
-		},
-		"edit": {
-			"message": "Edit",
-			"description": "Edit proxy button"
-		},
-		"patterns": {
-			"message": "Patterns",
-			"description": "Edit patterns button"
-		},
-		"delete_confirmation": {
-			"message": "Delete: are you sure?",
-			"description": "Confirm deletion"
-		}
+  "extensionName": { "message": "FoxyProxy Standard" },
+  "extensionDescription": { "message": "Easy to use advanced Proxy Management tool for everyone" },
+  
+  "extensionNameBasic": { "message": "FoxyProxy Basic" },
+  
+  
+  "error": { "message": "Error" },
+  "erroNoSettings": { "message": "No settings could be found. Please re-install FoxyProxy." },
+
+  "deleteAll": { "message": "Delete All" },
+  "export": { "message": "Export" },
+  "import": { "message": "Import" },
+  "log": { "message": "Log" },
+  "myIP": { "message": "What's My IP?" },
+  "deleteAllmessage": { "message": "All data deleted" },
+  
+  "authError": { "message": "$1 is refusing connections:\n \u00A0\u2022 Check your proxy settings\n \u00A0\u2022 Contact your network administrator" },
+  
+  
+  "delete": { "message": "Delete" },
+  "deleteNot": { "message": "Do Not Delete" },
+  "deleteBrowserData": { "message": "Delete Browser Data" },
+  "deleteBrowserDataDescription": { "message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data." },
+  "deleteBrowserDataNotDescription": { "message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates." },
+  "done": { "message": "Done!" },
+  
+  "about": { "message": "About" },
+  "syncSettings": { "message": "Synchronize Settings" },
+  "syncSettingsHelp": { "message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local." },
+//  "onOff": { "message": "On/Off" },
+  "on": { "message": "On" },
+  "off": { "message": "Off" },
+  "confirmTransferToLocal": { "message": "Would you like to transfer the synced settings to your local profile?\nExisting Data will be merged." },
+  "confirmTransferToSync": { "message": "Would you like to transfer the local settings to your synced profile?\nExisting Data will be merged." },
+  
+  "modePatterns": { "message": "Enabled Proxies By Patterns and Priority" },
+  "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
+  "forAll": { "message": "for all URLs" },
 
 
-}
+  
+  
+  "edit": { "message": "Edit" },
+  "patterns": { "message": "Patterns" },
+  "confirmDelete": { "message": "Are you sure you want to delete?" },
+  
+  "addProxy": { "message": "Add Proxy" },
+  "editProxy": { "message": "Edit Proxy $1" },
+  
+  
+  "editPatterns": { "message": "Edit Patterns" },
+  "editPatternsFor": { "message": "Edit Patterns of $1" },
+  
+  
+  "errorWas": { "message": "There was an error. Please try again." },
+  "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
+  "errorEmpty": { "message": "Filed can not be empty." },
+
+
+  "importEnd": { "message": "Settings were successfully imported" },
+  "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns to be sure the edits are acceptable." },
+  "importEndSlash": { "message": "Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any." },
+  "errorUserPass": { "message": "Please fill both Username & Password." },
+  "errorFetch": { "message": "There was an error with the operation" },
+
+
+  "errorPattern": { "message": "Please enter a pattern" },
+  "importBW": { "message": "Imported $1 white and $2 black patterns." },
+
+  "up": { "message": "move up" },
+  "down": { "message": "move down" },
+
+  "disabled": { "message": "Disabled" },
+  "active": { "message": "Enabled for patterns and priorities mode" },
+
+
+  "name": { "message": "Name" },
+  "pattern": { "message": "Pattern" },
+  "type": { "message": "Type" },
+  "protocol": { "message": "Protocol" },
+  "whitePatterns": { "message": "White Patterns" },
+  "blackPatterns": { "message": "Black Patterns" },
+  "importedPattern": { "message": "This pattern was imported from an older version of FoxyProxy and changed during import. Here is the original, unchanged pattern:" },
+
+
+  "patternMatch": { "message": "Pattern matches URL!" },
+  "patternNotMatch": { "message": "Pattern does not match URL." },
+  "errorProtocol": { "message": "Protocol does not match." },
+
+
+
+  "proxyType": { "message": "Proxy Type" },
+  "color": { "message": "Color" },
+  "title": { "message": "Title or Description (optional)" },
+  "ip": { "message": "Proxy IP address or DNS name" },
+  "port": { "message": "Port" },
+  "username": { "message": "Username (optional)" },
+  "password": { "message": "Password (optional)" },
+  "togglePW": { "message": "Toggle Password" },
+  
+  "addWhitelist": { "message": "Add whitelist pattern to match all URLs" },
+  "noLocal": { "message": "Do not use for localhost and intranet/private IP addresses" },
+  
+  
+
+  "patternTester": { "message": "Pattern Tester" },
+  "patternHelp": { "message": "Pattern Help" },
+  "welcome": { "message": "Welcome" },
+  "options": { "message": "Options" },
+  "enterUrl": { "message": "Enter URL to test" },
+  "enterUrlNote": { "message": "(paths and query parameters are ignored)" },
+  "patternDetail": { "message": "Enter pattern details." },
+  "patternNote": { "message": "(no paths, no query parameters)" },
+  "clickTest": { "message": "Click 'Test' when ready" },
+  
+
+  
+  
+  
+  
+
+  "ok": { "message": "OK" },
+  "clear": { "message": "Clear" },
+  "refresh": { "message": "Refresh" },
+  "cancel": { "message": "Cancel" },
+  "back": { "message": "Back" },
+  "test": { "message": "Test" },
+  "help": { "message": "Help" },
+  "importPatterns": { "message": "Import Patterns" },
+  "exportPatterns": { "message": "Export Patterns" },
+  "newWhite": { "message": "New White" },
+  "newBlack": { "message": "New Black" },
+  "save": { "message": "Save" },
+  "add": { "message": "Add" },
+  "saveAdd": { "message": "Save & Add Another" },
+  "saveEditPattern": { "message": "Save & Edit Patterns" },
+  "imported": { "message": "Imported" },
+  "addBlacklistTip": { "message": "Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
+
+
+
+  
+  "logSize": { "message": "Log Size" },
+  "url": { "message": "URL" },
+  "proxyTitle": { "message": "Proxy Title" },
+  "proxyAddress": { "message": "Proxy Address" },
+  "matchPattern": { "message": "Match Pattern" },
+  "timestamp": { "message": "Timestamp" }
+} 

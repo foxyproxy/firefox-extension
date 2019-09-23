@@ -1,57 +1,70 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <title data-i18n="patternTester">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      h3 { margin-bottom: 0; }
+      .prime > h3:first-of-type { margin-top: 0; }
+      #result { margin: 1em 0 0; }
+      label { display: inline-block; }
+      label + span { color: #f30; font-style: italic; margin-left: 0.5em; font-size: 0.9em; }
+    </style>
   </head>
-  <body style="margin: 1rem">
+  <body>
 
-    <div class="row">
-      <div class="small-12 columns">
-        <div class="row callout">
-            <img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">Pattern Tester</h2>
+    <!-- header -->
+    <div class="prime header" data-i18n="patternTester"></div>
+
+    <!-- main -->
+    <div class="prime">
+
+      <div style="text-align: right;">
+        <a href="/pattern-help.html" target="_blank"><span data-i18n="patternHelp"></span> <i class="fa fa-question-circle"></i></a>
       </div>
 
-      <div class="row callout small">
-        <div class="small-12 columns"><h4>Step 1</h4></div>
-        <div class="small-12 columns"><label>Enter URL to test <span style="color:red">(paths and query parameters are ignored)</style></label><input id="url" type="text" value="https://getfoxyproxy.org"></div>
-        <div class="small-12 columns"><h4>Step 2</h4><p>Enter pattern details.</p></div>
-          <div class="small-4 columns">
-            <label>Pattern <span style="color:red">(no paths, no query parameters)</label>
-            <input id="pattern" name="pattern" type="text">
-          </div>
-          <div class="small-4 columns">
-            <label>Type</label>
-            <select id="type" name="type">
-              <option value="1">Wildcard</option>
-              <option value="2">Reg Exp</option>
-            </select>
-          </div>
-          <div class="small-4 columns">
-            <label>Protocols</label>
-            <select id="protocols" name="protocols">
-              <option value="1">all</option>
-              <option value="2">http</option>
-              <option value="4">https</option>
-            </select>
-          </div>
-          <div class="small-12 columns"><h4>Step 3</h4><p>Click 'Test' when ready</p>
-            <input id="test" type="button" class="button" value="Test"><input id="help" type="button" class="button" value="Help">
-          </div>
-          <div id="results" class="small-12 columns">
-            <p id="match" class="hide-unimportant callout small success">Pattern matches URL!</p>
-            <p id="noMatch" class="hide-unimportant callout small alert">Pattern does not match URL.</p>
-            <p id="noProtocolMatch" class="hide-unimportant callout small alert">Protocols do not match.</p>
-          </div>
+      <h3>Step 1</h3>
+      <label data-i18n="enterUrl"></label><span data-i18n="enterUrlNote"></span>
+      <input id="url" type="url" value="https://getfoxyproxy.org" placeholder="https://getfoxyproxy.org">
+
+
+      <h3>Step 2</h3>
+      <div class="flex">
+        <div style="flex: 3;">
+          <label data-i18n="patternDetail"></label><span data-i18n="patternNote"></span>
+          <input id="pattern" type="text" spellcheck="false">
+        </div>
+
+        <div style="margin-left: 1em;">
+          <label data-i18n="type"></label>
+          <select id="type">
+            <option value="1">Wildcard</option>
+            <option value="2">Reg Exp</option>
+          </select>
+        </div>
+
+        <div style="margin-left: 1em;">
+          <label data-i18n="protocol"></label>
+          <select id="protocols">
+            <option value="1">all</option>
+            <option value="2">http</option>
+            <option value="4">https</option>
+          </select>
         </div>
       </div>
+
+
+      <h3>Step 3</h3>
+      <label data-i18n="clickTest"></label>
+      <div style="text-align: right;"><button type="button" data-i18n="test"></button></div>
+      <p id="result" class="prime small success hide"></p>
     </div>
 
-    <script src="scripts/jquery-3.4.1.js"></script>
-    <script src="scripts/const.js"></script>
-		<script src="scripts/utils.js"></script>
-		<script src="scripts/validate-pattern.js"></script>
-    <script src="scripts/pattern-tester.js"></script>
+  <script src="scripts/common.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/pattern-tester.js"></script>
   </body>
 </html>

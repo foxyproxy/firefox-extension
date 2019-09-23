@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title data-i18n="options">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <style>
+      nav { width: 14em; margin-right: 0.5em; }
+      nav i.fa { margin-right: 0.4em; font-size: 1.6em; }
+      nav a { display: block; padding: 0.2em 0.5em; border-radius: 0 50px 50px 0; cursor: pointer;  }
+      nav a:hover { background-color: #ffebcd; }
+      button i.fa { font-size: 1.8em; color: #ccc; }
+      button i.fa:hover { color: #f90; }
+      button[data-i18n="help|title"] { margin-right: 0.5em; }
+      i.fa-lock { color: #ccc; font-size: 1.3em; vertical-align: middle; margin-right: 0.3em; }
+      i.fa.fa-lock.on, i.fa-lock.on:hover { color: #080; }
+      
+      .rightColumn { padding: 1em; flex-grow: 1;   border: 1px solid #ccc; border-radius: 5px; }
+      .pxy { opacity: 1; transition: all 0.5s ease-in-out; border: 1px solid #ccc; border-radius: 5px;
+          margin: 0 0 0.2em 0; padding: 0.2em 0.4em; }
+      .pxy.on { box-shadow: 0px 2px 4px rgba(0,0,0,0.6); }
+      .pxy:first-of-type button.up,
+      .pxy:last-of-type button.down { visibility: hidden; }
+      #accounts { max-height: 60vh; }
+      #accounts div:last-of-type { margin: 0; }
+      
+      .title, .address { display: inline-block; vertical-align: middle; }
+      .title { width: 6em; margin: 0 0.5em; }
+      .address { max-width: 10em; }
+      #accounts button.small { margin-left: 0.2em; }
+
+      .scroll { max-height: 40vh; padding-right: 0.2em; }
+      
+      .color{
+        width: 2em;
+        display: inline-block;
+        border-radius: 5px;
+        border: 2px solid #fff;
+        box-shadow: 0px 2px 3px #777;
+        font-size: 0.8em;
+        width: 3em;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- header -->
+    <div class="prime header" data-i18n="options"></div>
+
+
+    <!-- spinner -->
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
+
+    <!-- error -->
+    <div id="error" class="prime hide"><h5 data-i18n="erroNoSettings"></h5></div>
+
+
+    <!-- main -->
+    <div class="prime">
+      <div style="display: flex;">
+
+        <nav>
+          <a data-i18n="add"><i class="fa fa-plus-circle"></i></a>
+          <a data-i18n="import"><i class="fa fa-download"></i></a>
+          <a data-i18n="export"><i class="fa fa-upload"></i></a>
+          <a data-i18n="deleteAll"><i class="fa fa-trash"></i></a>
+          <a data-i18n="deleteBrowserData"><i class="fa fa-eraser" style="margin-right: 0.1em;"></i></a>
+          <a href="https://getfoxyproxy.org/geoip/" target="_blank" data-i18n="myIP"><i class="fa fa-globe"></i></a>
+          <a data-i18n="log"><i class="fa fa-file-text"></i></a>
+          <a data-i18n="about"><i class="fa fa-info-circle"></i></a>
+        </nav>
+
+        <div class="rightColumn">
+
+          <!-- select & sync -->
+          <div class="flex">
+            <select id="mode">
+              <option value="patterns" style="color: #f90;" data-i18n="modePatterns"></option>
+              <option value="disabled" style="color: red;" data-i18n="modeDisabled"></option>
+            </select>
+
+            <div style="text-align: right;">
+                <span data-i18n="syncSettings"></span>
+                <button type="button" class="plain" data-i18n="help|title"><i class="fa fa-question-circle"></i></button>
+                <input type="checkbox" class="switch" id="syncOnOff"><label for="syncOnOff"></label>
+            </div>
+          </div>
+
+          <!-- proxy list -->
+          <div id="accounts" class="scroll"></div>
+
+          <!-- template -->
+          <div class="pxy flex template">
+            <div>
+              <span class="color">&nbsp;</span>
+              <span class="title ellipsis"></span>
+              <span class="address ellipsis"></span>
+              <span class="flag hide"></span>
+              
+            </div>
+            <div style="text-align: right;">
+              <i class="fa fa-lock"></i>
+              <input type="checkbox" name="onOff" class="switch" id=""><label for=""></label>
+              <button type="button" class="small" data-i18n="edit"></button>
+              <button type="button" class="small" data-i18n="patterns"></button>
+              <button type="button" class="plain" data-i18n="delete|title"><i class="fa fa-trash"></i></button>
+              <button type="button" class="plain up" data-i18n="up|title"><i class="fa fa-caret-up"></i></button>
+              <button type="button" class="plain down" data-i18n="down|title"><i class="fa fa-sort-desc"></i></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- popup -->
+    <div class="popup">
+      <div>
+        <h3></h3>
+        <div></div>
+        <div style="text-align: right;">
+          <button type="button" class="flat" data-i18n="cancel"></button>&nbsp;
+          <button type="button" class="flat" data-i18n="ok"></button>
+        </div>
+      </div>
+    </div>
+
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/options.js"></script>
+  </body>
+</html>

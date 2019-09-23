@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title data-i18n="add">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <style>
+      .main > div:nth-child(1) { flex: 1;  margin-right: 1em; }
+      .main > div:nth-child(2) { flex: 1; }
+      input[type], select { margin-top: 0.3em; }
+  
+      .onOff > label:first-of-type { flex: 0; flex-grow: 1; margin: 0 1em 0.5em 0; }
+      .onOff > div { flex: 0; }
+      .na { margin-top: 1.5em; }
+      .onOff, .pac, .na { display: none; }
+      input[name="nav"] { display: none; }
+      
+      #http:checked ~ div .onOff:not(.dns),
+      #https:checked ~ div .onOff:not(.dns),
+      #socks4:checked ~ div .onOff:not(.dns) {
+        display: flex;
+      }
+      #socks5:checked ~ div .onOff { display: flex; }
+      
+      #pac:checked ~ div .pac,
+      #wpad:checked ~ div .pac {
+        display: block;
+      }
+      #pac:checked ~ div div.na,
+      #wpad:checked ~ div div.na,
+      #system:checked ~ div div.na  {
+        display: block;
+      }
+      
+      #pac:checked ~ div .proxyData,
+      #wpad:checked ~ div .proxyData,
+      #system:checked ~ div .proxyData,
+      #direct:checked ~ div div.proxyData,
+      #pac:checked ~ div button:not(:first-of-type),
+      #wpad:checked ~ div button:not(:first-of-type),
+      #system:checked ~ div button:not(:first-of-type) {
+        display: none;
+      }
+
+      #direct:checked ~ div button[data-i18n="saveEditPattern"] {
+        display: none;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <!-- Navigation -->
+    <input type="radio" name="nav" id="http">
+    <input type="radio" name="nav" id="https" checked>
+    <input type="radio" name="nav" id="socks5">
+    <input type="radio" name="nav" id="socks4">
+    <input type="radio" name="nav" id="direct">
+    <input type="radio" name="nav" id="pac">
+    <input type="radio" name="nav" id="wpad">
+    <input type="radio" name="nav" id="system">
+
+    <!-- header -->
+    <div class="prime header" data-i18n="options"></div>
+
+
+    <!-- main -->
+    <div class="prime">  
+      <div class="main flex">
+  
+        <!-- left column -->
+        <div>
+          <label data-i18n="title"></label>
+          <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
+  
+          <label data-i18n="color"></label>
+          <input id="colorChooser" type="text" style="text-align: center;">
+  
+          <div class="flex onOff">
+            <label data-i18n="active"></label>
+            <div>
+              <input type="checkbox" class="switch" id="proxyActive" checked><label for="proxyActive"></label>
+            </div>
+          </div>
+  
+          <div class="flex onOff notForBasic">
+            <label data-i18n="addWhitelist"></label>
+            <div>
+              <input type="checkbox" class="switch" id="whiteAll"><label for="whiteAll"></label>
+            </div>
+          </div>
+  
+          <div class="flex onOff notForBasic">
+            <label><span data-i18n="noLocal"></span>
+             <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 1.2em;"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
+  
+            <div>
+              <input type="checkbox" class="switch" id="blackAll"><label for="blackAll"></label>
+            </div>
+          </div>
+          
+          
+  
+          <!-- SOCKS5 -->
+          <div class="flex onOff dns">
+            <label>Send DNS through SOCKS5 proxy</label>
+            <div>
+              <input type="checkbox" class="switch" id="proxyDNS" checked><label for="proxyDNS"></label>
+            </div>
+          </div>
+  
+
+  
+  
+        </div>
+  
+        <!-- right column -->
+        <div>
+          <div class="rightData">
+          <label data-i18n="proxyType"></label>
+          <select id="proxyType">
+            <option value="1" selected>HTTP</option>
+            <option value="2">HTTPS/SSL</option>
+            <option value="3">SOCKS5</option>
+            <option value="4">SOCKS4</option>
+            <option value="6">PAC URL</option>
+            <option value="7">WPAD</option>
+            <option value="8">System (use system settings)</option>
+            <option value="5">Direct (no proxy)</option>
+          </select>
+
+
+            <div class="proxyData">
+              <label data-i18n="ip"></label> <i class="fa fa-star"></i>
+              <input id="proxyAddress" type="text" spellcheck="false" placeholder="111.111.111.111, www.example.com">
+  
+              <label data-i18n="port"></label> <i class="fa fa-star"></i>
+              <input id="proxyPort" type="text" placeholder="3128">
+  
+              <label data-i18n="username"></label>
+              <input id="proxyUsername" type="text" spellcheck="false" placeholder="username">
+  
+              <label data-i18n="password"></label>
+              <button type="button" class="plain" data-i18n="togglePW|title"><i class="fa fa-eye"></i></button>
+              <input id="proxyPassword" type="password" spellcheck="false" placeholder="*****">
+            </div>
+          </div>
+
+          <!-- PAC/WPAD -->
+          <div class="pac">
+            <label>URL</label> <i class="fa fa-star"></i>
+            <input id="pacURL" type="text" placeholder="PAC URL">
+          </div>
+
+  
+          <div class="prime alert small na">
+            <h3>Not supported</h3>
+            <p>Due to Firefox limitation, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1396485" target="_blank">PAC</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319631" target="_blank">WPAD</a>, and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1319630"  target="_blank">System Settings</a> are currently not supported, but they are due to be added.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: right;">
+        <button type="button" class="alert" data-i18n="cancel"></button>
+        <button type="button" data-i18n="saveAdd"></button>
+        <button type="button" class="notForBasic" data-i18n="saveEditPattern"></button>
+        <button type="submit" data-i18n="save"></button>
+      </div>      
+
+  </div>
+
+  <script src="scripts/jscolor-2.0.5.js"></script><!-- only used here -->
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/proxy.js"></script>
+  </body>
+</html>

@@ -1,80 +1,91 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <title>FoxyProxy Pattern Help</title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/app.css">
+    <style>
+      td { font-size: 0.9em; }
+      td:not(:first-of-type) { font-family: monospace; }
+    </style>
   </head>
-  <body style="margin: 1rem">
+  <body>
 
-    <div class="row">
-      <div class="small-12 columns">
-        <div class="row callout">
-            <img style="vertical-align:inherit" src="/images/48x48.svg"><h2 id="title" style="vertical-align:text-bottom;display:inline;margin-left:1rem;">Pattern Help</h2>
-      </div>
+    <!-- header -->
+    <div class="prime header">Pattern Help</div>
+    
+    <!-- main -->
+    <div class="prime">    
 
-      <div class="row callout">
-        <div id="help" class="small-12 columns">
-            <h3>TL;DR</h3><p><a href="#examples">show me the examples</a></p>
-            <h3>What are they?</h3>
-            <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="callout-tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same group of patterns) match a URL, the proxy is <strong>not</strong> used to load that URL.</p><p><div class="callout small warning">Patterns are <strong>ignored</strong> unless FoxyProxy is set to <i>Use Enabled Proxies By Patterns and Priority</i>.</div>
-            <h3>Ordering</h3>
-            <p>Every URL is compared with the patterns for each proxy. The white/black patterns for the top-most (first) proxy are checked first, then the next set of white/black patterns are checked, and on down the list of proxies until there is a match. If there is no match, the <i>Default</i> is used to load the URL. <i>Default</i> matches all URLs. You can re-order the proxies using the arrow buttons as you like. You cannot re-order the <i>Default</i> since it acts as a <i>catch-all</i>.</p>
-            <p>If a black pattern matches, the proxy is not used for that URL <i>even if a white pattern also matches</i>. The black pattern takes priority. The URL may, however, load through another proxy you've defined if that proxy has a matching whitelist pattern and no matching blacklist pattern.</p>
-            <p>The order of white patterns and black patterns within a proxy do not matter.</p>
-            <h3>Wildcards</h3>
-            <div class="callout alert">
-              Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only URL domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
-            </div>
-            <h4 id="examples">Examples</h4>
-            <table>
-              <thead><tr><th>Pattern</th><th>Example Matches</th><th>Example Non-Matches</th></thead>
-              <tbody>
-                <tr>
-                  <td><strong>*.foxyproxy.com</strong><br>Match URLs at foxyproxy.com and all subdomains</td>
-                  <td>foxyproxy.com/order.html<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com<br>twostep.foxyproxy.com</td>
-                  <td>mozilla.com</td>
-                </tr>
-                <tr>
-                  <td><strong>.foxyproxy.com</strong><br>Match URLs at foxyproxy.com and all subdomains<br>(same as pattern above)</td>
-                  <td>foxyproxy.com/order.html<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com<br>twostep.foxyproxy.com</td>
-                  <td>mozilla.com</td>
-                </tr>
-                <tr>
-                  <td><strong>**.foxyproxy.com</strong><br>Match URLs <strong>only at subdomains</strong> of foxyproxy.com</td>
-                  <td>help.foxyproxy.com<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com</td>
-                  <td>foxyproxy.com</td>
-                </tr>
-                <tr>
-                  <td><strong>foxyproxy.com</strong><br>Match all URLs at foxyproxy.com but not subdomains</td>
-                  <td>foxyproxy.com<br>foxyproxy.com/index.html</td>
-                  <td>help.foxyproxy.com</td>
-                </tr>
-                <tr>
-                  <td><strong>*foo*</strong><br>Match all URLs with a domain containing the letters foo</td>
-                  <td>foo.com<br>foodle.com<br>one.befoo.org</td>
-                  <td>bar.com</td>
-                </tr>
-                <tr>
-                  <td><strong>*foo*.com</strong></td>
-                  <td>foo.com<br>foodle.com<br>food.com</td>
-                  <td>one.befoo.org<br>food.org</td>
-                </tr>
-                <tr>
-                  <td><strong>g?ogle.*</strong><br>? matches any single character</td>
-                  <td>google.com<br>grogle.org<br>google.com/maps</td>
-                  <td>goog.com</td>
-                </tr>
-                <tr>
-                  <td><strong>.catsinsinks.com:8080</strong><br>Port matching!</td>
-                  <td>catsinsinks.com:8080<br>www.catsinsinks.com:8080<br>www.catsinsinks.com:8080/privacy</td>
-                  <td>catinsinks.net</td>
-                </tr>
-              </tbody>
-            </table>
-            <h4>Notes</h4><p>If a wildcard pattern begins with <strong>.</strong> or <strong>*.</strong> then it matches the main domain and all subdomains in a URL.</p><p>To match <strong>only</strong> subdomains, use <strong>**</strong> instead of <strong>*</strong> in the beginning. Example: <strong>**.foxyproxy.com</strong> will match <strong>help.foxyproxy.com</strong> but will not match <strong>foxyproxy.com</strong>.</p>
-        </div>
+      <p><h3 style="display: inline-block;">TL;DR</h3>: <a href="#examples">show me the examples</a></p>
+      
+      <h3>What are they?</h3>
+      <p>Patterns are a way to specify groups of URLs: a pattern matches a specific set of URLs. If a white pattern matches a URL the browser wants to load, the proxy for that white pattern is used to load the URL <strong class="prime tiny warning">unless a black pattern also matches!</strong> Black patterns take precendence over white patterns and are always checked first. If both white and black patterns (in the same proxy) match a URL, that proxy is <strong>not</strong> used to load that URL.</p>
+      <div class="prime small warning">Patterns are <strong>ignored</strong> unless FoxyProxy is set to <i>Use Enabled Proxies By Patterns and Priority</i>.</div>
+      
+      <h3>Ordering</h3>
+      <p>Every URL is compared with the patterns for each proxy. The white/black patterns for the top-most (first) proxy are checked first, then the next set of white/black patterns are checked, and on down the list of proxies until there is a match. If there is no match, Firefox's native proxy settings are used to load the URL. Older versions of FoxyProxy had a <i>Default</i> proxy that acted as a catch-all to matches all URLs. You may still have <i>Default</i> in FoxyProxy if you upgraded from a previous version.
+			<p>You can re-order the proxies using the arrow buttons as you like, but <strong>the white/black patterns for the top-most (first) proxy are checked first.</strong></p>
+      <p>If a black pattern matches, the proxy is not used for that URL <i>even if a white pattern also matches</i>. The black pattern takes priority. The URL may, however, load through another proxy you've defined if that proxy has a matching whitelist pattern and no matching blacklist pattern.</p>
+      <p>The order of white patterns and black patterns within a proxy do not matter.</p>
+      
+      <h3>Wildcards</h3>
+      <div class="prime alert">
+        Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only URL domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
       </div>
+      
+      <h4 id="examples">Examples</h4>
+      <table>
+        <thead><tr><th>Pattern</th><th>Example Matches</th><th>Example Non-Matches</th></thead>
+        <tbody>
+          <tr>
+            <td><strong>*.foxyproxy.com</strong><br>Match URLs at foxyproxy.com and all subdomains</td>
+            <td>foxyproxy.com/order.html<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com<br>twostep.foxyproxy.com</td>
+            <td>mozilla.com</td>
+          </tr>
+          <tr>
+            <td><strong>.foxyproxy.com</strong><br>Match URLs at foxyproxy.com and all subdomains<br>(same as pattern above)</td>
+            <td>foxyproxy.com/order.html<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com<br>twostep.foxyproxy.com</td>
+            <td>mozilla.com</td>
+          </tr>
+          <tr>
+            <td><strong>**.foxyproxy.com</strong><br>Match URLs <strong>only at subdomains</strong> of foxyproxy.com</td>
+            <td>help.foxyproxy.com<br>help.foxyproxy.com/index.html<br>foo.bar.foxyproxy.com</td>
+            <td>foxyproxy.com</td>
+          </tr>
+          <tr>
+            <td><strong>foxyproxy.com</strong><br>Match all URLs at foxyproxy.com but not subdomains</td>
+            <td>foxyproxy.com<br>foxyproxy.com/index.html</td>
+            <td>help.foxyproxy.com</td>
+          </tr>
+          <tr>
+            <td><strong>*foo*</strong><br>Match all URLs with a domain containing the letters foo</td>
+            <td>foo.com<br>foodle.com<br>one.befoo.org</td>
+            <td>bar.com</td>
+          </tr>
+          <tr>
+            <td><strong>*foo*.com</strong></td>
+            <td>foo.com<br>foodle.com<br>food.com</td>
+            <td>one.befoo.org<br>food.org</td>
+          </tr>
+          <tr>
+            <td><strong>g?ogle.*</strong><br>? matches any single character</td>
+            <td>google.com<br>grogle.org<br>google.com/maps</td>
+            <td>goog.com</td>
+          </tr>
+          <tr>
+            <td><strong>.catsinsinks.com:8080</strong><br>Port matching!</td>
+            <td>catsinsinks.com:8080<br>www.catsinsinks.com:8080<br>www.catsinsinks.com:8080/privacy</td>
+            <td>catinsinks.net</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h4>Notes</h4>
+      <p>If a wildcard pattern begins with <strong>.</strong> or <strong>*.</strong> then it matches the main domain and all subdomains in a URL.</p>
+      <p>To match <strong>only</strong> subdomains, use <strong>**</strong> instead of <strong>*</strong> in the beginning. Example: <strong>**.foxyproxy.com</strong> will match <strong>help.foxyproxy.com</strong> but will not match <strong>foxyproxy.com</strong>.</p>
+
     </div>
   </body>
 </html>

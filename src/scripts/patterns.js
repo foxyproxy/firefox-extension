@@ -1,314 +1,272 @@
-vex.defaultOptions.className = 'vex-theme-default';
-let editingProxy,
-  patternRowTemplate =
-  `<div data-idx="%data-idx" class="row pattern-row %data-active">
-    <div class="small-3 columns">%data-name</div>
-    <div class="small-3 columns">%data-pattern</div>
-    <div class="small-2 columns">%data-type</div>
-    <div class="small-1 columns">%data-protocols</div>
-    <div class="small-1 columns">%data-onoff</div>
-    <div class="small-2 columns">
-    <a data-delete class="float-right"><i class="fa fa-1point8x fa-trash"></i></a>
-    <a data-edit class="float-right"><i class="fa fa-1point8x fa-pencil"></i></a>
-    <a data-imported class="%data-imported float-right"><i class="fa fa-1point8x fa-upload fp-orange"></i></a></div>
-  </div>`;
+'use strict';
 
-// Keep this first. In case of error in DOMContentLoaded listener code, we need this to execute first
-// So user can return from whence he came.
-$(document).on("click", "#errorOkButton", () => {
-  location.href = "/proxies.html";
+// ----------------- Internationalization ------------------
+document.querySelectorAll('[data-i18n]').forEach(node => {
+  let [text, attr] = node.dataset.i18n.split('|');
+  text = chrome.i18n.getMessage(text);
+  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
 });
+// ----------------- /Internationalization -----------------
 
-function renderPatterns() {
-  let blackPatternHtmlStr = [];
-  for (let i=0; i<editingProxy.blackPatterns.length; i++) {
-    blackPatternHtmlStr.push(buildRow(editingProxy.blackPatterns[i], i));
-  }
-  let whitePatternHtmlStr = [];
-  for (let i=0; i<editingProxy.whitePatterns.length; i++) {
-    whitePatternHtmlStr.push(buildRow(editingProxy.whitePatterns[i], i));
-  }
+// ----------------- Spinner -------------------------------
+const spinner = document.querySelector('.spinner');
+function hideSpinner() {
 
-  let blackScroller = new Clusterize({
-    rows: blackPatternHtmlStr,
-    scrollId: 'blackPatternScrollArea',
-    contentId: 'blackPatternContentArea'}),
-  whiteScroller = new Clusterize({
-    rows: whitePatternHtmlStr,
-    scrollId: 'whitePatternScrollArea',
-    contentId: 'whitePatternContentArea'});
+  spinner.classList.remove('on');
+  setTimeout(() => { spinner.style.display = 'none'; }, 600);
+}
 
-  installListeners();
+function showSpinner() {
 
-  function buildRow(patternObj, idx) {
-    let protocol;
-    if (patternObj.protocols & PROTOCOL_ALL) protocol = "both";
-    else if (patternObj.protocols & PROTOCOL_HTTPS) protocol = "https";
-    else if (patternObj.protocols & PROTOCOL_HTTP) protocol = "http";
+  spinner.style.display = 'flex';
+  spinner.classList.add('on');
+}
+// ----------------- /spinner ------------------------------
 
-    let t = patternRowTemplate
-      .replace(/%data-pattern/g, Utils.ellipsis(patternObj.pattern))
-      .replace(/%data-name/g, patternObj.title ? Utils.ellipsis(patternObj.title) : "&nbsp;")
-      .replace(/%data-type/g, patternObj.type == PATTERN_TYPE_WILDCARD ? "wildcard": "reg exp")
-      .replace(/%data-protocols/g, protocol)
-      .replace(/%data-idx/g, idx)
-      .replace("%data-imported", patternObj.importedPattern ? "" : "hide-unimportant")
+// ----- global
+let proxy = {};
+const header = document.querySelector('.header');
+const tbody = document.querySelectorAll('tbody');         // there are 2
+const template = document.querySelector('tr.template');
+const docfrag = document.createDocumentFragment();
 
-    if (patternObj.active) {
-      t = t.replace(/%data-onoff/g, "on").replace("%data-active", "success");
+const defaultPattern = {
+  title: '',
+  active: true,
+  pattern: '',
+  type: 1,                  // PATTERN_TYPE_WILDCARD,
+  protocols: 1              // PROTOCOL_ALL
+};
+
+
+const protocolSet = {                                     // converting to meaningful terms
+  1: 'All',
+  2: 'HTTP',
+  4: 'HTTPS'
+};
+
+const patternTypeSet = {
+  1: 'wildcard',
+  2: 'Reg Exp'
+}
+
+// ----- check for Edit
+const id = localStorage.getItem('id');
+const sync = localStorage.getItem('sync') === 'true';
+const storageArea = !sync ? chrome.storage.local : chrome.storage.sync;
+if (id) {                                                   // This is an edit operation
+
+  storageArea.get(id, result => {
+
+    if (!Object.keys(result).length) {
+/*
+      if (id === LASTRESORT) {                              // error prevention
+        proxy = DEFAULT_PROXY_SETTING;
+        processOptions();
+        return;
+      }*/
+      console.error('Unable to edit saved proxy (could not get existing settings)')
+      return;
     }
-    else
-      t = t.replace(/%data-onoff/g, "off").replace("%data-active", "secondary");
 
-    return t;
+    proxy = result[id];
+    if (proxy.title) { header.textContent = chrome.i18n.getMessage('editPatternsFor', proxy.title); }
+    processOptions();
+    hideSpinner();
+  })
+}
+/*
+else {
+  // Error, shouldn't ever get here
+  hideSpinner();
+  document.querySelector('#error').classList.remove('hide');
+  document.querySelector('.main').classList.add('hide');
+  console.error("2: Unable to read saved proxy proxy (could not get existing settings)");
+}*/
+
+// --- processing all buttons
+document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
+
+function process() {
+
+  switch (this.dataset.i18n) {
+
+    case 'back':                                            // error
+    case 'cancel':
+      location.href = '/options.html';
+      break;
+
+    case 'exportPatterns': exportPatterns(); break;
+
+    case 'newWhite':
+       addNew(tbody[0], 'whitePatterns');
+      break;
+
+    case 'newBlack':
+      addNew(tbody[1], 'blackPatterns');
+      break;
+
+    case 'save':
+      checkOptions();
+      break;
+
+    case 'add':
+      proxy.blackPatterns.push(...blacklistSet);
+      processOptions();
+      break;
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  let parsedURL = Utils.urlParamsToJsonMap(), idParam = parsedURL.id;
-  console.log("parsedURL is ");
-  console.log(parsedURL);
-  if (idParam) {
-    // Read the data to be edited.
-    getProxySettingById(idParam).then((ps) => {
-      editingProxy = ps;
-      init();
-    })
-    .catch((e) => {
-      $("#spinnerRow").hide();
-      $("#errorRow").show();
-      console.error("1: Unable to read saved proxy (could not get existing settings): " + e);
+function processOptions() {
+
+  // clearing the content
+  tbody[0].textContent = '';
+  tbody[1].textContent = '';
+
+  proxy.whitePatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, 'whitePatterns')));
+  docfrag.hasChildNodes() && tbody[0].appendChild(docfrag);
+
+  proxy.blackPatterns.forEach((item, index) => docfrag.appendChild(makeRow(item, index, 'blackPatterns')));
+  docfrag.hasChildNodes() && tbody[1].appendChild(docfrag);
+
+}
+
+function makeRow(pat, index, bw) {
+
+  const tr = template.cloneNode(true);
+  tr.classList.remove('template');
+  tr.classList.add(pat.active ? 'success' : 'secondary');
+  tr.dataset.idx = index;
+  tr.dataset.bw = bw;                                       // black/white
+  const td = tr.children;
+
+
+  td[0].children[0].value = pat.title;
+  td[1].children[0].value = pat.pattern;
+  td[2].children[0].value = pat.type;
+  td[3].children[0].value = pat.protocols;
+  td[4].children[0].checked = pat.active;
+  td[4].children[0].id = bw + index;
+  td[4].children[1].setAttribute('for', td[4].children[0].id);
+
+  pat.importedPattern && td[5].children[0].classList.remove('hide');
+
+  // add Listeners();
+  [...td[5].children].forEach(item => item.addEventListener('click', processEdit));
+
+  return tr;
+}
+
+function addNew(parent, bw) {
+
+  const tr = makeRow(defaultPattern, parent.children.length, bw);
+  parent.appendChild(tr);
+  tr.children[1].children[0].focus();
+}
+
+function processEdit() {
+
+  const parent = this.parentNode.parentNode;
+  const idx = parent.dataset.idx *1;
+  const patternsArray = proxy[parent.dataset.bw];           // whitePatterns | blackPatterns
+
+  switch (this.dataset.i18n) {
+
+    case 'imported|title':
+      alert(chrome.i18n.getMessage('importedPattern') + ' \n\n' + patternsArray[idx].importedPattern);
+      break;
+
+    case 'patternTester|title':
+      const pat = patternsArray[idx];
+      if (pat) {
+        localStorage.setItem('pattern', pat.pattern);
+        localStorage.setItem('type', pat.type);
+        localStorage.setItem('protocols', pat.protocols);
+      }
+      chrome.tabs.create({url: '/pattern-tester.html'});
+      break;
+
+    case 'delete|title':
+      parent.style.opacity = 0;
+      setTimeout(() => { parent.remove(); }, 600);          // remove row
+      break;
+  }
+}
+
+
+function checkOptions() {
+
+  const pxy = {
+    whitePatterns: [],
+    blackPatterns: []
+  };
+  
+  // use for loop to be able to return early on error
+  for (const item of document.querySelectorAll('tr[data-idx]')) {
+
+    const td = item.children;
+
+    // --- trim text values
+    [td[0].children[0], td[1].children[0]].forEach(item => item.value = item.value.trim());
+
+    // test pattern
+    const regex = testPattern(td[1].children[0], td[2].children[0]);
+    if (!regex) { return; }
+
+    const bw = item.dataset.bw;
+    pxy[bw].push({
+      title: td[0].children[0].value,
+      pattern: td[1].children[0].value,
+      type: td[2].children[0].value *1,
+      protocols: td[3].children[0].value *1,
+      active: td[4].children[0].checked,
+      'regExp': regex.source
     });
   }
-  else {
-    // Error, shouldn't ever get here
-    $("#spinnerRow").hide();
-    $("#errorRow").show();
-    console.error("2: Unable to read saved proxy proxy (could not get existing settings)");
-  }
-});
 
-function init() {
-  // Populate the form
-  let heading = editingProxy.title ? ("Add/Edit Patterns for " + editingProxy.title) : "Add/Edit Patterns";
-  $("#windowTitle").text(heading);
-  renderPatterns();
-  $("#spinnerRow").hide();
-  $("#patternsRow").show();
+  // all patterns passed
+  proxy.whitePatterns = pxy.whitePatterns;
+  proxy.blackPatterns = pxy.blackPatterns;
+  storageArea.set({[id]: proxy}, () => location.href = '/options.html');
 }
 
-function installListeners() {
-  $(document).off(); // Remove any existing handlers
 
-  // Get the index and white or black array of the clicked item
-  function getIdxAndPatternsArray(that) {
-    let idx = parseInt(that.closest("div[data-idx]").attr("data-idx")),
-      patternsArray = that.closest("#whitePatternContentArea").length ?
-        editingProxy.whitePatterns : editingProxy.blackPatterns;
-    return [idx, patternsArray];
-  }
+function testPattern(pattern, type) {
 
-  $(document).on("click", "a[data-imported]", (e) => {
-    let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
-    //let that = $(e.target).closest("div[data-idx]");
-    alert("This pattern was imported from an older version of FoxyProxy and changed during import. Here is the original, unchanged pattern: \n\n" + patternsArray[idx].importedPattern);
-    return false;
-  });
+  // --- reset
+  pattern.classList.remove('invalid');
+  result.classList.add('hide');
+  result.classList.remove('alert');
 
-  $(document).on("click", "a[data-edit]", (e) => {
-    let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
-    let pat = patternsArray[idx];
-    openDialog(pat);
-    return false;
-  });
-
-  $(document).on("click", "#newWhite", () => {
-    // Make a copy of PATTERN_NEW and pass it to the vex dialog.
-    // Note that openDialog() returns immediately even though the dialog is modal
-    // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
-    openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.whitePatterns);
-  return false;
-  });
-
-  $(document).on("click", "#newBlack", () => {
-    // Make a copy of PATTERN_NEW and pass it to the vex dialog.
-    // Note that openDialog() returns immediately even though the dialog is modal
-    // so adding of the pattern info to the patterns array must be done in openDialog(), not here.
-    openDialog(JSON.parse(JSON.stringify(PATTERN_NEW)), true, editingProxy.blackPatterns);
-    return false;
-  });
-
-  $(document).on("click", "#save", () => {
-    savePatterns().then(() => location.href = "/proxies.html")
-    .catch((e) => {console.error("Error saving proxy: " + e)});
-  });
-
-  $(document).on("click", "a[data-delete]", (e) => {
-    let [idx, patternsArray] = getIdxAndPatternsArray($(e.target));
-    let that = $(e.target).closest("div[data-idx]");
-    that.hide("fast", function(){
-      patternsArray.splice(idx, 1);
-      renderPatterns(); // TODO: refocus correct page number
-    });
-    return false;
-  });
-
-  $(document).on("click", "#cancel", () => {
-    location.href = "/proxies.html";
-  });
-
-  $(document).on("click", "#addLocal", function() {
-    editingProxy.blackPatterns.push(PATTERN_LOCALHOSTURLS_BLACK);
-    editingProxy.blackPatterns.push(PATTERN_INTERNALIPS_BLACK);
-    editingProxy.blackPatterns.push(PATTERN_LOCALHOSTNAMES_BLACK);
-    renderPatterns();
-    document.getElementById(editingProxy.blackPatterns.length-1).scrollIntoView({
-      behavior: "smooth"
-    });
-  });
-
-  $(document).on("click", "#export", () => {
-    exportPatterns();
-  });
-
-  $(document).on("click", "#import", () => {
-    importPatterns();
-  });
-
-  $(document).on("change", "#importFileSelected", function(evt) {
-    importFileSelected(evt.target.files[0], ["text/plain", "application/json"], 1024*1024*50 /* 50 MB */);
-  });
+  // --- pattern check
+  return checkPattern(pattern, type);
 }
 
-function savePatterns() {
-  $("#patternsRow").hide();
-  $("#spinnerRow").show();
-  return editProxySetting(editingProxy.id, editingProxy.index, editingProxy);
-}
 
-function openDialog(pat, isNew, patternArray) {
-  vex.dialog.buttons.YES.className = "button";
-  vex.dialog.buttons.NO.className = "button alert";
-  vex.dialog.open({
-    message: 'Pattern Details',
-    input: `
-    <style>
-      .vex-custom-field-wrapper {
-        margin-bottom: .5rem;
-      }
-    </style>
-    <div class="callout alert">
-      Because of <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1337001">Firefox limitations</a>, only domains, subdomains, and ports are recognized in patterns. Do not use paths or query parameters in patterns. Example: <strong>*.foxyproxy.com:30053</strong> is OK but not <strong>*.foxyproxy.com:30053/help/*</strong>
-    </div>
-    <div class="vex-custom-field-wrapper">
-        <label for="name" class="bold">Pattern Name (optional)</label>
-        <div class="vex-custom-input-wrapper">
-            <input name="title" type="edit" style="width: 100%" value="${pat.title ? pat.title : ""}"/>
-        </div>
-    </div>
-    <div class="vex-custom-field-wrapper">
-        <label for="pattern" class="bold">Pattern &mdash; <a href="/pattern-help.html" target="_blank">Pattern Help</a> |
-          <a href="/pattern-tester.html" target="_blank">Pattern Tester</a></label>
-        <input name="pattern" type="edit" style="width: 100%" value="${pat.pattern}"/>
-    </div>
-
-    <div class="vex-custom-field-wrapper">
-        <div class="vex-custom-input-wrapper">
-          <label class="bold">Is the pattern a wildcard or regular expression?</label>
-          <label style="display: inline">Wildcard <input name="type" type="radio" value="${PATTERN_TYPE_WILDCARD}"
-            ${pat.type == PATTERN_TYPE_WILDCARD ? `checked` : `` }/></label>
-          <label style="display: inline">Regular Expression <input name="type" type="radio" value="${PATTERN_TYPE_REGEXP}"
-            ${pat.type == PATTERN_TYPE_REGEXP ? `checked` : `` }/></label>
-        </div>
-    </div>
-    <div class="vex-custom-field-wrapper">
-        <div class="vex-custom-input-wrapper">
-          <label class="bold">Use Pattern For Which Protocols?</label>
-          <select name="protocols">
-            <option value="${PROTOCOL_ALL}">https and http</option>
-            <option value="${PROTOCOL_HTTP}">http</option>
-            <option value="${PROTOCOL_HTTPS}">https</option>
-          </ul>
-        </select>
-    </div>
-    <div class="vex-custom-field-wrapper">
-      <div class="vex-custom-input-wrapper">
-      <label class="bold">Enable/Disable the Pattern</label> <input id="active" name="active" class="switch-input" type="checkbox" ${pat.active ? `checked` : `` }>
-      <label class="switch-paddle" for="active">
-        <span class="show-for-sr">On/Off</span>
-        <span class="switch-active bold" aria-hidden="true" style="color: white">On</span>
-        <span class="switch-inactive bold fp-orange" aria-hidden="true">Off</span>
-      </label>
-      </div>
-    </div>`,
-
-    callback: function(data) {
-      if (data) {
-        // Not cancelled
-        // data has .title, .pattern, .type, .protocols, and .onOff (values on or off)
-        pat.title = data.title && data.title.trim();
-        pat.pattern = data.pattern && data.pattern.trim();
-        pat.type = parseInt(data.type);
-        pat.protocols = parseInt(data.protocols);
-        pat.active = data.active == "on";
-        if (isNew) {
-          patternArray.push(pat);
-        }
-        renderPatterns();
-      }
-    },
-
-    beforeClose: function() {
-      // |this| is vex instance
-      if (!this.value) {
-        // Cancel button was clicked
-        return true;
-      }
-      let pat = this.value.pattern && this.value.pattern.trim();
-      if (!pat) {
-        alert("Please enter a pattern");
-        return false;
-      }
-      else return true;
-    }
-  });
-}
 
 function exportPatterns() {
-  let tmpObject = {whitePatterns: editingProxy.whitePatterns, blackPatterns: editingProxy.blackPatterns},
-    blob = new Blob([JSON.stringify(tmpObject, null, 2)], {type : 'text/plain'}),
-    filename = "foxyproxy-patterns.json";
-  browser.downloads.download({
+
+  const tmpObject = {whitePatterns: proxy.whitePatterns, blackPatterns: proxy.blackPatterns};
+  const blob = new Blob([JSON.stringify(tmpObject, null, 2)], {type : 'text/plain'});
+  const filename = 'foxyproxy' + (proxy.title ? '-' + proxy.title : '')  + '-patterns' + '_' + new Date().toISOString().substring(0, 10) + '.json';
+  chrome.downloads.download({
     url: URL.createObjectURL(blob),
     filename,
-    saveAs: true
-  }).then(() => console.log("Export/download finished")); // wait for it to complete before returning
+    saveAs: true,
+    conflictAction: 'uniquify'
+  }, () => console.log('Export/download finished'));        // wait for it to complete before returning
 }
 
-function importPatterns() {
-  vex.dialog.buttons.YES.className = "button";
-  vex.dialog.buttons.NO.className = "button alert";
-  vex.dialog.alert({
-    message: 'Import Patterns',
-    input: `
-    <style>
-      .vex-custom-field-wrapper {
-        margin-bottom: .5rem;
-      }
-    </style>
-    <div class="callout alert">
-      <input id="importFileSelected" type="file"/>
-    </div>`
+
+document.getElementById('file').addEventListener('change', processFileSelect);
+function processFileSelect(e) {
+
+  const file = e.target.files[0];
+
+  Utils.importFile(file, ['application/json'], 1024*1024*5, 'json', imported => {
+    proxy.whitePatterns = imported.whitePatterns;
+    proxy.blackPatterns = imported.blackPatterns;
+    processOptions();
+    Utils.notify(chrome.i18n.getMessage('importBW', [proxy.whitePatterns.length, proxy.blackPatterns.length]));
   });
 }
-
-function importFileSelected(file, mimeTypeArr, maxSizeBytes) {
-  Utils.importFile(file, mimeTypeArr, maxSizeBytes, "json", (allPatterns) => {
-    editingProxy.whitePatterns = allPatterns.whitePatterns;
-    editingProxy.blackPatterns = allPatterns.blackPatterns;
-    vex.closeTop();
-    renderPatterns();
-    alert(`Imported ${editingProxy.whitePatterns.length} white patterns and ${editingProxy.blackPatterns.length} black patterns.`);
-  });
-}
-
