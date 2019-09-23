@@ -336,8 +336,23 @@ function foxyProxyImport() {
     return;
   }
 
+	// --- generate the form post data
+	const usernamePassword = { 'username': username, 'password': password };
+	const formBody = [];
+	for (const property in usernamePassword) {
+		const encodedKey = encodeURIComponent(property);
+		const encodedValue = encodeURIComponent(usernamePassword[property]);
+		formBody.push(encodedKey + "=" + encodedValue);
+	}
+	
   // --- fetch data
-  fetch(`https://getfoxyproxy.org/webservices/get-accounts.php?username=${username}&password=${password}`)
+	fetch('https://getfoxyproxy.org/webservices/get-accounts.php',
+	{	method: 'POST',
+		body: formBody.join("&"),
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+		}
+	})
   .then(response => response.json())
   .then(response => {
 
@@ -352,16 +367,17 @@ function foxyProxyImport() {
     storageArea.get(null, result => {
 
       response.forEach(item => {
-
+				const hostname = item.hostname.substring(0, item.hostname.indexOf('.getfoxyproxy.org'));
+				
         // --- creating proxy
         result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
           index: -1,
           active: item.active,
-          title: '',
+          title: hostname,
           color: '#ff9900',
-          type: 2,                                          // HTTPS
-          address: item.hostname,
-          port: item.ssl_port,
+          type: 1,                                          // HTTP
+          address: item.ipaddress,
+          port: item.port[0],
           username: item.username,
           password: item.password,
           cc: item.country_code,
