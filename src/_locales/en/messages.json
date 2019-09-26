@@ -72,7 +72,8 @@
   "down": { "message": "move down" },
 
   "disabled": { "message": "Disabled" },
-  "active": { "message": "Enabled for patterns and priorities mode" },
+  "active": { "message": "Enabled" },
+	"activeNote": { "message": "Enabling/Disabling a pattern here only affects FoxyProxy when using 'Enabled Proxies By Patterns and Order'"},
 
 
   "name": { "message": "Name" },
