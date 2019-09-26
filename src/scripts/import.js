@@ -336,26 +336,25 @@ function foxyProxyImport() {
     return;
   }
 
-	// --- generate the form post data
-	const usernamePassword = { 'username': username, 'password': password };
-	const formBody = [];
-	for (const property in usernamePassword) {
-		const encodedKey = encodeURIComponent(property);
-		const encodedValue = encodeURIComponent(usernamePassword[property]);
-		formBody.push(encodedKey + "=" + encodedValue);
-	}
-	
+  // --- generate the form post data
+  const usernamePassword = { 'username': username, 'password': password };
+  const formBody = [];
+  for (const property in usernamePassword) {
+  const encodedKey = encodeURIComponent(property);
+  const encodedValue = encodeURIComponent(usernamePassword[property]);
+  formBody.push(encodedKey + "=" + encodedValue);
+  }
+  
   // --- fetch data
-	fetch('https://getfoxyproxy.org/webservices/get-accounts.php',
-	{	method: 'POST',
-		body: formBody.join("&"),
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-		}
-	})
+  fetch('https://getfoxyproxy.org/webservices/get-accounts.php',
+  {	method: 'POST',
+  body: formBody.join("&"),
+  headers: {
+  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  }
+  })
   .then(response => response.json())
   .then(response => {
-
     if (!Array.isArray(response) || !response[0] || !response[0].hostname) {
       hideSpinner();
       Utils.notify(chrome.i18n.getMessage('errorFetch'));
@@ -367,24 +366,27 @@ function foxyProxyImport() {
     storageArea.get(null, result => {
 
       response.forEach(item => {
-				const hostname = item.hostname.substring(0, item.hostname.indexOf('.getfoxyproxy.org'));
-				
-        // --- creating proxy
-        result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
-          index: -1,
-          active: item.active,
-          title: hostname,
-          color: '#ff9900',
-          type: 1,                                          // HTTP
-          address: item.ipaddress,
-          port: item.port[0],
-          username: item.username,
-          password: item.password,
-          cc: item.country_code,
-          country: item.country,
-          whitePatterns: [],
-          blackPatterns: []
-        };
+      const hostname = item.hostname.substring(0, item.hostname.indexOf('.getfoxyproxy.org'));
+  
+       if (hostname && item.ipaddress && item.port && item.port[0] && item.country_code && item.country) {
+  
+          // --- creating proxy
+          result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
+            index: -1,
+            active: item.active,
+            title: hostname,
+            color: '#ff9900',
+            type: 1,                                          // HTTP
+            address: item.ipaddress,
+            port: item.port[0],
+            username: item.username,
+            password: item.password,
+            cc: item.country_code,
+            country: item.country,
+            whitePatterns: [],
+            blackPatterns: []
+          };
+        }
       });
 
       storageArea.set(result, end);                         // save to target
