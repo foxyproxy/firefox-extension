@@ -41,8 +41,8 @@ class Logger {
 browser.proxy['onError' || 'onProxyError'].addListener(e => console.error(`pac.js error: ${e.message}`));
 
 // --- registering persistent listener
-// auth can only be sent for HTTP requests so '<all_urls>' is not needed
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 ...Resolution: --- ? WONTFIX
+// Do not change '<all_urls>' to ['*://*/*'] since it breaks http basic auth:
+// https://github.com/foxyproxy/firefox-extension/issues/30
 chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['*://*/*']}, ['blocking']);
 
 chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
@@ -246,34 +246,28 @@ function setDisabled(isError) {
 // ----------------- Proxy Authentication ------------------
 // ----- session global
 let authData = {};
-let authPending = {};
 
-async function sendAuth(request) {
-
-  // --- already sent once and pending
-  if (authPending[request.requestId]) { return {cancel: true}; }
+function sendAuth(request) {
+  
+  // Do nothing if this not proxy auth request:
+  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
+  //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
+  //   have no effect on the handling of the request, and the browser will probably just ask the user to log in."
+  if (!request.isProxy) return;
 
   // --- authData credentials not yet populated from storage
+  // --- cancel request; user may come back to the tab & reload it later.
   if(!Object.keys(authData)[0]) { return {cancel: true}; }
 
   // --- first authentication
+  // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
+  //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
+  //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication 
+  // TODO: test in future Fx releases to see if that changes.
+  // console.log(request.challenger.host, "challenger host");
   if (authData[request.challenger.host]) {
-    authPending[request.requestId] = 1;                       // prevent bad authentication loop
     return {authCredentials: authData[request.challenger.host]};
   }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
-function clearPending(request) {
-
-  if(!authPending[request.requestId]) { return; }
-
-  if (request.error) {
-    const host = request.proxyInfo && request.proxyInfo.host ? request.proxyInfo.host : request.ip;
-    Utils.notify(chrome.i18n.getMessage('authError', host));
-    console.error(request.error);
-    return;
-  }
-
-  delete authPending[request.requestId];                    // no error
-}
