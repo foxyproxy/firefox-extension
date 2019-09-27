@@ -73,7 +73,7 @@
 
   "disabled": { "message": "Disabled" },
   "active": { "message": "Enabled" },
-	"activeNote": { "message": "Enabling/Disabling a pattern here only affects FoxyProxy when using 'Enabled Proxies By Patterns and Order'"},
+	"activeNote": { "message": "Enabling/Disabling patterns only affect FoxyProxy if you select "},
 
 
   "name": { "message": "Name" },

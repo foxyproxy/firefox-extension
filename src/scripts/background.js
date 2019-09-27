@@ -22,6 +22,7 @@ class Logger {
   }
 
   add(item) {
+    console.log(item, "ITM!!!");
     this.list.push(item);                             // addds to the end
     this.list = this.list.slice(-this.size);          // slice to the ending size entries
   }
@@ -58,7 +59,12 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
 
 chrome.runtime.onMessage.addListener((message, sender) => {
   // used only for log from PAC, will be removed in the next API update
-  message.type === 'log' && logger && logger.active && logger.add(message);
+  if (message.type === 'log') {
+    logger && logger.active && logger.add(message);
+  }
+  else if (message.type === 'console') {
+    console.log(message.message, "from PAC");
+  }
 });
 
 
@@ -186,11 +192,38 @@ function sendToPAC(settings) {
     prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id]));
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
+    function processPatterns(patterns) {
+      return patterns.reduce((accumulator, pat) => {
+        if (pat.active) {
+          if (pat.type === PATTERN_TYPE_WILDCARD) {
+            // Convert wildcards to regular expressions.
+            // Validate. If invalid, notify user.
+            // Store the original pattern so if this pattern matches anything,
+            // we can display whatever the user entered ("original") in the log
+            pat.originalPattern = pat.pattern;
+            pat.pattern = Utils.safeRegExp(Utils.wildcardToRegExp(pat.pattern));
+            accumulator.push(pat);
+          }
+          else if (pat.type == PATTERN_TYPE_REGEXP) {
+            // Validate regexp. If invalid, notify user
+            // Store the original pattern so if this pattern matches anything,
+            // we can display whatever the user entered ("original") in the log
+            pat.originalPattern = pat.pattern;
+            pat.pattern = Utils.safeRegExp(pat.pattern);
+            accumulator.push(pat);
+          }
+          else {
+            console.error(`Ignoring unknown type in pattern object ${pat}`);
+          }
+        }
+        return accumulator;
+      }, []);
+    }
     // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
-    // is a little faster (doesn't even know about inative patterns)
+    // is a little faster (doesn't even know about inative patterns). Also convert all patterns to reg exps.
     for (const idx in active.proxySettings) {
-      active.proxySettings[idx].blackPatterns = active.proxySettings[idx].blackPatterns.filter(x => x.active);
-      active.proxySettings[idx].whitePatterns = active.proxySettings[idx].whitePatterns.filter(x => x.active);
+      active.proxySettings[idx].blackPatterns = processPatterns(active.proxySettings[idx].blackPatterns);
+      active.proxySettings[idx].whitePatterns = processPatterns(active.proxySettings[idx].whitePatterns);
     }
 
     browser.proxy.register(pacURL).then(() => {
@@ -248,7 +281,7 @@ function setDisabled(isError) {
 let authData = {};
 
 function sendAuth(request) {
-  
+
   // Do nothing if this not proxy auth request:
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
   //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
@@ -262,7 +295,7 @@ function sendAuth(request) {
   // --- first authentication
   // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
   //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
-  //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication 
+  //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
   // TODO: test in future Fx releases to see if that changes.
   // console.log(request.challenger.host, "challenger host");
   if (authData[request.challenger.host]) {

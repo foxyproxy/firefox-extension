@@ -2,14 +2,14 @@
 
 // ----- global
 let settings = {};
+const FOR_ALL = {originalPattern: 'all'};
 
 browser.runtime.onMessage.addListener(s => settings = s);
 
 function logToUI(log) { browser.runtime.sendMessage(log); }
-
+function console(message) { browser.runtime.sendMessage({type: 'console', message}) }
 
 function FindProxyForURL(url, host) { // The URL being accessed. The path and query components of https:// URLs are stripped. 
-
   switch (settings.mode) {
     // not supported at the moment
     case 'random':
@@ -30,7 +30,7 @@ function FindProxyForURL(url, host) { // The URL being accessed. The path and qu
 
     default:
       // Use proxy "xxxx" for all URLs        // const USE_PROXY_FOR_ALL_URLS = 2;
-      return [prepareSetting(url, settings.proxySettings[0], 'all')]; // the first proxy
+      return [prepareSetting(url, settings.proxySettings[0], FOR_ALL)]; // the first proxy
   }
 }
 
@@ -50,16 +50,19 @@ function findProxyMatch(url) {
     // Check black patterns first
     const blackMatch = proxy.blackPatterns.find(item => 
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              item.pattern.test(hostPort));
  
     //if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
     if (blackMatch) { continue; }                             // if blacklist matched move to the next proxy
 
     const whiteMatch = proxy.whitePatterns.find(item =>
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              item.pattern.test(hostPort));
   
-    if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here
+    if (whiteMatch) {
+			// found a whitelist match, end here
+			return {proxy, pattern: whiteMatch};
+		}
   }
 
   return null; // no black or white matches
@@ -85,15 +88,15 @@ function prepareSetting(url, proxy, matchedPattern) {
   proxy.proxyDNS && (ret.proxyDNS = proxy.proxyDNS);
 
   // trim the log data to what is needed
-  const log = {
+  logToUI({
     type: 'log',
     url,
     title: proxy.title,
     color: proxy.color,
     address: proxy.address,
-    matchedPattern,
+    // Log should display whatever user typed, not our processed version.
+    matchedPattern: matchedPattern.originalPattern,
     timestamp: Date.now()
-  };
-  logToUI(log);
+  });
   return ret;
 }
