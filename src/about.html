@@ -51,24 +51,28 @@
       </p>
 
       <h3>Support Me</h3>
-      <p>Please <a href="https://www.paypal.me/ericjung2/9.99" target="_blank">donate</a> or <a href="https://getfoxyproxy.org/order/" target="_blank">buy dedicated VPN/Proxy Servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
+      <p>Please <a href="https://www.paypal.me/ericjung2/5.99" target="_blank">donate</a> or <a href="https://getfoxyproxy.org/order/" target="_blank">buy dedicated VPN/Proxy Servers</a> in over 100 countries (including such remote places like <a href="https://wikipedia.org/wiki/Réunion" target="_blank">Reunion Island</a>).</p>
       <p><strong>Thank you for using FoxyProxy!</strong></p>
       <img src="/images/ericjung.png" alt=""><br>
       <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
 
-
       <h3>Release Notes for Recent Releases</h3>
+      <h4>Version 7.3</h4>
+      <ul>
+        <li><a href="https://github.com/foxyproxy/firefox-extension/issues/33">Another</a> pattern bugfix.</li>
+        <li>Fix for inability to turn off <i>Send DNS through SOCKS5 proxy</i>; discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/35">here</a>.</li>
+      </ul>
+      
       <h4>Version 7.2</h4>
-        <ul>
+      <ul>
         <li>HTTP Basic Auth bugfix introduced in 7.0; discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/30">here</a>.</li>
         <li>Fix minor import bug when importing FoxyProxy settings for paid accounts.</li>
       </ul>
       
-          <h3>Release Notes for Recent Releases</h3>
       <h4>Version 7.1</h4>
-            <ul>
-      <li>Patterns bugfix for bug introduced in 7.0</li>
-      <li>Text changes in patterns window</li>
+      <ul>
+        <li>Patterns bugfix for bug introduced in 7.0</li>
+        <li>Text changes in patterns window</li>
       </ul>
   
       <h4>Version 7.0</h4>
@@ -96,7 +100,7 @@
           <li>Proxy Page</li>
           <li class="sub">Option to set active on|off on proxy Edit page</li>
           <li class="sub">username/password/port are kept when adding new proxies to ease creation of multiple proxies with same username/password</li>
-  <li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
+          <li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
 
 
           <li>Import Page</li>
@@ -113,37 +117,12 @@
           <li class="sub">Added size control to Log entries</li>
           <li class="sub">Default is set to log off and size 100 entries</li>
 
-  <li><strong>Default proxy</strong> is no longer created for new installations. Users can create this manually if they want it.</li>
+          <li><strong>Default proxy</strong> is no longer created for new installations. Users can create this manually if they want it.</li>
           <li>i18n support</li>
           <li>Removed all but one external javascript libraries: JQuery, Clusterize & Vex</li>
           <li>Greatly streamlined code</li>
           <li>Style/Code Improvements</li>
         </ul>
-
-
-      <h4>Versions 6.4 &mdash; 6.6.2</h4>
-      <ul>
-        <li>Fixed pattern matching bug whereby patterns with leading .* or . did not always accurately match subdomains</li>
-        <li>Import/Export patterns to and from files (previously you could only import/export all settings, including patterns)</li>
-        <li>Replaced paging on the patterns page with infinite scroll</li>
-        <li>Replaced the inline editing on the patterns page with a modal dialog</li>
-        <li>Several UI improvements; for example, rounded containers are now less round, message after successful export, etc.</li>
-        <li>Removed all minified code for Mozilla; change filenames of 3rd-party libs to include version number</li>
-        <li>Security fixes with jQuery</li>
-        <li>Minor UI fixes to the toolbar popup window</li>
-        <li>Initial i18n support with 1 page localized</li>
-        <li>Removed several jQuery plugins towards the day when jQuery will be completely removed. Upgraded jQuery from 2.2.4 to 3.4.1 per Mozilla regulations.</li>
-        <li>Removed cruft</li>
-        <li>Minor updates to About and First Install pages</li>
-        <li>Added link on About Page to the now public github repository for source code</li>
-      </ul>
-
-      <h4>Version 6.3</h4>
-
-      <ul>
-        <li>Turn Firefox Sync on/off - much requested feature.</li>
-        <li>Some further input validation</li>
-      </ul>
 
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>
