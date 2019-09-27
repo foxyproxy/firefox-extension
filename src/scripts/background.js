@@ -58,7 +58,12 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
 
 chrome.runtime.onMessage.addListener((message, sender) => {
   // used only for log from PAC, will be removed in the next API update
-  message.type === 'log' && logger && logger.active && logger.add(message);
+  if (message.type === 'log') {
+    logger && logger.active && logger.add(message);
+  }
+  else if (message.type === 'console') {
+    console.log(message.message);
+  }
 });
 
 
@@ -186,11 +191,32 @@ function sendToPAC(settings) {
     prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id]));
     active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
+    function processPatterns(patterns) {
+      return patterns.reduce((accumulator, pat) => {
+        if (pat.active) {
+          if (pat.type === PATTERN_TYPE_WILDCARD) {
+            // Convert wildcards to regular expressions.
+            // Validate. If invalid, notify user.
+            pat.pattern = Utils.safeRegExp(Utils.wildcardToRegExp(pat.pattern));
+            accumulator.push(pat);
+          }
+          else if (pat.type == PATTERN_TYPE_REGEXP) {
+            // Validate regexp. If invalid, notify user
+            pat.pattern = Utils.safeRegExp(pat.pattern);
+            accumulator.push(pat);
+          }
+          else {
+            console.error(`Ignoring unknown type in pattern ${pat}`);
+          }
+        }
+        return accumulator;
+      }, []);      
+    }
     // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
-    // is a little faster (doesn't even know about inative patterns)
+    // is a little faster (doesn't even know about inative patterns). Also convert all patterns to reg exps.
     for (const idx in active.proxySettings) {
-      active.proxySettings[idx].blackPatterns = active.proxySettings[idx].blackPatterns.filter(x => x.active);
-      active.proxySettings[idx].whitePatterns = active.proxySettings[idx].whitePatterns.filter(x => x.active);
+      active.proxySettings[idx].blackPatterns = processPatterns(active.proxySettings[idx].blackPatterns);
+      active.proxySettings[idx].whitePatterns = processPatterns(active.proxySettings[idx].whitePatterns);
     }
 
     browser.proxy.register(pacURL).then(() => {

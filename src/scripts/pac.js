@@ -6,7 +6,7 @@ let settings = {};
 browser.runtime.onMessage.addListener(s => settings = s);
 
 function logToUI(log) { browser.runtime.sendMessage(log); }
-
+function console(message) { browser.runtime.sendMessage({type: 'console', message}) }
 
 function FindProxyForURL(url, host) { // The URL being accessed. The path and query components of https:// URLs are stripped. 
 
@@ -50,16 +50,20 @@ function findProxyMatch(url) {
     // Check black patterns first
     const blackMatch = proxy.blackPatterns.find(item => 
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              item.pattern.test(hostPort));
  
     //if (blackMatch) { return null; }                        // found a blacklist match, end here, use direct, no proxy
     if (blackMatch) { continue; }                             // if blacklist matched move to the next proxy
 
     const whiteMatch = proxy.whitePatterns.find(item =>
             (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-              new RegExp(item['regExp'], 'i').test(hostPort));
+              item.pattern.test(hostPort));
   
-    if (whiteMatch) { return {proxy, pattern: whiteMatch}; } // found a whitelist match, end here
+    if (whiteMatch) {
+			//console({hostPort, whiteMatch});
+			 // found a whitelist match, end here
+			return {proxy, pattern: whiteMatch};
+		}
   }
 
   return null; // no black or white matches

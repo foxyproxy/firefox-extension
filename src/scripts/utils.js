@@ -106,7 +106,7 @@ class Utils {
       while (pat[start] === '*' && start < end) start++;
       while (pat[end - 1] === '*' && start < end) end--;
       // If there's only an asterisk left, match everything
-      if (end - start == 1 && pat[start] == '*') return new RegExp('');
+      if (end - start == 1 && pat[start] == '*') return '';
     }
     else if (pat.startsWith('*.')) { matchOptionalSubdomains = true; }
 
@@ -127,7 +127,18 @@ class Utils {
     if (end === pat.length) { regExpStr += '$'; }
     return regExpStr;
   }
-
+	
+	static safeRegExp(regExpStr) {
+		try {
+			return new RegExp(regExpStr, 'i');
+		}
+		catch(e) {
+			console.error(`safeRegExp(): Error creating regexp for pattern: ${regExpStr}`, e);
+			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
+			return new RegExp("a^"); // match nothing
+		}
+	}
+	
   // import | pattern
   static importFile(file, mimeTypeArr, maxSizeBytes, jsonOrXml, callback) {
 
