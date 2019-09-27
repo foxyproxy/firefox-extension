@@ -148,7 +148,8 @@ function makeProxy() {
 
     proxy.address = proxyAddress.value;
     proxy.port = proxyPort.value *1;
-    if (proxy.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked) { proxy.proxyDNS = true; }
+    proxy.proxyDNS = proxy.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked;
+    console.log(proxy.proxyDNS, "checked?");
     proxy.active = proxyActive.checked;
     // already trimmed in validateInput()
     proxy.username = proxyUsername.value;                   // if it had u/p and then deletd it, it must be reflected
