@@ -143,18 +143,17 @@ function makeProxy() {
   proxy.type = proxyType.value *1;
   proxy.color = document.querySelector('#colorChooser').value;
   proxy.title = proxyTitle.value;
-
+  proxy.active = proxyActive.checked;
+  
   if (proxy.type !== PROXY_TYPE_NONE) {
 
     proxy.address = proxyAddress.value;
     proxy.port = proxyPort.value *1;
     proxy.proxyDNS = proxy.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked;
-    proxy.active = proxyActive.checked;
     // already trimmed in validateInput()
     proxy.username = proxyUsername.value;                   // if it had u/p and then deletd it, it must be reflected
     proxy.password = proxyPassword.value;
   }
-
   proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#whiteAll').checked ? [PATTERN_ALL_WHITE] : []);
   proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#blackAll').checked ? blacklistSet : []);
   proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
