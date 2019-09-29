@@ -22,7 +22,6 @@ class Logger {
   }
 
   add(item) {
-    console.log(item, "ITM!!!");
     this.list.push(item);                             // addds to the end
     this.list = this.list.slice(-this.size);          // slice to the ending size entries
   }
@@ -42,9 +41,9 @@ class Logger {
 browser.proxy['onError' || 'onProxyError'].addListener(e => console.error(`pac.js error: ${e.message}`));
 
 // --- registering persistent listener
-// Do not change '<all_urls>' to ['*://*/*'] since it breaks http basic auth:
+// Do not change '<all_urls>' to ['*://*/*'] since it seems to break http basic auth:
 // https://github.com/foxyproxy/firefox-extension/issues/30
-chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['*://*/*']}, ['blocking']);
+chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['<all_urls']}, ['blocking']);
 
 chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
   // reason: install | update | browser_update | shared_module_update
@@ -59,10 +58,13 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
 
 chrome.runtime.onMessage.addListener((message, sender) => {
   // used only for log from PAC, will be removed in the next API update
-  if (message.type === 'log') {
+  if (message.type === 1) {
     logger && logger.active && logger.add(message);
+    browser.browserAction.setTitle({title:message.title});
+    browser.browserAction.setBadgeText({text: message.title});
+    browser.browserAction.setBadgeBackgroundColor({color: message.color});    
   }
-  else if (message.type === 'console') {
+  else if (message.type === 2) {
     console.log(message.message, "from PAC");
   }
 });

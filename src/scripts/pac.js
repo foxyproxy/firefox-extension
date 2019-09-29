@@ -7,7 +7,7 @@ const FOR_ALL = {originalPattern: 'all'};
 browser.runtime.onMessage.addListener(s => settings = s);
 
 function logToUI(log) { browser.runtime.sendMessage(log); }
-function console(message) { browser.runtime.sendMessage({type: 'console', message}) }
+function console(message) { browser.runtime.sendMessage({type: 2, message}) }
 
 function FindProxyForURL(url, host) { // The URL being accessed. The path and query components of https:// URLs are stripped. 
   switch (settings.mode) {
@@ -89,7 +89,7 @@ function prepareSetting(url, proxy, matchedPattern) {
 
   // trim the log data to what is needed
   logToUI({
-    type: 'log',
+    type: 1,
     url,
     title: proxy.title,
     color: proxy.color,
