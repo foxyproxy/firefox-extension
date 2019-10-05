@@ -41,7 +41,7 @@ class Logger {
 // --- registering persistent listener
 // Do not change '<all_urls>' to ['*://*/*'] since it seems to break http basic auth:
 // https://github.com/foxyproxy/firefox-extension/issues/30
-chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['<all_urls']}, ['blocking']);
+chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['<all_urls>']}, ['blocking']);
 
 chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
   // reason: install | update | browser_update | shared_module_update
