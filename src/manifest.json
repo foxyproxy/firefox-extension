@@ -17,7 +17,7 @@
   },
 
   "background": {
-    "scripts": ["scripts/utils.js", "scripts/background.js"]
+    "scripts": ["scripts/utils.js", "scripts/background.js", "scripts/matcher.js"]
   },
 
   "options_ui": {

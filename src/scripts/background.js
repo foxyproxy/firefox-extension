@@ -2,9 +2,14 @@
 
 // ----- global
 //const FF = typeof browser !== 'undefined'; // for later
-const pacURL = 'scripts/pac.js';
 let storageArea; // keeping track of sync
 let bgDisable = false;
+ 
+// shortcuts so we can do int comparisons, rather than string comparisons, in hotspots
+const FIXED_MODE = 1, PATTERNS_MODE = 2, DISABLED_MODE = 3;
+
+// Start in DISABLED_MODE mode because it's going to take time to load setings from storage
+let activeSettings = {mode: DISABLED_MODE};
 
 // ----------------- logger --------------------------------
 let logger;
@@ -33,13 +38,6 @@ class Logger {
 }
 // ----------------- /logger -------------------------------
 
-
-// ----------------- Listeners ------------------
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1388619
-// proxy.onProxyError has been deprecated and will be removed in Firefox 71. Use proxy.onError instead.
-// FF60+ proxy.onError | FF55-59 proxy.onProxyError
-browser.proxy['onError' || 'onProxyError'].addListener(e => console.error(`pac.js error: ${e.message}`));
-
 // --- registering persistent listener
 // Do not change '<all_urls>' to ['*://*/*'] since it seems to break http basic auth:
 // https://github.com/foxyproxy/firefox-extension/issues/30
@@ -53,19 +51,6 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
     case details.reason === 'update' && /^(3\.|4\.|5\.5|5\.6)/.test(details.previousVersion):
       chrome.tabs.create({url: '/about.html?welcome'});
       break;
-  }
-});
-
-chrome.runtime.onMessage.addListener((message, sender) => {
-  // used only for log from PAC, will be removed in the next API update
-  if (message.type === 1) {
-    logger && logger.active && logger.add(message);
-    browser.browserAction.setTitle({title:message.title});
-    browser.browserAction.setBadgeText({text: message.title});
-    browser.browserAction.setBadgeBackgroundColor({color: message.color});    
-  }
-  else if (message.type === 2) {
-    console.log(message.message, "from PAC");
   }
 });
 
@@ -140,7 +125,7 @@ function process(settings) {
                                             chrome.storage.onChanged.addListener(storageOnChanged);
 
   logger = settings.logging ? new Logger(settings.logging.size, settings.logging.active) : new Logger();
-  sendToPAC(settings);
+  setActiveSettings(settings);
   console.log('background.js: loaded proxy settings from storage.');
 }
 
@@ -163,12 +148,16 @@ function storageOnChanged(changes, area) {
   }
 
   // default: changes from popup | options
-  storageArea.get(null, sendToPAC);
+  storageArea.get(null, setActiveSettings);
 }
 
+function proxyRequest(requestInfo) {
+  return findProxyMatch(requestInfo.url, activeSettings);  
+}
 
-function sendToPAC(settings) {
-
+function setActiveSettings(settings) {
+  browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
+  
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
@@ -178,21 +167,21 @@ function sendToPAC(settings) {
 
 
   const mode = settings.mode;
-
+  activeSettings = {  // global
+    mode,
+    proxySettings: []
+  };
+  
   if (mode === 'disabled' || (FOXYPROXY_BASIC && mode === 'patterns')){
     setDisabled();
+    return;
   }
 
-  else if (['patterns', 'random', 'roundrobin'].includes(mode)) { // we only support 'patterns' ATM
-
-    const active = {
-      mode,
-      proxySettings: []
-    }
+  if (['patterns', 'random', 'roundrobin'].includes(mode)) { // we only support 'patterns' ATM
 
     // filter out the inactive proxy settings
-    prefKeys.forEach(id => pref[id].active && active.proxySettings.push(pref[id]));
-    active.proxySettings.sort((a, b) => a.index - b.index); // sort by index
+    prefKeys.forEach(id => pref[id].active && activeSettings.proxySettings.push(pref[id]));
+    activeSettings.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
     function processPatterns(patterns) {
       return patterns.reduce((accumulator, pat) => {
@@ -223,35 +212,22 @@ function sendToPAC(settings) {
     }
     // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
     // is a little faster (doesn't even know about inative patterns). Also convert all patterns to reg exps.
-    for (const idx in active.proxySettings) {
-      active.proxySettings[idx].blackPatterns = processPatterns(active.proxySettings[idx].blackPatterns);
-      active.proxySettings[idx].whitePatterns = processPatterns(active.proxySettings[idx].whitePatterns);
+    for (const idx in activeSettings.proxySettings) {
+      activeSettings.proxySettings[idx].blackPatterns = processPatterns(activeSettings.proxySettings[idx].blackPatterns);
+      activeSettings.proxySettings[idx].whitePatterns = processPatterns(activeSettings.proxySettings[idx].whitePatterns);
     }
-
-    browser.proxy.register(pacURL).then(() => {
-
-      chrome.browserAction.setIcon({path: '/images/icon.svg'});
-      chrome.browserAction.setTitle({title: chrome.i18n.getMessage('patterns')});
-      chrome.browserAction.setBadgeText({text: ''});
-      chrome.runtime.sendMessage(active, {toProxyScript: true});
-    });
+    activeSettings.mode = PATTERNS_MODE;
+    //console.log(activeSettings, "activeSettings in patterns mode");
+    browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
   }
   else {
     // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
     // mode is set to the proxySettings id to use for all URLs.
-    // Find it and pass to the PAC as the only proxySetting.
     if (settings[mode]) {
-
-      const tmp = settings[mode];
-      browser.proxy.register(pacURL).then(() => {
-
-        const title = tmp.title || `${tmp.address}:${tmp.port}`;
-        chrome.browserAction.setIcon({path: '/images/icon.svg'});
-        chrome.browserAction.setTitle({title});
-        chrome.browserAction.setBadgeText({text: title});
-        chrome.browserAction.setBadgeBackgroundColor({color: tmp.color});
-        chrome.runtime.sendMessage({mode, proxySettings: [settings[mode]]}, {toProxyScript: true});
-      });
+      activeSettings.proxySettings = [settings[mode]];
+      activeSettings.mode = FIXED_MODE;
+      //console.log(activeSettings, "activeSettings in fixed mode");      
+      browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});      
     }
     else {
       bgDisable = true;
@@ -264,16 +240,13 @@ function sendToPAC(settings) {
 
 
 function setDisabled(isError) {
-
+  browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
+  activeSettings.mode = DISABLED_MODE;
   chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
-
-  browser.proxy.unregister().then(() => {
-
-    chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
-    chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
-    chrome.browserAction.setBadgeText({text: ''});
-    console.log('******* disabled mode');
-  });
+  chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
+  chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
+  chrome.browserAction.setBadgeText({text: ''});
+  console.log('******* disabled mode');
 }
 
 
