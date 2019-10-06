@@ -38,11 +38,6 @@ class Logger {
 }
 // ----------------- /logger -------------------------------
 
-// --- registering persistent listener
-// Do not change '<all_urls>' to ['*://*/*'] since it seems to break http basic auth:
-// https://github.com/foxyproxy/firefox-extension/issues/30
-chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['<all_urls']}, ['blocking']);
-
 chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
   // reason: install | update | browser_update | shared_module_update
   switch (true) {
@@ -254,28 +249,3 @@ function setDisabled(isError) {
 // ----------------- Proxy Authentication ------------------
 // ----- session global
 let authData = {};
-
-function sendAuth(request) {
-
-  // Do nothing if this not proxy auth request:
-  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
-  //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
-  //   have no effect on the handling of the request, and the browser will probably just ask the user to log in."
-  if (!request.isProxy) return;
-
-  // --- authData credentials not yet populated from storage
-  // --- cancel request; user may come back to the tab & reload it later.
-  if(!Object.keys(authData)[0]) { return {cancel: true}; }
-
-  // --- first authentication
-  // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
-  //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
-  //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
-  // TODO: test in future Fx releases to see if that changes.
-  // console.log(request.challenger.host, "challenger host");
-  if (authData[request.challenger.host]) {
-    return {authCredentials: authData[request.challenger.host]};
-  }
-  // --- no user/pass set for the challenger.host, leave the authentication to the browser
-}
-
