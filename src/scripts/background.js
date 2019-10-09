@@ -156,11 +156,6 @@ function setActiveSettings(settings) {
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
-  // --- cache credentials in authData (only those with user/pass)
-  prefKeys.forEach(id => pref[id].username && pref[id].password &&
-    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
-
-
   const mode = settings.mode;
   activeSettings = {  // global
     mode,
@@ -243,9 +238,3 @@ function setDisabled(isError) {
   chrome.browserAction.setBadgeText({text: ''});
   console.log('******* disabled mode');
 }
-
-
-
-// ----------------- Proxy Authentication ------------------
-// ----- session global
-let authData = {};

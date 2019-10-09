@@ -220,7 +220,7 @@ function checkOptions() {
       type: td[2].children[0].value *1,
       protocols: td[3].children[0].value *1,
       active: td[4].children[0].checked,
-      'regExp': regex.source
+      'regExp': regex.source // Is this used?
     });
   }
 
