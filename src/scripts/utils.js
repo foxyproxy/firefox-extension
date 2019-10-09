@@ -190,16 +190,21 @@ class Utils {
   static exportFile() {
 
     chrome.storage.local.get(null, result => {
-      !result.sync ? Utils.saveAs(result) : chrome.storage.sync.get(null, result => { 
-        result.sync = true;                                 // storing syn value
-        Utils.saveAs(result);
+      browser.runtime.getBrowserInfo().then((bi) => {
+        !result.sync ? Utils.saveAs(result, bi.version) : chrome.storage.sync.get(null, result => { 
+          Utils.saveAs(result, bi.version, true);
+        });
       });
     });
   }
   // exportFile helper
-  static saveAs(data) {
+  static saveAs(data, browserVersion, sync) {
 
     const settings = data; //Utils.prepareForSettings(data);
+    // Browser version and extension version. These are used for debugging.
+    settings.browserVersion = browserVersion;
+    settings.foxyProxyVersion = chrome.runtime.getManifest().version;
+    settings.sync = sync;
     const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain;charset=utf-8'});
     const filename = chrome.i18n.getMessage('extensionName') + '_' + new Date().toISOString().substring(0, 10) + '.json';
     chrome.downloads.download({
