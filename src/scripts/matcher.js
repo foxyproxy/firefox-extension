@@ -1,9 +1,9 @@
 'use strict';
 
 const schemeSet = {
-  all : PROTOCOL_ALL,
-  http: PROTOCOL_HTTP,
-  https: PROTOCOL_HTTPS
+  all : 1,
+  http: 2,
+  https: 4
 };
 const FOR_ALL = {originalPattern: chrome.i18n.getMessage('forAll')}
 const DIRECT_SETTING = {type: 'direct'};
@@ -12,11 +12,7 @@ function findProxyMatch(url, activeSettings) {
   // note: we've already thrown out inactive settings and inactive patterns in background.js.
   // we're not iterating over them
   
-  if (activeSettings.mode === FIXED_MODE) {
-    return prepareSetting(url, activeSettings.proxySettings[0], FOR_ALL);
-  }
-  
-  else if (activeSettings.mode === PATTERNS_MODE) {
+  if (activeSettings.mode === 'patterns') {
     // Unfortunately, since Firefox 57 and some releases afterwards, we were unable
     // to get anything of the URL except scheme, port, and host (because of Fx's PAC
     // implementation). Now we have access to rest of URL, like pre-57, but users
@@ -49,16 +45,15 @@ function findProxyMatch(url, activeSettings) {
     handleNoMatch(url);
     return DIRECT_SETTING;
   }
-  else if (activeSettings.mode === DISABLED_MODE) {
+  else if (activeSettings.mode === 'disabled') {
     // Generally we won't get to this block because our proxy handler is turned off in this mode.
     // We will get here at startup and also if there is a race condition between removing our listener
     // (when switching to disabled mode) and handaling requests.
     return {type: 'direct'};    
   }
   else {
-    // TODO: roundrobin, random
-    handleNoMatch(url); // Not really needed. We should never get into this block right now.
-    return DIRECT_SETTING;
+    // Fixed mode -- use 1 proxy for all URLs
+    return prepareSetting(url, activeSettings.proxySettings[0], FOR_ALL);
   }
 }
 
@@ -79,7 +74,7 @@ function prepareSetting(url, proxy, matchedPattern) {
   proxy.username && (ret.username = proxy.username);
   proxy.password && (ret.password = proxy.password);
   proxy.proxyDNS && (ret.proxyDNS = proxy.proxyDNS); // Only useful for SOCKS
-  if ((proxy.type === PROXY_TYPE_HTTP || proxy.type === PROXY_TYPE_HTTPS) && proxy.username && proxy.password) {
+  if ((proxy.type === typeSet[1] || proxy.type === typeSet[2]) && proxy.username && proxy.password) {
     ret.proxyAuthorizationHeader = btoa(proxy.username + ":" + proxy.password);
   }
   sendTologAndHandleToolbarIcon(url, proxy, matchedPattern);

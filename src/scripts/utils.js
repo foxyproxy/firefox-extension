@@ -128,15 +128,28 @@ class Utils {
     return regExpStr;
   }
 	
-	static safeRegExp(regExpStr) {
-		try {
-			return new RegExp(regExpStr, 'i');
-		}
-		catch(e) {
-			console.error(`safeRegExp(): Error creating regexp for pattern: ${regExpStr}`, e);
-			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
-			return new RegExp("a^"); // match nothing
-		}
+  // Prep the patternObject for matching: convert wildcards to regexp,
+  // store the originalPattern which the user entered so we can display if needed, etc.
+  // Return null if patternObject is inactive or there is an error.
+	static processPatternObject(patternObject) {
+    if (patternObject.active) {
+      // Store the original pattern so if this pattern matches something,
+      // we can display whatever the user entered ("original") in the log.
+      patternObject.originalPattern = patternObject.pattern;    
+      if (patternObject.type === PATTERN_TYPE_WILDCARD) {
+        patternObject.pattern = Utils.wildcardToRegExp(patternObject.pattern);
+      }
+      try {
+        // Convert to real RegExp, not just a string. Validate. If invalid, notify user.
+        patternObject.pattern = new RegExp(patternObject.pattern, 'i');
+        return patternObject;
+      }
+      catch(e) {
+  			console.error(`Error creating regexp for pattern: ${patternObject.pattern}`, e);
+  			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
+  		}      
+    }
+    return null;
 	}
 	
   // import | pattern

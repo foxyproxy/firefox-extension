@@ -4,12 +4,9 @@
 //const FF = typeof browser !== 'undefined'; // for later
 let storageArea; // keeping track of sync
 let bgDisable = false;
- 
-// shortcuts so we can do int comparisons, rather than string comparisons, in hotspots
-const FIXED_MODE = 1, PATTERNS_MODE = 2, DISABLED_MODE = 3;
 
-// Start in DISABLED_MODE mode because it's going to take time to load setings from storage
-let activeSettings = {mode: DISABLED_MODE};
+// Start in disabled mode because it's going to take time to load setings from storage
+let activeSettings = {mode: 'disabled'};
 
 // ----------------- logger --------------------------------
 let logger;
@@ -173,41 +170,21 @@ function setActiveSettings(settings) {
     prefKeys.forEach(id => pref[id].active && activeSettings.proxySettings.push(pref[id]));
     activeSettings.proxySettings.sort((a, b) => a.index - b.index); // sort by index
 
-    function processPatterns(patterns) {
-      return patterns.reduce((accumulator, pat) => {
-        if (pat.active) {
-          if (pat.type === PATTERN_TYPE_WILDCARD) {
-            // Convert wildcards to regular expressions.
-            // Validate. If invalid, notify user.
-            // Store the original pattern so if this pattern matches anything,
-            // we can display whatever the user entered ("original") in the log
-            pat.originalPattern = pat.pattern;
-            pat.pattern = Utils.safeRegExp(Utils.wildcardToRegExp(pat.pattern));
-            accumulator.push(pat);
-          }
-          else if (pat.type == PATTERN_TYPE_REGEXP) {
-            // Validate regexp. If invalid, notify user
-            // Store the original pattern so if this pattern matches anything,
-            // we can display whatever the user entered ("original") in the log
-            pat.originalPattern = pat.pattern;
-            pat.pattern = Utils.safeRegExp(pat.pattern);
-            accumulator.push(pat);
-          }
-          else {
-            console.error(`Ignoring unknown type in pattern object ${pat}`);
-          }
-        }
+    function processPatternObjects(patternObjects) {
+      return patternObjects.reduce((accumulator, patternObject) => {
+        patternObject = Utils.processPatternObject(patternObject);
+        patternObject && accumulator.push(patternObject);
         return accumulator;
       }, []);
     }
+    
     // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
     // is a little faster (doesn't even know about inative patterns). Also convert all patterns to reg exps.
     for (const idx in activeSettings.proxySettings) {
-      activeSettings.proxySettings[idx].blackPatterns = processPatterns(activeSettings.proxySettings[idx].blackPatterns);
-      activeSettings.proxySettings[idx].whitePatterns = processPatterns(activeSettings.proxySettings[idx].whitePatterns);
+      activeSettings.proxySettings[idx].blackPatterns = processPatternObjects(activeSettings.proxySettings[idx].blackPatterns);
+      activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
     }
-    activeSettings.mode = PATTERNS_MODE;
-    //console.log(activeSettings, "activeSettings in patterns mode");
+    console.log(activeSettings, "activeSettings in patterns mode");
     browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
   }
   else {
@@ -215,8 +192,7 @@ function setActiveSettings(settings) {
     // mode is set to the proxySettings id to use for all URLs.
     if (settings[mode]) {
       activeSettings.proxySettings = [settings[mode]];
-      activeSettings.mode = FIXED_MODE;
-      //console.log(activeSettings, "activeSettings in fixed mode");      
+      console.log(activeSettings, "activeSettings in fixed mode");      
       browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});      
     }
     else {
@@ -231,7 +207,6 @@ function setActiveSettings(settings) {
 
 function setDisabled(isError) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
-  activeSettings.mode = DISABLED_MODE;
   chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
   chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
   chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
