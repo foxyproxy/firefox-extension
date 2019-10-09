@@ -35,6 +35,12 @@ class Logger {
 }
 // ----------------- /logger -------------------------------
 
+// --- registering persistent listener
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1359693 ...Resolution: --- ? WONTFIX
+chrome.webRequest.onAuthRequired.addListener(sendAuth, {urls: ['*://*/*']}, ['blocking']);
+chrome.webRequest.onCompleted.addListener(clearPending, {urls: ['*://*/*']});
+chrome.webRequest.onErrorOccurred.addListener(clearPending, {urls: ['*://*/*']});
+
 chrome.runtime.onInstalled.addListener((details) => {       // Installs Update Listener
   // reason: install | update | browser_update | shared_module_update
   switch (true) {
@@ -45,7 +51,6 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
       break;
   }
 });
-
 
 // ----------------- User Preference -----------------------
 chrome.storage.local.get(null, result => {
@@ -152,6 +157,10 @@ function setActiveSettings(settings) {
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
+  // --- cache credentials in authData (only those with user/pass)
+  prefKeys.forEach(id => pref[id].username && pref[id].password &&
+    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
+
   const mode = settings.mode;
   activeSettings = {  // global
     mode,
@@ -211,4 +220,66 @@ function setDisabled(isError) {
   chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
   Utils.updateIcon('images/icon-off.svg', null, 'disabled', true);
   console.log('******* disabled mode');
+}
+
+
+// ----------------- Proxy Authentication ------------------
+// ----- session global
+let authData = {};
+let authPending = {};
+
+async function sendAuth(request) {
+  console.log("sendAuth()");
+  // Do nothing if this not proxy auth request:
+  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
+  //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
+  //   have no effect on the handling of the request, and the browser will probably just ask the user to log in."
+  if (!request.isProxy) return;
+  
+  // --- already sent once and pending
+  if (authPending[request.requestId]) { return {cancel: true}; }
+
+  // --- authData credentials not yet populated from storage
+  if(!Object.keys(authData)[0]) { await getAuth(request); }
+
+  // --- first authentication
+  // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
+  //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
+  //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
+  // TODO: test in future Fx releases to see if that changes.
+  // console.log(request.challenger.host, "challenger host");
+  if (authData[request.challenger.host]) {
+    authPending[request.requestId] = 1;                       // prevent bad authentication loop
+    console.log({authCredentials: authData[request.challenger.host]}, "here3");
+    return {authCredentials: authData[request.challenger.host]};
+  }
+  // --- no user/pass set for the challenger.host, leave the authentication to the browser
+}
+
+async function getAuth(request) {
+
+  await new Promise(resolve => {
+    chrome.storage.local.get(null, result => {
+      const host = result.hostData[request.challenger.host];
+      if (host && host.username) {                          // cache credentials in authData
+        console.log("here2");
+        authData[host] = {username: host.username, password: host.password};
+      }
+      resolve();
+    });
+  });
+}
+
+function clearPending(request) {
+
+  if(!authPending[request.requestId]) { return; }
+
+  if (request.error) {
+    const host = request.proxyInfo && request.proxyInfo.host ? request.proxyInfo.host : request.ip;
+    Utils.notify(chrome.i18n.getMessage('authError', host));
+    console.error(request.error);
+    return; // auth will be sent again
+  }
+
+  delete authPending[request.requestId];                    // no error
 }
