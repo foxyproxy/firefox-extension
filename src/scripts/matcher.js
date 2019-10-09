@@ -101,11 +101,8 @@ function sendTologAndHandleToolbarIcon(url, proxy, matchedPattern) {
 // Shortcuts so we dont make objects, perform i18n lookups for every non-match
 const NOMATCH_TEXT = chrome.i18n.getMessage('noMatch');
 const NONE_TEXT = chrome.i18n.getMessage('none');
-const NOMATCH_COLOR = '#D3D3D3';
-const NOMATCH_ICON = {path: 'images/gray.svg'};
-const NOMATCH_TITLE = {title: NOMATCH_TEXT};
-const NOMATCH_BADGE_TEXT = {text: NONE_TEXT};
-const NOMATCH_BACKGROUND_COLOR = {color: NOMATCH_COLOR};
+const NOMATCH_COLOR = '#d3d3d3';
+
 function handleNoMatch(url) {
   logger && logger.active && logger.add({
     url,
@@ -115,8 +112,8 @@ function handleNoMatch(url) {
     matchedPattern: NOMATCH_TEXT,
     timestamp: Date.now()
   });  
-  chrome.browserAction.setIcon(NOMATCH_ICON);
-  chrome.browserAction.setTitle(NOMATCH_TITLE);
-  chrome.browserAction.setBadgeText(NOMATCH_BADGE_TEXT); 
-  browser.browserAction.setBadgeBackgroundColor(NOMATCH_BACKGROUND_COLOR);  
+  chrome.browserAction.setIcon({path: 'images/gray.svg'});
+  chrome.browserAction.setTitle({title: NOMATCH_TEXT});
+  chrome.browserAction.setBadgeText({text: NONE_TEXT}); 
+  browser.browserAction.setBadgeBackgroundColor({color: NOMATCH_COLOR});  
 }
