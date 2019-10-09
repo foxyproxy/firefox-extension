@@ -5,8 +5,11 @@ const schemeSet = {
   http: 2,
   https: 4
 };
+// Shortcuts so we dont perform i18n lookups for every non-match
 const FOR_ALL = {originalPattern: chrome.i18n.getMessage('forAll')}
-const DIRECT_SETTING = {type: 'direct'};
+const NOMATCH_TEXT = chrome.i18n.getMessage('noMatch');
+const NONE_TEXT = chrome.i18n.getMessage('none');
+const NOMATCH_COLOR = '#D3D3D3';
 
 function findProxyMatch(url, activeSettings) {
   // note: we've already thrown out inactive settings and inactive patterns in background.js.
@@ -26,27 +29,28 @@ function findProxyMatch(url, activeSettings) {
       
       // Check black patterns first
       const blackMatch = proxy.blackPatterns.find(item => 
-              (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-                item.pattern.test(hostPort));
+        (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+          item.pattern.test(hostPort));
 
       if (blackMatch) { continue; } // if blacklist matched, move to the next proxy
 
-      //console.log(scheme, hostPort, proxy.whitePatterns, "hi");
       const whiteMatch = proxy.whitePatterns.find(item =>
-              (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-                item.pattern.test(hostPort));
+        (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
+          item.pattern.test(hostPort));
       
       if (whiteMatch) {
   			// found a whitelist match, end here
-  			ret = prepareSetting(url);
+        const title = Utils.getProxyTitle(proxy);
+        Utils.updateIcon('images/icon.svg', proxy.color, title, false, title, false);
         // TODO: use a Promise for sendToLogAndHandleToolbarIcon()
-        sendToLogAndHandleToolbarIcon(url, proxy, whiteMatch);
-        return ret;
+        sendToLog(url, proxy, title, whiteMatch);
+        return prepareSetting(proxy);
   		}
     }
     // no white matches in any settings
-    handleNoMatch(url);
-    return DIRECT_SETTING;
+    sendToLog(url, {color: NOMATCH_COLOR, address: ''}, NOMATCH_TEXT, {originalPattern: NOMATCH_TEXT});
+    Utils.updateIcon('images/gray.svg', null, NOMATCH_TEXT, false, NOMATCH_TEXT, false);
+    return {type: 'direct'};
   }
   else if (activeSettings.mode === 'disabled') {
     // Generally we won't get to this block because our proxy handler is turned off in this mode.
@@ -56,7 +60,11 @@ function findProxyMatch(url, activeSettings) {
   }
   else {
     // Fixed mode -- use 1 proxy for all URLs
-    return prepareSetting(url, activeSettings.proxySettings[0], FOR_ALL);
+    const p = activeSettings.proxySettings[0];
+    const title = Utils.getProxyTitle(p);
+    Utils.updateIcon('images/icon.svg', p.color, title, false, title, false);
+    sendToLog(url, p, title, FOR_ALL);
+    return prepareSetting(p);
   }
 }
 
@@ -77,14 +85,15 @@ function prepareSetting(proxy) {
   proxy.username && (ret.username = proxy.username);
   proxy.password && (ret.password = proxy.password);
   proxy.proxyDNS && (ret.proxyDNS = proxy.proxyDNS); // Only useful for SOCKS
-  if ((proxy.type === typeSet[1] || proxy.type === typeSet[2]) && proxy.username && proxy.password) {
-    ret.proxyAuthorizationHeader = btoa(proxy.username + ":" + proxy.password);
-  }
+  //if ((proxy.type === PROXY_TYPE_HTTP || proxy.type === PROXY_TYPE_HTTPS) && proxy.username && proxy.password) {
+    // Using wireshark, I do not see this header being sent, contrary to
+    // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/proxy/ProxyInfo
+    //ret.proxyAuthorizationHeader = 'Basic ' + btoa(proxy.username + ":" + proxy.password);
+  //}
   return ret;
 }
 
-function sendToLogAndHandleToolbarIcon(url, proxy, matchedPattern) {
-  const title = Utils.getProxyTitle(proxy);
+function sendToLog(url, proxy, title, matchedPattern) {
   // log only the data that is needed for display
   logger && logger.active && logger.add({
     url,
@@ -95,29 +104,4 @@ function sendToLogAndHandleToolbarIcon(url, proxy, matchedPattern) {
     matchedPattern: matchedPattern.originalPattern,
     timestamp: Date.now()
   });
-  //iconPath, color, i18nTitleKey, badgeText, badgeTextIsI18nKey
-  Utils.updateIcon('images/icon.svg', proxy.color, title, false, title, false);
-}
-
-// Shortcuts so we dont make objects, perform i18n lookups for every non-match
-const NOMATCH_TEXT = chrome.i18n.getMessage('noMatch');
-const NONE_TEXT = chrome.i18n.getMessage('none');
-const NOMATCH_COLOR = '#D3D3D3';
-const NOMATCH_ICON = {path: 'images/gray.svg'};
-const NOMATCH_TITLE = {title: NOMATCH_TEXT};
-const NOMATCH_BADGE_TEXT = {text: NONE_TEXT};
-const NOMATCH_BACKGROUND_COLOR = {color: NOMATCH_COLOR};
-function handleNoMatch(url) {
-  logger && logger.active && logger.add({
-    url,
-    title: NOMATCH_TEXT,
-    color: NOMATCH_COLOR,
-    address: '',
-    matchedPattern: NOMATCH_TEXT,
-    timestamp: Date.now()
-  });  
-  chrome.browserAction.setIcon(NOMATCH_ICON);
-  chrome.browserAction.setTitle(NOMATCH_TITLE);
-  chrome.browserAction.setBadgeText(NOMATCH_BADGE_TEXT); 
-  chrome.browserAction.setBadgeBackgroundColor(NOMATCH_BACKGROUND_COLOR);  
 }
