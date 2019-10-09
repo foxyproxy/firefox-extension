@@ -228,6 +228,33 @@ class Utils {
     });
   }
 
+  static updateIcon(iconPath, color, title, titleIsKey, badgeText, badgeTextIsKey) {
+    chrome.browserAction.setIcon({path: iconPath});
+    if (color) {
+      chrome.browserAction.setBadgeBackgroundColor({color: color});
+    }
+    else {
+      // TODO: confirm this is OK to do
+      chrome.browserAction.setBadgeBackgroundColor({color: null});
+    }
+    if (title) {
+      chrome.browserAction.setTitle({title: titleIsKey ? chrome.i18n.getMessage(title) : title});
+    }
+    else {
+      chrome.browserAction.setTitle({title: ''});
+    }
+    if (badgeText) {
+      chrome.browserAction.setBadgeText({text: badgeTextIsKey ? chrome.i18n.getMessage(badgeText) : badgeText});
+    }
+    else {
+      chrome.browserAction.setBadgeText({text: ''});
+    }
+  }
+  
+  static getProxyTitle(proxySetting) {
+    return proxySetting.title || `${proxySetting.address}:${proxySetting.port}`;
+  }
+
 /*
   // utils only used for export, will be removed as DB format export is adapted
   static prepareForSettings(settings = {}) {

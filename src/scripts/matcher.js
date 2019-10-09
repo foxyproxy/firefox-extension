@@ -38,7 +38,10 @@ function findProxyMatch(url, activeSettings) {
       
       if (whiteMatch) {
   			// found a whitelist match, end here
-  			return prepareSetting(url, proxy, whiteMatch);
+  			ret = prepareSetting(url);
+        // TODO: use a Promise for sendToLogAndHandleToolbarIcon()
+        sendToLogAndHandleToolbarIcon(url, proxy, whiteMatch);
+        return ret;
   		}
     }
     // no white matches in any settings
@@ -65,7 +68,7 @@ const typeSet = {
   5: 'direct'   // PROXY_TYPE_NONE
 };
 
-function prepareSetting(url, proxy, matchedPattern) {
+function prepareSetting(proxy) {
   const ret = {
     type: typeSet[proxy.type] || typeSet[5], // If 'direct', all other properties of this object are ignored.
     host: proxy.address, 
@@ -77,12 +80,11 @@ function prepareSetting(url, proxy, matchedPattern) {
   if ((proxy.type === typeSet[1] || proxy.type === typeSet[2]) && proxy.username && proxy.password) {
     ret.proxyAuthorizationHeader = btoa(proxy.username + ":" + proxy.password);
   }
-  sendTologAndHandleToolbarIcon(url, proxy, matchedPattern);
   return ret;
 }
 
-function sendTologAndHandleToolbarIcon(url, proxy, matchedPattern) {
-  const title = proxy.title || `${proxy.address}:${proxy.port}`;
+function sendToLogAndHandleToolbarIcon(url, proxy, matchedPattern) {
+  const title = Utils.getProxyTitle(proxy);
   // log only the data that is needed for display
   logger && logger.active && logger.add({
     url,
@@ -93,9 +95,8 @@ function sendTologAndHandleToolbarIcon(url, proxy, matchedPattern) {
     matchedPattern: matchedPattern.originalPattern,
     timestamp: Date.now()
   });
-  browser.browserAction.setTitle({title});
-  browser.browserAction.setBadgeText({text: title});
-  browser.browserAction.setBadgeBackgroundColor({color: proxy.color}); 
+  //iconPath, color, i18nTitleKey, badgeText, badgeTextIsI18nKey
+  Utils.updateIcon('images/icon.svg', proxy.color, title, false, title, false);
 }
 
 // Shortcuts so we dont make objects, perform i18n lookups for every non-match
@@ -118,5 +119,5 @@ function handleNoMatch(url) {
   chrome.browserAction.setIcon(NOMATCH_ICON);
   chrome.browserAction.setTitle(NOMATCH_TITLE);
   chrome.browserAction.setBadgeText(NOMATCH_BADGE_TEXT); 
-  browser.browserAction.setBadgeBackgroundColor(NOMATCH_BACKGROUND_COLOR);  
+  chrome.browserAction.setBadgeBackgroundColor(NOMATCH_BACKGROUND_COLOR);  
 }

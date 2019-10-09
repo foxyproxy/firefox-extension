@@ -121,7 +121,6 @@ function process(settings) {
   console.log('background.js: loaded proxy settings from storage.');
 }
 
-// Update the PAC script whenever stored settings change
 function storageOnChanged(changes, area) {
 //    console.log(changes);
   // update storageArea on sync on/off change from options
@@ -184,16 +183,18 @@ function setActiveSettings(settings) {
       activeSettings.proxySettings[idx].blackPatterns = processPatternObjects(activeSettings.proxySettings[idx].blackPatterns);
       activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
     }
-    console.log(activeSettings, "activeSettings in patterns mode");
     browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
+    Utils.updateIcon('images/icon.svg', null, 'patterns', 'patterns');
+    console.log(activeSettings, "activeSettings in patterns mode");
   }
   else {
     // User has selected a proxy for all URLs (not patterns, disabled, random, round-robin modes).
     // mode is set to the proxySettings id to use for all URLs.
     if (settings[mode]) {
       activeSettings.proxySettings = [settings[mode]];
+      browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
+      Utils.updateIcon('images/icon.svg', settings[mode].color, 'forAll', true, Utils.getProxyTitle(settings[mode]), false);
       console.log(activeSettings, "activeSettings in fixed mode");      
-      browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});      
     }
     else {
       bgDisable = true;
@@ -208,8 +209,6 @@ function setActiveSettings(settings) {
 function setDisabled(isError) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
   chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
-  chrome.browserAction.setIcon({path: 'images/icon-off.svg'});
-  chrome.browserAction.setTitle({title: chrome.i18n.getMessage('disabled')});
-  chrome.browserAction.setBadgeText({text: ''});
+  Utils.updateIcon('images/icon-off.svg', null, 'disabled', true);
   console.log('******* disabled mode');
 }
