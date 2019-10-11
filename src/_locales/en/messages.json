@@ -73,7 +73,7 @@
 
   "disabled": { "message": "Disabled" },
   "active": { "message": "Enabled" },
-	"activeNote": { "message": "Enabling/Disabling patterns only affect FoxyProxy if you select "},
+	"activeNote.1": { "message": "FoxyProxy ignores everything here unless set to" },
   "noMatch": { "message": "No Match" },
   "none": { "message": "None" },
 
@@ -94,6 +94,7 @@
 
   "proxyType": { "message": "Proxy Type" },
   "color": { "message": "Color" },
+  "patternShortcuts": { "message": "Pattern Shorcuts"}, 
   "title": { "message": "Title or Description (optional)" },
   "ip": { "message": "Proxy IP address or DNS name" },
   "port": { "message": "Port" },
@@ -140,7 +141,7 @@
   "imported": { "message": "Imported" },
   "addBlacklistTip": { "message": "Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
   "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
-
+  "addWhitelistTip": { "message": "Add whitelist pattern *" },
 
 
   

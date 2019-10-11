@@ -78,29 +78,32 @@
           <label data-i18n="color"></label>
           <input id="colorChooser" type="text" style="text-align: center;">
   
-          <div class="flex onOff">
-            <label data-i18n="active"></label>
-            <div>
-              <input type="checkbox" class="switch" id="proxyActive" checked><label for="proxyActive"></label>
+          <label data-i18n="patternShortcuts" class="notForBasic notForEdit"></label>
+          <div class="prime warning notForBasic notForEdit">
+            <div class="flex onOff">
+              <label data-i18n="active"></label>
+              <div>
+                <input type="checkbox" class="switch" id="proxyActive" checked><label for="proxyActive"></label>
+              </div>
+            </div>
+    
+            <div class="flex onOff">
+              <label><span data-i18n="addWhitelist"></span>
+              <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 1.2em;"></i><span class="tooltiptext" data-i18n="addWhitelistTip"></span></div></label>
+              <div>
+                <input type="checkbox" class="switch" id="whiteAll"><label for="whiteAll"></label>
+              </div>
+            </div>
+    
+            <div class="flex onOff">
+              <label><span data-i18n="noLocal"></span>
+              <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 1.2em;"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
+    
+              <div>
+                <input type="checkbox" class="switch" id="blackAll"><label for="blackAll"></label>
+              </div>
             </div>
           </div>
-  
-          <div class="flex onOff notForBasic notForEdit">
-            <label data-i18n="addWhitelist"></label>
-            <div>
-              <input type="checkbox" class="switch" id="whiteAll"><label for="whiteAll"></label>
-            </div>
-          </div>
-  
-          <div class="flex onOff notForBasic notForEdit">
-            <label><span data-i18n="noLocal"></span>
-             <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 1.2em;"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
-  
-            <div>
-              <input type="checkbox" class="switch" id="blackAll"><label for="blackAll"></label>
-            </div>
-          </div>
-          
           
   
           <!-- SOCKS5 -->
