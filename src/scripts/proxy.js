@@ -62,6 +62,9 @@ const pacURL = document.querySelector('#pacURL');
 // --- remove nodes completely for FP Basic
 FOXYPROXY_BASIC && document.querySelectorAll('.notForBasic').forEach(item => item.remove());
 
+// --- remove pattern shortcuts if this is an edit operation
+id && document.querySelectorAll('.notForEdit').forEach(item => item.remove());
+
 // --- add Listeners
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
 function process() {
