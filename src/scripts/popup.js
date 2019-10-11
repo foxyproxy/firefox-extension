@@ -25,7 +25,7 @@ function processOptions(pref) {
   // add default lastresort if not there
   //pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
-  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
+  const prefKeys = Object.keys(pref).filter(item => !NON_PROXY_KEYS.includes(item)); // not for these
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
   
@@ -35,7 +35,7 @@ function processOptions(pref) {
 
     const item = pref[id];
     
-    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
+    if (item.whitePatterns[0]) { foundPattern = true; }
     
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 

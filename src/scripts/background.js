@@ -94,32 +94,14 @@ function process(settings) {
     };
     update = true;
   }
-
-  // ----------------- migrate -----------------------------
-  // The initial WebExtension version, which was disabled after a couple of days, was called 5.0
-  if(settings.hasOwnProperty('whiteBlack')) {               // check for v5.0 storage, it had a whiteBlack property
-
-    delete settings.whiteBlack;
-    ///settings[LASTRESORT] = DEFAULT_PROXY_SETTING;           // 5.0 didn't have a default proxy setting
-    update = true;
-  }
-
-  // Fix import settings bug in 6.1 - 6.1.3 (and Basic 5.1 - 5.1.3) where by import of legacy foxyproxy.xml
-  // imported this property as a string rather than boolean.
-  if (prefKeys.find(item => settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string')) {
-    prefKeys.forEach(item => {
-
-      if (settings[item].proxyDNS && typeof settings[item].proxyDNS === 'string') {
-        settings[item].proxyDNS = settings[item].proxyDNS === 'true' ? true : false;
-      }
-    });
-    update = true;
-  }
-  // ----------------- /migrate ----------------------------
-
+  
   // update storage then add Change Listener
-  update ? storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged)) :
-                                            chrome.storage.onChanged.addListener(storageOnChanged);
+  if (update) {
+    storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged));
+  }
+  else {
+    chrome.storage.onChanged.addListener(storageOnChanged);
+  }
 
   logger = settings.logging ? new Logger(settings.logging.size, settings.logging.active) : new Logger();
   setActiveSettings(settings);
@@ -186,8 +168,8 @@ function setActiveSettings(settings) {
       }, []);
     }
     
-    // Filter out the inactive patterns before we send to pac. that way, each findProxyMatch() call
-    // is a little faster (doesn't even know about inative patterns). Also convert all patterns to reg exps.
+    // Filter out the inactive patterns. that way, each comparison
+    // is a little faster (doesn't even know about inactive patterns). Also convert all patterns to reg exps.
     for (const idx in activeSettings.proxySettings) {
       activeSettings.proxySettings[idx].blackPatterns = processPatternObjects(activeSettings.proxySettings[idx].blackPatterns);
       activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
@@ -206,6 +188,8 @@ function setActiveSettings(settings) {
       console.log(activeSettings, "activeSettings in fixed mode");      
     }
     else {
+      // This happens if user deletes the current proxy and mode is "use this proxy for all URLs"
+      // Don't remove this block.
       bgDisable = true;
       storageArea.set({mode: 'disabled'});                  // only in case of error, otherwise mode is already set
       setDisabled();

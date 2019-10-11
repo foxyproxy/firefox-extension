@@ -24,7 +24,8 @@ const PROXY_TYPE_PASS = 9;
 const PATTERN_TYPE_WILDCARD = 1;
 const PATTERN_TYPE_REGEXP = 2;
 
-
+// Storage keys that are not proxy settings
+const NON_PROXY_KEYS = ['mode', 'logging', 'sync', 'browserVersion', 'foxyProxyVersion', 'nextIndex'];
 
 // bg | import | proxy | utils
 const PATTERN_ALL_WHITE = {
