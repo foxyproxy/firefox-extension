@@ -15,7 +15,7 @@
   "myIP": { "message": "What's My IP?" },
   "deleteAllmessage": { "message": "All data deleted" },
   
-  "authError": { "message": "$1 is refusing connections:\n \u00A0\u2022 Check your proxy settings\n \u00A0\u2022 Contact your network administrator" },
+  "authError": { "message": "$1 is refusing connections\nCheck proxy username/password" },
   
   
   "delete": { "message": "Delete" },
