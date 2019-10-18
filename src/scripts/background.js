@@ -234,7 +234,6 @@ async function sendAuth(request) {
   // console.log(request.challenger.host, "challenger host");
   if (authData[request.challenger.host]) {
     authPending[request.requestId] = 1;                       // prevent bad authentication loop
-    console.log({authCredentials: authData[request.challenger.host]}, "here3");
     return {authCredentials: authData[request.challenger.host]};
   }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser

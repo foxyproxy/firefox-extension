@@ -23,6 +23,15 @@
     <div class="prime">
 
       <div style="text-align: right;">
+        
+        <div class="tooltip"><span data-i18n="patternCheatSheet" class="orangehover"></span> <i class="fa fa-info-circle"></i>
+          <span class="tooltiptext center">
+            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
+            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+          </span>
+        </div>
+        |
         <a href="/pattern-help.html" target="_blank"><span data-i18n="patternHelp"></span> <i class="fa fa-question-circle"></i></a>
       </div>
 
@@ -58,9 +67,10 @@
 
 
       <h3>Step 3</h3>
+      <p id="result" class="prime small success hide"></p><br>
+      
       <label data-i18n="clickTest"></label>
       <div style="text-align: right;"><button type="button" data-i18n="test"></button></div>
-      <p id="result" class="prime small success hide"></p>
     </div>
 
   <script src="scripts/common.js"></script>

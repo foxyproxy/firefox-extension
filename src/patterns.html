@@ -39,7 +39,6 @@
       }
       #result { margin: 1em 0 0; }
       label[for="file"] { margin: 0; }
-      div.prime.warning { display: inline-block; }
       #links { float: right; }
     </style>
   </head>
@@ -59,15 +58,28 @@
 
     <!-- main -->
     <div class="prime main">
-			<div>
-        <div class="prime warning">
-  				<span data-i18n="activeNote.1"></span> <strong><span data-i18n="modePatterns"></span></strong>
-  			</div>
-        <span id="links">        
-          <a href="/pattern-help.html" target="_blank"><span data-i18n="patternHelp"></span> <i class="fa fa-question-circle"></i></a> |
-          <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>
-        </span>
-      </div>			
+        
+        <div class="flex">
+          <div class="prime warning small" style="flex: 1.5">
+              <span data-i18n="activeNote.1"></span> <strong><span data-i18n="modePatterns"></span></strong>
+    			</div>
+          <div style="text-align: right;">
+            <div class="tooltip"><span data-i18n="patternCheatSheet" class="orangehover"></span> <i class="fa fa-info-circle"></i>
+              <span class="tooltiptext center">
+                <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
+                <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+                <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+              </span>
+            </div>
+            |
+            <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>
+            |
+            <a href="/pattern-help.html" target="_blank">
+              <span data-i18n="patternHelp"></span>
+            </a>
+          </div>
+        </div>        
+	
 			
       <h3 data-i18n="whitePatterns"></h3>
       <!-- table template -->

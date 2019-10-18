@@ -59,7 +59,7 @@
 
 
   "importEnd": { "message": "Settings were successfully imported" },
-  "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns to be sure the edits are acceptable." },
+  "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported anymore." },
   "importEndSlash": { "message": "Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any." },
   "errorUserPass": { "message": "Please fill both Username & Password." },
   "errorFetch": { "message": "There was an error with the operation" },
@@ -73,7 +73,7 @@
 
   "disabled": { "message": "Disabled" },
   "active": { "message": "Enabled" },
-	"activeNote.1": { "message": "FoxyProxy ignores everything here unless set to" },
+	"activeNote.1": { "message": "FoxyProxy ignores everything on this page unless set to" },
   "noMatch": { "message": "No Match" },
   "none": { "message": "None" },
 
@@ -94,7 +94,7 @@
 
   "proxyType": { "message": "Proxy Type" },
   "color": { "message": "Color" },
-  "patternShortcuts": { "message": "Pattern Shorcuts"}, 
+  "patternShortcuts": { "message": "Pattern Shortcuts"}, 
   "title": { "message": "Title or Description (optional)" },
   "ip": { "message": "Proxy IP address or DNS name" },
   "port": { "message": "Port" },
@@ -142,8 +142,7 @@
   "addBlacklistTip": { "message": "Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
   "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
   "addWhitelistTip": { "message": "Add whitelist pattern *" },
-
-
+  "patternCheatSheet":  { "message": "Pattern Cheat Sheet" },
   
   "logSize": { "message": "Log Size" },
   "url": { "message": "URL" },

@@ -327,7 +327,7 @@ input.switch:checked + label::after {
 
 
 
-.fp-orange {
+.fp-orange, .orangehover:hover {
   color: #f90;
 }
 
@@ -585,10 +585,14 @@ input[type="text"] + button i.fa.fa-eye {
 }
 
 .tooltip i.fa {
-  font-size: 1.5em;
-  color: #ccc;
+  font-size: 1.2em;
+  color: black;
 }
 
 .tooltip i.fa:hover {
   color: #f90;
+}
+
+.monospace {
+  font-family: monospace;
 }

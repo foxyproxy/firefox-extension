@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>FoxyProxy Pattern Help</title>
     <link rel="icon" type="image/png" href="/images/icon.svg">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
     <link rel="stylesheet" href="styles/app.css">
     <style>
       td { font-size: 0.9em; }
@@ -18,6 +19,19 @@
     <!-- main -->
     <div class="prime">    
 
+      <div style="text-align: right;">
+        
+        <div class="tooltip"><span data-i18n="patternCheatSheet" class="orangehover"></span> <i class="fa fa-info-circle"></i>
+          <span class="tooltiptext center">
+            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
+            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+          </span>
+        </div>
+        |
+        <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>
+      </div>
+      
       <p><h3 style="display: inline-block;">TL;DR</h3>: <a href="#examples">show me the examples</a></p>
       
       <h3>What are they?</h3>
@@ -87,5 +101,6 @@
       <p>To match <strong>only</strong> subdomains, use <strong>**</strong> instead of <strong>*</strong> in the beginning. Example: <strong>**.foxyproxy.com</strong> will match <strong>help.foxyproxy.com</strong> but will not match <strong>foxyproxy.com</strong>.</p>
 
     </div>
+  <script src="scripts/pattern-tester.js"></script>
   </body>
 </html>

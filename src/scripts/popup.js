@@ -35,7 +35,10 @@ function processOptions(pref) {
 
     const item = pref[id];
     
-    if (item.whitePatterns[0]) { foundPattern = true; }
+    // check item.whitePatterns exists, otherwise this page won't render at all.
+    // some people import patterns json using the primary import button
+    // and therefore dont have items.whitePatterns.
+    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
     
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
