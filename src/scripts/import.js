@@ -111,7 +111,10 @@ function importXml(doc) {
 
   const FP = doc.querySelector('foxyproxy');
   if (!FP) {
-    Utils.notify('There is an error with the XML file (missing <foxyproxy ....>)');
+    // Don't use Utils.notify() because at least on macOS,
+    // the message is too long and cut off    
+    alert('There is an error with the XML file (missing <foxyproxy ....>)');
+    hideSpinner();
     return;
   }
 
@@ -179,6 +182,7 @@ function importXml(doc) {
     const oldId = item.getAttribute('id');
     if (item.getAttribute('lastresort') === 'true') {
       lastResortFound = true;
+      const LASTRESORT = "k20d21508277536715"; // from legacy version
       newId = LASTRESORT;                                   // this is a string
       proxy.index = Number.MAX_SAFE_INTEGER;
       if (!allowedType) { proxy.type = PROXY_TYPE_NONE; }
@@ -284,9 +288,16 @@ function importXml(doc) {
 function endXML(patternsEdited) {
 
   hideSpinner();
-  if (patternsEdited) { Utils.notify(chrome.i18n.getMessage('patternsChanged')); }
+  if (patternsEdited) {
+    // Don't use Utils.notify() because at least on macOS,
+    // the message is too long and cut off
+    alert(chrome.i18n.getMessage('patternsChanged'));
+    location.href = '/options.html';
+  }
   else {
-    Utils.notify(chrome.i18n.getMessage('importEndSlash'));
+    // Don't use Utils.notify() because at least on macOS,
+    // the message is too long and cut off
+    alert(chrome.i18n.getMessage('importEndSlash'));
     location.href = '/options.html';
   }
 }

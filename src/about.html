@@ -68,6 +68,17 @@
         <li>Ensure new proxies are added to the top of the list when created</li>
         <li>Remove migration code which seems to cause errors for some people; migration from very old versions now gone.</li>
         <li>Do not display pattern shortcuts (match all URLs, don't match localhost & intranet IPs) when editing a proxy setting, just like 6.x and earlier. Showing these created a lot of confusion for some users. Sorry!</li>
+        <li>
+        
+        <div class="tooltip"><span class="orangehover">Pattern Cheat Sheet</span> <i class="fa fa-info-circle"></i>
+          <span class="tooltiptext center">
+            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
+            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+          </span>
+         on pattern-related pages</div>
+      </li>
+      <li>Bug fixes when importing legacy foxyproxy.xml settings (FoxyProxy 4.x and earlier)</li>
       </ul>      
       <h4>Version 7.3</h4>
       <ul>
