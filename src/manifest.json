@@ -3,7 +3,7 @@
 
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "7.3",
+  "version": "7.4",
   "default_locale": "en",
   "homepage_url": "https://getfoxyproxy.org/",
   "author": "Eric Jung",
@@ -17,7 +17,7 @@
   },
 
   "background": {
-    "scripts": ["scripts/utils.js", "scripts/background.js"]
+    "scripts": ["scripts/utils.js", "scripts/background.js", "scripts/matcher.js"]
   },
 
   "options_ui": {
@@ -45,10 +45,10 @@
     "<all_urls>"
   ],
 
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "foxyproxy@eric.h.jung",
-      "strict_min_version": "57.0"
+      "strict_min_version": "60.0"
     }
   }
 }

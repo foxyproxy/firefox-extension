@@ -9,7 +9,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 // ----------------- /Internationalization -----------------
 
 // ----- global
-let proxy = {};
+let proxy = {}, proxiesAdded = 0;
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
 const defaultColor = '#66cc66'
 color.fromString(defaultColor);                             // starting from default color
@@ -37,7 +37,7 @@ if (id) {                                                   // This is an edit o
     }
     proxy = result[id];
     processOptions();
-  })
+  });
 }
 
 
@@ -61,6 +61,9 @@ const pacURL = document.querySelector('#pacURL');
 
 // --- remove nodes completely for FP Basic
 FOXYPROXY_BASIC && document.querySelectorAll('.notForBasic').forEach(item => item.remove());
+
+// --- remove pattern shortcuts if this is an edit operation
+id && document.querySelectorAll('.notForEdit').forEach(item => item.remove());
 
 // --- add Listeners
 document.querySelectorAll('button').forEach(item => item.addEventListener('click', process));
@@ -143,25 +146,29 @@ function makeProxy() {
   proxy.type = proxyType.value *1;
   proxy.color = document.querySelector('#colorChooser').value;
   proxy.title = proxyTitle.value;
-
+  proxy.active = proxyActive.checked;
+  
   if (proxy.type !== PROXY_TYPE_NONE) {
 
     proxy.address = proxyAddress.value;
     proxy.port = proxyPort.value *1;
     proxy.proxyDNS = proxy.type === PROXY_TYPE_SOCKS5 && proxyDNS.checked;
-    proxy.active = proxyActive.checked;
     // already trimmed in validateInput()
     proxy.username = proxyUsername.value;                   // if it had u/p and then deletd it, it must be reflected
     proxy.password = proxyPassword.value;
   }
-
   proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#whiteAll').checked ? [PATTERN_ALL_WHITE] : []);
   proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#blackAll').checked ? blacklistSet : []);
   proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
 
-  id = id || getUniqueId();                                 // global
-  proxy.index = proxy.index || -1;
-
+  if (!id) {  // global
+    // This is an add operation since id does not exist. If this is an edit op, then id is already set.
+    // Get the nextIndex given to us by options.js and subtract by the number of proxies we've added
+    // while this window has been open. This ensures this proxy setting is first in list of all proxy settings.
+    proxy.index = (localStorage.getItem('nextIndex')) - (++proxiesAdded);
+    id = getUniqueId();
+  }
+  // else proxy.index is already set for edit operations
   return {[id]: proxy};
 }
 

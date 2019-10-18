@@ -219,8 +219,7 @@ function checkOptions() {
       pattern: td[1].children[0].value,
       type: td[2].children[0].value *1,
       protocols: td[3].children[0].value *1,
-      active: td[4].children[0].checked,
-      'regExp': regex.source
+      active: td[4].children[0].checked
     });
   }
 

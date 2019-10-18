@@ -25,7 +25,7 @@ function processOptions(pref) {
   // add default lastresort if not there
   //pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
-  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
+  const prefKeys = Object.keys(pref).filter(item => !NON_PROXY_KEYS.includes(item)); // not for these
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
   
@@ -35,7 +35,10 @@ function processOptions(pref) {
 
     const item = pref[id];
     
-    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
+    // check item.whitePatterns exists, otherwise this page won't render at all.
+    // some people import patterns json using the primary import button
+    // and therefore dont have items.whitePatterns.
+    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
     
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
@@ -43,7 +46,7 @@ function processOptions(pref) {
       li.classList.remove('template');
       li.id = id;
       li.style.color = item.color;
-      li.children[0].textContent = item.title || `${item.address}:${item.port}`;
+      li.children[0].textContent = Utils.getProxyTitle(item);
       li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);

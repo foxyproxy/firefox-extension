@@ -15,7 +15,7 @@ const syncOnOff = document.querySelector('#syncOnOff');
 const popup = document.querySelector('.popup');
 const popupMain = popup.children[0];
 
-let storageArea;
+let storageArea, minIndex = Number.MAX_SAFE_INTEGER;
 
 // ----------------- User Preference -----------------------
 chrome.storage.local.get(null, result => {
@@ -50,7 +50,8 @@ function process() {
   switch (this.dataset.i18n) {
 
     case 'add':
-      localStorage.removeItem('id');                        // clear localStorage
+      localStorage.removeItem('id'); // clear localStorage; this indicates an add not an edit
+      localStorage.setItem('nextIndex', minIndex); // index to use for this proxy so that it's added to the beginning
       location.href = '/proxy.html';
       break;
     case 'export': Utils.exportFile(); break;
@@ -124,7 +125,9 @@ function selectMode() {
   // set color
   mode.style.color = mode.children[mode.selectedIndex].style.color;
 
+  console.log(this, "selectMode");
   // we already know the state of sync | this is set when manually changing the select
+  // it is undefined when mode is switched from toolbar popup or on startup
   this && storageArea.set({mode: mode.value});
 
   // --- change the state of success/secondary
@@ -181,9 +184,10 @@ chrome.runtime.onMessage.addListener((message, sender) => { // from popup or bg
 });
 
 function processOptions(pref) {
-
   // --- reset
   accounts.textContent = '';
+  
+  // remove all <option> elements except patterns and disabled
   [...mode.children].forEach(item => !['patterns', 'disabled'].includes(item.value) && item.remove());
 
   // ----- templates & containers
@@ -196,17 +200,22 @@ function processOptions(pref) {
   // add default lastresort if not there
   //pref[LASTRESORT] || (pref[LASTRESORT] = DEFAULT_PROXY_SETTING);
 
-  const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
+  const prefKeys = Object.keys(pref).filter(item => !NON_PROXY_KEYS.includes(item)); // not for these
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
-
+  if (prefKeys[0]) {
+    minIndex = pref[prefKeys[0]].index; // the first index after sort (if any)
+  }
+  
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
   let foundPattern;
   prefKeys.forEach(id => {
-
     const item = pref[id];
     
-    if (item.whitePatterns[0] || item.whitePatterns[0]) { foundPattern = true; }
+    // check item.whitePatterns exists, otherwise this page won't render at all.
+    // some people import patterns json using the primary import button
+    // and therefore dont have items.whitePatterns.
+    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
 
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
@@ -215,7 +224,7 @@ function processOptions(pref) {
 
     div.id = id;
     node[0].style.backgroundColor = item.color;
-    node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
+    node[1].textContent = Utils.getProxyTitle(item);
     node[2].textContent = item.address; // ellipsis is handled by CSS
     if (item.cc) {
       node[3].classList.remove('hide');
@@ -257,7 +266,7 @@ function processOptions(pref) {
     opt.style.color = item.color;
     docfrag2.appendChild(opt);
   });
-
+  
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
@@ -336,6 +345,7 @@ function processButton() {
         // re-index
         //[...accounts.children].forEach((item, index) => item.id !== LASTRESORT && (result[item.id].index = index));
         [...accounts.children].forEach((item, index) => result[item.id].index = index);
+        minIndex = 0; // minimum index is always 0 now
         storageArea.set(result);
       });
       break;

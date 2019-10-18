@@ -57,6 +57,30 @@
       <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Colorado, USA</p>
 
       <h3>Release Notes for Recent Releases</h3>
+      <h4>Version 7.4</h4>
+      <ul>
+        <li>Uses new proxy API now and works with Firefox Nighly; discussed <a target="_blank" href="https://github.com/foxyproxy/firefox-extension/issues/39">here</a>. Minimum Firefox version is now 60.0.</li>
+        <li>Toolbar icon now changes with proxy use, just like version 6.x and earlier (patterns mode only). If there are no matches, a gray icon is displayed; discussed <a target="_blank" href="https://github.com/foxyproxy/firefox-extension/issues/38">here</a>.</li>
+        <li>Logging improvements; log now displays unmatched URLs just like version 6.x and earlier. This makes it obvious which URLs you may want to write patterns for.</li>
+        <li>UI Improvements</li>
+        <li>Performance improvements for authentication</li>
+        <li>Add browser and extension version numbers to export for debugging of exported settings submitted by users. It will be useful also in the future as the fileformat matures and changes, as it has many times over the years.</li>
+        <li>Ensure new proxies are added to the top of the list when created</li>
+        <li>Remove migration code which seems to cause errors for some people; migration from very old versions now gone.</li>
+        <li>Do not display pattern shortcuts (match all URLs, don't match localhost & intranet IPs) when editing a proxy setting, just like 6.x and earlier. Showing these created a lot of confusion for some users. Sorry!</li>
+        <li>
+        
+        <div class="tooltip"><span class="orangehover">Pattern Cheat Sheet</span> <i class="fa fa-info-circle"></i>
+          <span class="tooltiptext center">
+            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
+            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+          </span>
+         on pattern-related pages</div>
+      </li>
+      <li>Bug fixes when importing legacy foxyproxy.xml settings (FoxyProxy 4.x and earlier)</li>
+      <li>Show patterns buttons when adding Direct (no proxy) setting. Fixed some minor UI bugs when using Direct (no proxy).</li>
+      </ul>      
       <h4>Version 7.3</h4>
       <ul>
         <li><a href="https://github.com/foxyproxy/firefox-extension/issues/33">Another</a> pattern bugfix.</li>
@@ -74,55 +98,6 @@
         <li>Patterns bugfix for bug introduced in 7.0</li>
         <li>Text changes in patterns window</li>
       </ul>
-  
-      <h4>Version 7.0</h4>
-        <ul>
-
-          <li>Toolbar Popup</li>
-          <li class="sub">"By Pattern" option is removed if there are no patterns set</li>
-
-
-          <li>Options Page</li>
-          <li class="sub">Option to transfer preferences from <i>local</i> to <i>Sync</i> and vice versa</li>
-          <li class="sub">Options page shows <i class="fa fa-lock"></i>for proxies with saved username/password</li>
-          <li class="sub">Date is added to the export filename</li>
-          <li class="sub">Export auto-renames file if the same name exists</li>
-          <li class="sub">Country flag and mouseover information added for proxies imported from FoxyProxy account</li>
-          <li class="sub">"By Pattern" option is removed if there are no patterns set</li>
-
-          <li>Patterns Page</li>
-          <li class="sub">New Inline-Editor</li>
-          <li class="sub">Patterns are checked and errors dispalyed</li>
-          <li class="sub">Proxy title & Date is added to the export filename</li>
-          <li class="sub">Import data max size set to 5mb</li>
-
-
-          <li>Proxy Page</li>
-          <li class="sub">Option to set active on|off on proxy Edit page</li>
-          <li class="sub">username/password/port are kept when adding new proxies to ease creation of multiple proxies with same username/password</li>
-          <li class="sub">Default no proxy for  localhost and intranet/private IP addresses is set to OFF</li>
-
-
-          <li>Import Page</li>
-          <li class="sub">Added option to import proxies from FoxyProxy account</li>
-          <li class="sub">Import data max size set to 5mb</li>
-          <li class="sub">Added spinner for import duration</li>
-          <li class="sub">Import now saves the data to the storage set in the imported preference (sync vs local)</li>
-
-
-          <li>Log Page</li>
-          <li class="sub">Log shows local date & time in local (browser) language</li>
-          <li class="sub">Log is not cleared when switching it off until it is manually cleared</li>
-          <li class="sub">Log entries are numbered</li>
-          <li class="sub">Added size control to Log entries</li>
-          <li class="sub">Default is set to log off and size 100 entries</li>
-
-          <li><strong>Default proxy</strong> is no longer created for new installations. Users can create this manually if they want it.</li>
-          <li>i18n support</li>
-          <li>Removed all but one external javascript libraries: JQuery, Clusterize & Vex</li>
-          <li>Greatly streamlined code</li>
-          <li>Style/Code Improvements</li>
-        </ul>
 
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>

@@ -172,7 +172,7 @@ input[type="file"] {
   display: none;
 }
 
-[type="text"], [type="password"], textarea {
+[type="text"], [type="password"], [type="url"], textarea {
   background-color: #fefefe;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -186,7 +186,7 @@ input[type="file"] {
   width: 100%;
 }
 
-[type="text"]:focus, [type="password"]:focus, textarea:focus {
+[type="text"]:focus, [type="password"]:focus, [type="url"]:focus, textarea:focus {
   border: 1px solid #999;
   box-shadow: 0 0 5px #cacaca;
 }
@@ -327,7 +327,7 @@ input.switch:checked + label::after {
 
 
 
-.fp-orange {
+.fp-orange, .orangehover:hover {
   color: #f90;
 }
 
@@ -585,10 +585,14 @@ input[type="text"] + button i.fa.fa-eye {
 }
 
 .tooltip i.fa {
-  font-size: 1.5em;
-  color: #ccc;
+  font-size: 1.2em;
+  color: black;
 }
 
 .tooltip i.fa:hover {
   color: #f90;
+}
+
+.monospace {
+  font-family: monospace;
 }

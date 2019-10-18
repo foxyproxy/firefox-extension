@@ -44,10 +44,23 @@
         display: none;
       }
 
-      #direct:checked ~ div button[data-i18n="saveEditPattern"] {
+      #http:checked ~ div .patternShortcuts,
+      #https:checked ~ div .patternShortcuts,
+      #socks4:checked ~ div .patternShortcuts,
+      #socks5:checked ~ div .patternShortcuts,
+      #direct:checked ~ div .patternShortcuts {
+        display: flex;
+      }
+      
+      #pac:checked ~ div .patternShortcutsContainer,
+      #wpad:checked ~ div .patternShortcutsContainer,
+      #system:checked ~ div .patternShortcutsContainer {
         display: none;
       }
-
+      
+      #direct:checked ~ div .patternShortcutsContainer {
+        display: block;
+      }      
     </style>
   </head>
   <body>
@@ -72,36 +85,13 @@
   
         <!-- left column -->
         <div>
-          <label data-i18n="title"></label>
-          <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
-  
-          <label data-i18n="color"></label>
-          <input id="colorChooser" type="text" style="text-align: center;">
-  
-          <div class="flex onOff">
-            <label data-i18n="active"></label>
-            <div>
-              <input type="checkbox" class="switch" id="proxyActive" checked><label for="proxyActive"></label>
-            </div>
+          <div>
+            <label data-i18n="title"></label>
+            <input id="proxyTitle" type="text" spellcheck="false" placeholder="title">
+    
+            <label data-i18n="color"></label>
+            <input id="colorChooser" type="text" style="text-align: center;">
           </div>
-  
-          <div class="flex onOff notForBasic">
-            <label data-i18n="addWhitelist"></label>
-            <div>
-              <input type="checkbox" class="switch" id="whiteAll"><label for="whiteAll"></label>
-            </div>
-          </div>
-  
-          <div class="flex onOff notForBasic">
-            <label><span data-i18n="noLocal"></span>
-             <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 1.2em;"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
-  
-            <div>
-              <input type="checkbox" class="switch" id="blackAll"><label for="blackAll"></label>
-            </div>
-          </div>
-          
-          
   
           <!-- SOCKS5 -->
           <div class="flex onOff dns">
@@ -110,10 +100,35 @@
               <input type="checkbox" class="switch" id="proxyDNS" checked><label for="proxyDNS"></label>
             </div>
           </div>
-  
 
-  
-  
+          <div class="patternShortcutsContainer notForBasic notForEdit">
+            <label data-i18n="patternShortcuts" class="notForBasic notForEdit"></label>
+            <div class="prime warning">
+              <div class="patternShortcuts flex onOff">
+                <label data-i18n="active"></label>
+                <div>
+                  <input type="checkbox" class="switch" id="proxyActive" checked><label for="proxyActive"></label>
+                </div>
+              </div>
+      
+              <div class="patternShortcuts onOff">
+                <label><span data-i18n="addWhitelist"></span>
+                <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext" data-i18n="addWhitelistTip"></span></div></label>
+                <div>
+                  <input type="checkbox" class="switch" id="whiteAll"><label for="whiteAll"></label>
+                </div>
+              </div>
+      
+              <div class="patternShortcuts onOff">
+                <label><span data-i18n="noLocal"></span>
+                <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext" data-i18n="addBlacklistTip"></span></div></label>
+      
+                <div>
+                  <input type="checkbox" class="switch" id="blackAll"><label for="blackAll"></label>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
   
         <!-- right column -->

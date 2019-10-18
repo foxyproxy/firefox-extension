@@ -24,7 +24,8 @@ const PROXY_TYPE_PASS = 9;
 const PATTERN_TYPE_WILDCARD = 1;
 const PATTERN_TYPE_REGEXP = 2;
 
-
+// Storage keys that are not proxy settings
+const NON_PROXY_KEYS = ['mode', 'logging', 'sync', 'browserVersion', 'foxyProxyVersion', 'nextIndex'];
 
 // bg | import | proxy | utils
 const PATTERN_ALL_WHITE = {
@@ -128,15 +129,28 @@ class Utils {
     return regExpStr;
   }
 	
-	static safeRegExp(regExpStr) {
-		try {
-			return new RegExp(regExpStr, 'i');
-		}
-		catch(e) {
-			console.error(`safeRegExp(): Error creating regexp for pattern: ${regExpStr}`, e);
-			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
-			return new RegExp("a^"); // match nothing
-		}
+  // Prep the patternObject for matching: convert wildcards to regexp,
+  // store the originalPattern which the user entered so we can display if needed, etc.
+  // Return null if patternObject is inactive or there is an error.
+	static processPatternObject(patternObject) {
+    if (patternObject.active) {
+      // Store the original pattern so if this pattern matches something,
+      // we can display whatever the user entered ("original") in the log.
+      patternObject.originalPattern = patternObject.pattern;    
+      if (patternObject.type === PATTERN_TYPE_WILDCARD) {
+        patternObject.pattern = Utils.wildcardToRegExp(patternObject.pattern);
+      }
+      try {
+        // Convert to real RegExp, not just a string. Validate. If invalid, notify user.
+        patternObject.pattern = new RegExp(patternObject.pattern, 'i');
+        return patternObject;
+      }
+      catch(e) {
+  			console.error(`Error creating regexp for pattern: ${patternObject.pattern}`, e);
+  			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
+  		}      
+    }
+    return null;
 	}
 	
   // import | pattern
@@ -190,16 +204,21 @@ class Utils {
   static exportFile() {
 
     chrome.storage.local.get(null, result => {
-      !result.sync ? Utils.saveAs(result) : chrome.storage.sync.get(null, result => { 
-        result.sync = true;                                 // storing syn value
-        Utils.saveAs(result);
+      browser.runtime.getBrowserInfo().then((bi) => {
+        !result.sync ? Utils.saveAs(result, bi.version) : chrome.storage.sync.get(null, result => { 
+          Utils.saveAs(result, bi.version, true);
+        });
       });
     });
   }
   // exportFile helper
-  static saveAs(data) {
+  static saveAs(data, browserVersion, sync) {
 
     const settings = data; //Utils.prepareForSettings(data);
+    // Browser version and extension version. These are used for debugging.
+    settings.browserVersion = browserVersion;
+    settings.foxyProxyVersion = chrome.runtime.getManifest().version;
+    settings.sync = sync;
     const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain;charset=utf-8'});
     const filename = chrome.i18n.getMessage('extensionName') + '_' + new Date().toISOString().substring(0, 10) + '.json';
     chrome.downloads.download({
@@ -208,6 +227,41 @@ class Utils {
       saveAs: true,
       conflictAction: 'uniquify'
     });
+  }
+
+  static updateIcon(iconPath, color, title, titleIsKey, badgeText, badgeTextIsKey) {
+    chrome.browserAction.setIcon({path: iconPath});
+    if (color) {
+      chrome.browserAction.setBadgeBackgroundColor({color: color});
+    }
+    else {
+      // TODO: confirm this is OK to do
+      chrome.browserAction.setBadgeBackgroundColor({color: null});
+    }
+    if (title) {
+      chrome.browserAction.setTitle({title: titleIsKey ? chrome.i18n.getMessage(title) : title});
+    }
+    else {
+      chrome.browserAction.setTitle({title: ''});
+    }
+    if (badgeText) {
+      chrome.browserAction.setBadgeText({text: badgeTextIsKey ? chrome.i18n.getMessage(badgeText) : badgeText});
+    }
+    else {
+      chrome.browserAction.setBadgeText({text: ''});
+    }
+  }
+  
+  static getProxyTitle(proxySetting) {
+    if (proxySetting.title) {
+      return proxySetting.title;
+    }
+    else if (proxySetting.type === PROXY_TYPE_NONE) {
+      return 'Direct (no proxy)';
+    }
+    else {
+      return `${proxySetting.address}:${proxySetting.port}`;
+    }
   }
 
 /*
