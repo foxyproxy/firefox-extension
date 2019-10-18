@@ -392,7 +392,10 @@ function foxyProxyImport() {
       storageArea.set(result, end);                         // save to target
     });
   })
-  .catch(error => notify(error));
+  .catch(error => {
+    hideSpinner();
+    Utils.notify(chrome.i18n.getMessage('errorFetch'));
+  });
 
 }
 // ----------------- /FoxyProxy Import ---------------------
