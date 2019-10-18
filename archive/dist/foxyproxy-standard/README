@@ -1,0 +1,7 @@
+* Not all versions are here, but most are.
+* These files can be unzipped to view source is used as-is in Firefox. Manifest files list compatible Firefox version numbers.
+* Firefox did not sign extensions until some time. So older versions are always unsigned.
+* From version 2.15 and onwards, the extension is called "Standard" to differeniate it from the newly introduced "Basic".
+* The two-letter abbreviations in filenames represent compatible applications: fx is firfox, tb is thunderbird, sm is seamonkey. FoxyProxy was also compatible with other XUL-basd apps, such as the media player SongBird, but those are not listed in filename abbrevations. They can be seen in the manifest file inside the XPI.
+
+
