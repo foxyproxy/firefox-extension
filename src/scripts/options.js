@@ -224,7 +224,7 @@ function processOptions(pref) {
 
     div.id = id;
     node[0].style.backgroundColor = item.color;
-    node[1].textContent = item.title || `${item.address}:${item.port}`; // ellipsis is handled by CSS
+    node[1].textContent = Utils.getProxyTitle(item);
     node[2].textContent = item.address; // ellipsis is handled by CSS
     if (item.cc) {
       node[3].classList.remove('hide');

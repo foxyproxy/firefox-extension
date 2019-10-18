@@ -253,7 +253,15 @@ class Utils {
   }
   
   static getProxyTitle(proxySetting) {
-    return proxySetting.title || `${proxySetting.address}:${proxySetting.port}`;
+    if (proxySetting.title) {
+      return proxySetting.title;
+    }
+    else if (proxySetting.type === PROXY_TYPE_NONE) {
+      return 'Direct (no proxy)';
+    }
+    else {
+      return `${proxySetting.address}:${proxySetting.port}`;
+    }
   }
 
 /*

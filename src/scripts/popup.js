@@ -46,7 +46,7 @@ function processOptions(pref) {
       li.classList.remove('template');
       li.id = id;
       li.style.color = item.color;
-      li.children[0].textContent = item.title || `${item.address}:${item.port}`;
+      li.children[0].textContent = Utils.getProxyTitle(item);
       li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);
