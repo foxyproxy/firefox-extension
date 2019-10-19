@@ -1,7 +1,7 @@
 'use strict';
 
 // ----------------- Constants -----------------------------
-const FOXYPROXY_BASIC = false;
+const FOXYPROXY_BASIC = true;
 
 // Bit-wise flags so we can add/remove these independently. We may add more later so PROTOCOL_ALL is future-proof.
 const PROTOCOL_ALL = 1; // in case other protocols besides http and https are supported later
