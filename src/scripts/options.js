@@ -292,7 +292,21 @@ function processOptions(pref) {
     });
   }));
 
+  doWeHaveProxiesDefined();
   hideSpinner();
+}
+
+function doWeHaveProxiesDefined() {
+  if (!accounts.hasChildNodes()) {
+    document.querySelector('#help').style.display = 'block';
+    document.querySelector('#rightColumn').classList.add('secondary');
+    document.querySelector('#selectAndSync').style.display = 'none';
+  }
+  else {
+    document.querySelector('#help').style.display = 'none';
+    document.querySelector('#rightColumn').classList.remove('warning');
+    document.querySelector('#selectAndSync').style.display = 'flex';
+  }
 }
 
 function getFlag(cc) {
@@ -329,7 +343,7 @@ function processButton() {
     case 'delete|title':
       if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
         parent.style.opacity = 0;
-        setTimeout(() => { parent.remove(); }, 600);          // remove row
+        setTimeout(() => { parent.remove(); doWeHaveProxiesDefined();}, 600);          // remove row
         storageArea.remove(id);
       }
       break;

@@ -37,7 +37,7 @@
   "modePatterns": { "message": "Use Enabled Proxies By Patterns and Order" },
   "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
   "forAll": { "message": "for all URLs" },
-
+  "noProxies": { "message": "You do not have any proxy settings."},
 
   
   
