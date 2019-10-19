@@ -48,7 +48,7 @@
   <body>
 
     <!-- header -->
-    <div class="prime header" data-i18n="options"></div>
+    <div class="prime header" data-i18n="optionsPage"></div>
 
 
     <!-- spinner -->
@@ -73,10 +73,10 @@
           <a data-i18n="about"><i class="fa fa-info-circle"></i></a>
         </nav>
 
-        <div class="rightColumn">
+        <div id="rightColumn" class="rightColumn">
 
           <!-- select & sync -->
-          <div class="flex">
+          <div id="selectAndSync" class="flex">
             <select id="mode">
               <option value="patterns" style="color: #f90;" data-i18n="modePatterns"></option>
               <option value="disabled" style="color: red;" data-i18n="modeDisabled"></option>
@@ -91,7 +91,11 @@
 
           <!-- proxy list -->
           <div id="accounts" class="scroll"></div>
-
+          <div id="help" style="text-align: center;margin: 15% auto"> <!-- try to center -->
+            <span data-i18n="noProxies"></span>
+            Please click <a data-i18n="add" href="/proxy.html"><i class="fa fa-plus-circle"></i> </a> to start.
+          </div>
+          
           <!-- template -->
           <div class="pxy flex template">
             <div>
@@ -122,8 +126,8 @@
         <h3></h3>
         <div></div>
         <div style="text-align: right;">
-          <button type="button" class="flat" data-i18n="cancel"></button>&nbsp;
-          <button type="button" class="flat" data-i18n="ok"></button>
+          <button type="button" class="alert" data-i18n="cancel"></button>&nbsp;
+          <button type="submit" data-i18n="ok"></button>
         </div>
       </div>
     </div>

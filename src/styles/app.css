@@ -473,7 +473,7 @@ input.switch:checked + label::after {
 
 .popup h3 {
   color: #fff;
-  background-color: #f80;
+  background-color: #630;
   margin: 0 0 1em;
   padding: 0.5em;
   border-radius: 10px 10px 0 0 ;
@@ -498,11 +498,6 @@ input.switch:checked + label::after {
   margin: 0;
 }
 
-.popup button:first-of-type {
-  background: none;
-  border: none;
-  color: #f90;
-}
 /* ----- /Popup ----- */
 
 

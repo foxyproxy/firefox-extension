@@ -8,11 +8,19 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+document.addEventListener('keyup', evt => {
+  if (evt.keyCode === 27) {
+    location.href = '/options.html';
+  }
+});
+
 const manifest = chrome.runtime.getManifest();
 document.querySelector('#version').textContent = manifest.version;
-document.querySelector('#edition').textContent = chrome.i18n.getMessage('extensionName');
+document.querySelector('#edition').textContent = 'FoxyProxy ' + (FOXYPROXY_BASIC ? 'Basic' : 'Standard');
 document.querySelector('button').addEventListener('click', () => location.href = '/options.html');
 
+// --- remove nodes completely for FP Basic
+FOXYPROXY_BASIC && document.querySelectorAll('.notForBasic').forEach(item => item.remove());
 
 // --- welcome on install/update
 location.search === '?welcome' && document.querySelector('.welcome').classList.remove('hide');

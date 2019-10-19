@@ -30,11 +30,10 @@ function processOptions(pref) {
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
   
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
-  let foundPattern;
+  let foundPattern, hasProxySettings = false;
   prefKeys.forEach(id => {
 
     const item = pref[id];
-    
     // check item.whitePatterns exists, otherwise this page won't render at all.
     // some people import patterns json using the primary import button
     // and therefore dont have items.whitePatterns.
@@ -50,6 +49,7 @@ function processOptions(pref) {
       li.children[1].textContent = '(' + chrome.i18n.getMessage('forAll') + ')';
 
       docfrag.appendChild(li);
+      hasProxySettings = true;
     }
   });
 
@@ -60,6 +60,9 @@ function processOptions(pref) {
     pref.mode === 'patterns' && (pref.mode = 'disabled');
   } 
   
+  // hide the selections if there are no proxy settings defined
+  document.getElementById('scroll').style.display = hasProxySettings ? 'block' : 'none';
+    
   const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number
   node.classList.add('on');
   

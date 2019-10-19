@@ -25,7 +25,7 @@ const PATTERN_TYPE_WILDCARD = 1;
 const PATTERN_TYPE_REGEXP = 2;
 
 // Storage keys that are not proxy settings
-const NON_PROXY_KEYS = ['mode', 'logging', 'sync', 'browserVersion', 'foxyProxyVersion', 'nextIndex'];
+const NON_PROXY_KEYS = ['mode', 'logging', 'sync', 'browserVersion', 'foxyProxyVersion', 'foxyProxyEdition', 'nextIndex'];
 
 // bg | import | proxy | utils
 const PATTERN_ALL_WHITE = {
@@ -218,6 +218,7 @@ class Utils {
     // Browser version and extension version. These are used for debugging.
     settings.browserVersion = browserVersion;
     settings.foxyProxyVersion = chrome.runtime.getManifest().version;
+    settings.foxyProxyEdition = FOXYPROXY_BASIC ? 'basic' : 'standard';
     settings.sync = sync;
     const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain;charset=utf-8'});
     const filename = chrome.i18n.getMessage('extensionName') + '_' + new Date().toISOString().substring(0, 10) + '.json';
