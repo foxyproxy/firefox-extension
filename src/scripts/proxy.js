@@ -8,6 +8,12 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+document.addEventListener('keyup', evt => {
+  if (evt.keyCode === 27) {
+    close();
+  }
+});
+  
 // ----- global
 let proxy = {}, proxiesAdded = 0;
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
@@ -72,8 +78,7 @@ function process() {
   switch (this.dataset.i18n) {
 
     case 'cancel':
-      proxyPassword.value = '';                             // prevent Firefox's save password prompt
-      location.href = '/options.html';
+      close();
       break;
 
     case 'saveAdd':
@@ -157,8 +162,13 @@ function makeProxy() {
     proxy.username = proxyUsername.value;                   // if it had u/p and then deletd it, it must be reflected
     proxy.password = proxyPassword.value;
   }
-  proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#whiteAll').checked ? [PATTERN_ALL_WHITE] : []);
-  proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#blackAll').checked ? blacklistSet : []);
+  if (FOXYPROXY_BASIC) {
+    proxy.whitePatterns = proxy.blackPatterns = [];
+  }
+  else {
+    proxy.whitePatterns = proxy.whitePatterns || (document.querySelector('#whiteAll').checked ? [PATTERN_ALL_WHITE] : []);
+    proxy.blackPatterns = proxy.blackPatterns || (document.querySelector('#blackAll').checked ? blacklistSet : []);
+  }
   proxy.pacURL = proxy.pacURL || pacURL.value;  // imported foxyproxy.xml
 
   if (!id) {  // global
@@ -181,7 +191,7 @@ function validateInput() {
 
   document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
 
-  // let's handle here, #proxyPort will be checks later separately
+  // let's handle here, #proxyPort will be checked later separately
   // Utils.escapeAllInputs('#proxyTitle,#proxyAddress,#proxyPort');
   // escape all inputs
   [proxyTitle, proxyAddress].forEach(item => item.value = item.value.replace(/[&<>"']+/g, ''));
@@ -217,4 +227,9 @@ function resetOptions() {
 
   setHeader();  
   proxyTitle.focus();
-} 
+}
+
+function close() {
+  proxyPassword.value = ''; /* prevent Firefox's save password prompt */
+  location.href = '/options.html';
+}

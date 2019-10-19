@@ -111,6 +111,7 @@
   "patternHelp": { "message": "Pattern Help" },
   "welcome": { "message": "Welcome" },
   "options": { "message": "Options" },
+  "optionsPage": { "message": "FoxyProxy Options" },
   "enterUrl": { "message": "Enter URL to test" },
   "enterUrlNote": { "message": "(paths and query parameters are ignored)" },
   "patternDetail": { "message": "Enter pattern details." },

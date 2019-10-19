@@ -8,6 +8,13 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 });
 // ----------------- /Internationalization -----------------
 
+document.addEventListener('keyup', evt => {
+  if (evt.keyCode === 27) {
+    // We either came from /options.html or were opened as a new tab from popup.html (in that case, do nothing)
+    history.back();
+  }
+});
+
 // ----------------- Spinner -------------------------------
 const spinner = document.querySelector('.spinner');
 function hideSpinner() {

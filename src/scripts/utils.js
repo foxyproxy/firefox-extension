@@ -218,6 +218,7 @@ class Utils {
     // Browser version and extension version. These are used for debugging.
     settings.browserVersion = browserVersion;
     settings.foxyProxyVersion = chrome.runtime.getManifest().version;
+    settings.foxyProxyEdition = FOXYPROXY_BASIC ? 'basic' : 'standard';
     settings.sync = sync;
     const blob = new Blob([JSON.stringify(settings, null, 2)], {type : 'text/plain;charset=utf-8'});
     const filename = chrome.i18n.getMessage('extensionName') + '_' + new Date().toISOString().substring(0, 10) + '.json';
