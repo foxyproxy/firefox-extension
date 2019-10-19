@@ -49,11 +49,11 @@ function process(e) {
 
     case 'importJson':
       showSpinner();
-      Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*5, 'json', importJson); // 5mb
+      Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*10, 'json', importJson); // 10mb
       break;
     case 'importXml':
       showSpinner();
-      Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*5, 'xml', importXml);  // 5mb
+      Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*10, 'xml', importXml);  // 10mb
       break;
   }
 }
@@ -74,6 +74,12 @@ function importJson(result) {
 }
 
 function save(result, callback) {
+
+  // Remove 'browserVersion', 'foxyProxyVersion', 'foxyProxyEdition' if they exist
+  // We don't need those imported.
+  delete result.browserVersion;
+  delete result.foxyProxyVersion;
+  delete result.foxyProxyEdition;
 
   const  storageArea = result.sync ? chrome.storage.sync : chrome.storage.local;
 
