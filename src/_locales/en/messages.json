@@ -73,7 +73,7 @@
 
   "disabled": { "message": "Disabled" },
   "active": { "message": "Enabled" },
-	"activeNote.1": { "message": "FoxyProxy ignores everything on this page unless set to" },
+	"activeNote": { "message": "FoxyProxy ignores everything on this page unless set to" },
   "noMatch": { "message": "No Match" },
   "none": { "message": "None" },
 

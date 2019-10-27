@@ -213,7 +213,6 @@ let authData = {};
 let authPending = {};
 
 async function sendAuth(request) {
-  console.log("sendAuth()");
   // Do nothing if this not proxy auth request:
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
   //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
@@ -245,7 +244,6 @@ async function getAuth(request) {
     chrome.storage.local.get(null, result => {
       const host = result.hostData[request.challenger.host];
       if (host && host.username) {                          // cache credentials in authData
-        console.log("here2");
         authData[host] = {username: host.username, password: host.password};
       }
       resolve();
