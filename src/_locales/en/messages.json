@@ -150,5 +150,9 @@
   "proxyTitle": { "message": "Proxy Title" },
   "proxyAddress": { "message": "Proxy Address" },
   "matchPattern": { "message": "Match Pattern" },
-  "timestamp": { "message": "Timestamp" }
+  "whiteBlack": { "message": "White/Black" },
+  "white": { "message": "White" },
+  "black": { "message": "Black" },
+  "timestamp": { "message": "Timestamp" },
+  "notApplicable": {"message": "n/a"}
 } 

@@ -117,8 +117,14 @@ function process() {
       break;
 
     case 'add':
-      proxy.blackPatterns.push(...blacklistSet);
-      processOptions();
+      if (typeof(this.dataset.black) !== 'undefined') {
+        proxy.blackPatterns.push(...blacklistSet);
+        processOptions();
+      }
+      else {
+        proxy.whitePatterns.push(PATTERN_ALL_WHITE);
+        processOptions();
+      }
       break;
   }
 }
@@ -194,7 +200,7 @@ function processEdit() {
 
     case 'delete|title':
       parent.style.opacity = 0;
-      setTimeout(() => { parent.remove(); }, 600);          // remove row
+      setTimeout(() => { parent.remove(); }, 300);          // remove row
       break;
   }
 }

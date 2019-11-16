@@ -65,10 +65,12 @@
     			</div>
           <div style="text-align: right;">
             <div class="tooltip"><span data-i18n="patternCheatSheet" class="orangehover"></span> <i class="fa fa-info-circle"></i>
-              <span class="tooltiptext center">
-                <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
-                <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
-                <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
+              <span class="tooltiptext bottom monospace" style="text-align: left; padding-left: 1rem">
+                <p><span>*</span> &mdash; all domains<br>
+                <span>bbc.co.uk</span> &mdash; exact domain only<br>
+                <span>*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
+                <span>**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk</p>
+                <p><span>Black patterns take precedence over white patterns. For example, a black pattern of * means nothing will match, regardless of any white patterns.</span></p>
               </span>
             </div>
             |
@@ -125,6 +127,11 @@
         </table>
       </div>
 
+      <div style="margin: 1em 0 2em; text-align: center; font-size: 0.9em;">
+        <span data-i18n="addWhitelist"></span>
+        <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext center" data-i18n="addWhitelistTip"></span></div>
+        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add" data-white></button>
+      </div>
 
       <h3 data-i18n="blackPatterns"></h3>
       <div class="scroll">
@@ -145,7 +152,7 @@
       <div style="margin: 1em 0 2em; text-align: center; font-size: 0.9em;">
         <span data-i18n="addBlacklist"></span>
         <div class="tooltip"><i class="fa fa-info-circle"></i><span class="tooltiptext center" data-i18n="addBlacklistTip"></span></div>
-        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add"></button>
+        <button type="button" class="small" style="margin-left: 1em; vertical-align: initial;" data-i18n="add" data-black></button>
       </div>
 
       <div class="flex">
