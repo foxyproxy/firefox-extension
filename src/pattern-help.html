@@ -21,13 +21,25 @@
 
       <div style="text-align: right;">
         
-        <div class="tooltip"><span data-i18n="patternCheatSheet" class="orangehover"></span> <i class="fa fa-info-circle"></i>
-          <span class="tooltiptext center bottom">
-            <span class="monospace">*</span> &mdash; all domains<br>
-            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
-            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
-            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
-          </span>
+        <div class="tooltip">
+          <span data-i18n="patternCheatSheet" class="fp-orange"></span>
+          <i class="fa fa-info-circle"></i>
+          <div class="tooltiptext bottom table">
+            <div class="tooltiptable">
+              <div class="monospace">*</div>
+              <div>all domains</div>
+              <div class="monospace">*.bbc.co.uk</div>
+              <div>exact domain and all subdomains</div>
+              <div class="monospace">**.bbc.co.uk</div>
+              <div>subdomains only (not bbc.co.uk)</div>
+              <div class="monospace">bbc.co.uk</div>
+              <div>exact domain only</div>
+            </div>
+            <hr>
+            <div class="tooltiptablefooter">
+              <div>Black patterns take precedence over white patterns. For example, a black pattern of <span class="monospace">*</span> means nothing will match, regardless of any white patterns.</div>
+            </div>
+          </div>
         </div>
         |
         <a href="/pattern-tester.html" target="_blank"><span data-i18n="patternTester"></span> <i class="fa fa-flask"></i></a>

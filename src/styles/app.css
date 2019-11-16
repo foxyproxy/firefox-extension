@@ -540,14 +540,14 @@ input[type="text"] + button i.fa.fa-eye {
   visibility: hidden;
   width: 20em;
   background-color: #630;
-  color: #fff;
+  color: white;
   text-align: center;
-  border-radius: 10px;
-  padding: 0.3em;
+  border-radius: 3px;
+  padding: .8em;
   position: absolute;
   z-index: 1;
   bottom: 125%;
-  left: 50%;
+  left: 10%;
   margin-left: -2em;
   opacity: 0;
   transition: all 0.5s ease-in-out;
@@ -598,6 +598,30 @@ input[type="text"] + button i.fa.fa-eye {
 
 .tooltip i.fa:hover {
   color: #f90;
+}
+
+.tooltiptable {
+  /* https://stackoverflow.com/questions/20626685/better-way-to-set-distance-between-flexbox-items */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.tooltiptable > div {
+  /*
+    1/ - 2 columns per row
+    .5em - spacing between rows 
+  */
+  box-sizing: border-box;
+  margin-bottom: .5em;
+  width: calc(1/2*100% - (1 - 1/2)*10px);
+}
+
+.tooltiptablefooter {
+  margin-top: 1em;
+  text-align: justify;
 }
 
 .monospace {
