@@ -208,14 +208,8 @@ function processOptions(pref) {
   }
   
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
-  let foundPattern;
   prefKeys.forEach(id => {
     const item = pref[id];
-    
-    // check item.whitePatterns exists, otherwise this page won't render at all.
-    // some people import patterns json using the primary import button
-    // and therefore dont have items.whitePatterns.
-    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
 
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
@@ -270,7 +264,7 @@ function processOptions(pref) {
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
-  if (FOXYPROXY_BASIC || !foundPattern) {  
+  if (FOXYPROXY_BASIC) {  
     mode.children[0].classList.add('hide');                 // hide by pattern option
     pref.mode === 'patterns' &&  (pref.mode = 'disabled');
   }

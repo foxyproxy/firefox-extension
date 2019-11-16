@@ -15,21 +15,32 @@ class Logger {
 
   constructor(size = 100, active = false) {
     this.size = size;
-    this.list = [];
+    this.matchedList = [];
+    this.unmatchedList = [];
     this.active = active;
   }
 
   clear() {
-    this.list = [];
+    this.matchedList = [];
+    this.unmatchedList = [];
   }
 
-  add(item) {
-    this.list.push(item);                             // addds to the end
-    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+  add(item, list) {
+    list.push(item);                        // adds to the end
+    list = list.slice(-this.size);          // slice to the ending size entries
+  }
+  
+  addMatched(item) {
+    this.add(item, this.matchedList);
+  }
+
+  addUnmatched(item) {
+    this.add(item, this.unmatchedList);
   }
 
   updateStorage() {
-    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+    this.matchedList = this.matchedList.slice(-this.size);          // slice to the ending size entries
+    this.unmatchedList = this.unmatchedList.slice(-this.size);      // slice to the ending size entries
     storageArea.set({logging: {size: this.size, active: this.active} });
   }
 }

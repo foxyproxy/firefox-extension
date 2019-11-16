@@ -35,7 +35,7 @@ function findProxyMatch(url, activeSettings) {
           item.pattern.test(hostPort));
 
       if (blackMatch) {
-        sendToLog(url, proxy, Utils.getProxyTitle(proxy), blackMatch, BLACK);
+        sendToMatchedLog(url, proxy, Utils.getProxyTitle(proxy), blackMatch, BLACK);
         continue; // if blacklist matched, continue to the next proxy
       }
 
@@ -47,13 +47,12 @@ function findProxyMatch(url, activeSettings) {
   			// found a whitelist match, end here
         const title = Utils.getProxyTitle(proxy);
         Utils.updateIcon('images/icon.svg', proxy.color, title, false, title, false);
-        // TODO: use a Promise for sendToLogAndHandleToolbarIcon()
-        sendToLog(url, proxy, title, whiteMatch, WHITE);
+        sendToMatchedLog(url, proxy, title, whiteMatch, WHITE);
         return prepareSetting(proxy);
   		}
     }
     // no white matches in any settings
-    sendToLog(url, {color: NOMATCH_COLOR, address: ''}, NOMATCH_TEXT, {originalPattern: NOMATCH_TEXT});
+    sendToUnmatchedLog(url);
     Utils.updateIcon('images/gray.svg', null, NOMATCH_TEXT, false, NOMATCH_TEXT, false);
     return {type: 'direct'};
   }
@@ -68,7 +67,7 @@ function findProxyMatch(url, activeSettings) {
     const p = activeSettings.proxySettings[0];
     const title = Utils.getProxyTitle(p);
     Utils.updateIcon('images/icon.svg', p.color, title, false, title, false);
-    sendToLog(url, p, title, FOR_ALL);
+    sendToMatchedLog(url, p, title, FOR_ALL);
     return prepareSetting(p);
   }
 }
@@ -98,9 +97,9 @@ function prepareSetting(proxy) {
   return ret;
 }
 
-function sendToLog(url, proxy, title, matchedPattern, whiteBlack) {
+function sendToMatchedLog(url, proxy, title, matchedPattern, whiteBlack) {
   // log only the data that is needed for display
-  logger && logger.active && logger.add({
+  logger && logger.active && logger.addMatched({
     url,
     title,
     color: proxy.color,
@@ -110,4 +109,8 @@ function sendToLog(url, proxy, title, matchedPattern, whiteBlack) {
     whiteBlack,
     timestamp: Date.now()
   });
+}
+
+function sendToUnmatchedLog(url) {
+  logger && logger.active && logger.addUnmatched({url, timestamp: Date.now()});
 }

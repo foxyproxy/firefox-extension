@@ -30,14 +30,10 @@ function processOptions(pref) {
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
   
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
-  let foundPattern, hasProxySettings = false;
+  let hasProxySettings = false;
   prefKeys.forEach(id => {
 
     const item = pref[id];
-    // check item.whitePatterns exists, otherwise this page won't render at all.
-    // some people import patterns json using the primary import button
-    // and therefore dont have items.whitePatterns.
-    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
     
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
@@ -55,7 +51,7 @@ function processOptions(pref) {
 
   docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
   
-  if (FOXYPROXY_BASIC || !foundPattern) {
+  if (FOXYPROXY_BASIC) {
     temp.parentNode.children[0].classList.add('hide');      // hide by pattern option
     pref.mode === 'patterns' && (pref.mode = 'disabled');
   } 
