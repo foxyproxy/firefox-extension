@@ -47,7 +47,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "foxyproxy@eric.h.jung",
+      "id": "foxyproxy-basic@eric.h.jung",
       "strict_min_version": "60.0"
     }
   }
