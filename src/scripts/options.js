@@ -125,7 +125,7 @@ function selectMode() {
   // set color
   mode.style.color = mode.children[mode.selectedIndex].style.color;
 
-  console.log(this, "selectMode");
+  console.log(mode, "selectMode");
   // we already know the state of sync | this is set when manually changing the select
   // it is undefined when mode is switched from toolbar popup or on startup
   this && storageArea.set({mode: mode.value});
