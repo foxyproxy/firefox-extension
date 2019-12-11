@@ -15,21 +15,32 @@ class Logger {
 
   constructor(size = 100, active = false) {
     this.size = size;
-    this.list = [];
+    this.matchedList = [];
+    this.unmatchedList = [];
     this.active = active;
   }
 
   clear() {
-    this.list = [];
+    this.matchedList = [];
+    this.unmatchedList = [];
   }
 
-  add(item) {
-    this.list.push(item);                             // addds to the end
-    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+  add(item, list) {
+    list.push(item);                        // adds to the end
+    list = list.slice(-this.size);          // slice to the ending size entries
+  }
+  
+  addMatched(item) {
+    this.add(item, this.matchedList);
+  }
+
+  addUnmatched(item) {
+    this.add(item, this.unmatchedList);
   }
 
   updateStorage() {
-    this.list = this.list.slice(-this.size);          // slice to the ending size entries
+    this.matchedList = this.matchedList.slice(-this.size);          // slice to the ending size entries
+    this.unmatchedList = this.unmatchedList.slice(-this.size);      // slice to the ending size entries
     storageArea.set({logging: {size: this.size, active: this.active} });
   }
 }
@@ -213,7 +224,6 @@ let authData = {};
 let authPending = {};
 
 async function sendAuth(request) {
-  console.log("sendAuth()");
   // Do nothing if this not proxy auth request:
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired
   //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
@@ -245,7 +255,6 @@ async function getAuth(request) {
     chrome.storage.local.get(null, result => {
       const host = result.hostData[request.challenger.host];
       if (host && host.username) {                          // cache credentials in authData
-        console.log("here2");
         authData[host] = {username: host.username, password: host.password};
       }
       resolve();

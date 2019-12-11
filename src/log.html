@@ -70,16 +70,19 @@
         A row in this log does not mean the URL successfully loaded. The log shows only how <strong>attempts</strong> were made to load URLs. If the proxy server was not responding or there was some other problem which prevented the URL from loading, the URL still displays here. This is a limitation of Firefox 57+.
       </div>
 
+      <h3 data-i18n="matchedURLs"></h3>
       <div class="scroll">
         <table>
           <thead>
             <tr>
               <th data-i18n="url"></th><th data-i18n="proxyTitle"></th><th data-i18n="color"></th>
-              <th data-i18n="proxyAddress"></th><th data-i18n="matchPattern"></th><th data-i18n="timestamp"></th>
+              <th data-i18n="proxyAddress"></th><th data-i18n="matchPattern"></th><th data-i18n="whiteBlack"></th>
+              <th data-i18n="timestamp"></th>
              </tr>
             <!-- template -->
-            <tr class="template">
+            <tr class="matchedtemplate">
                <td><a href="" target="_blank"></a></td>
+               <td></td>
                <td></td>
                <td></td>
                <td></td>
@@ -92,6 +95,25 @@
         </table>
       </div>
 
+      <h3 data-i18n="unmatchedURLs"></h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="url"></th>
+              <th data-i18n="timestamp"></th>
+             </tr>
+            <!-- template -->
+            <tr class="unmatchedtemplate">
+               <td><a href="" target="_blank"></a></td>
+               <td></td>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+      
       <div style="margin-top: 1em; text-align: right;">
         <button type="button" data-i18n="back">&#x25c1; </button>
         <button type="button" data-i18n="refresh"><i class="fa fa-refresh"></i> </button>

@@ -56,6 +56,19 @@
       <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Denver, Colorado, USA</p>
 
       <h3>Release Notes for Recent Releases</h3>
+      <h4>Version 7.4.2</h4>
+      <ul>
+        <li>Improved Logging &mdash; see URLs that matched blacklist patterns and URLs that didn't match anything are now in their own section.</li>
+        <li>Patterns mode now exists even if there are no white patterns defined. This was the behavior of FoxyProxy before 7.x. Its absence when no white patterns
+          are defined makes sense (no proxy will ever be used), but has been a source of tremendous confusion. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>
+        but also many other places.</li>
+        <li>When adding a new proxy, <strong>Add whitelist pattern to match all URLs</strong> is now on by default. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>.</li>
+        <li>On the patterns window, added new button for <strong>Add whitelist pattern to match all URLs</strong> similar to the existing button <strong>Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses</strong>.</li>
+        <li>Patterns Cheat Sheet improvements &mdash; more examples and text explaining that blacklist patterns take precedence over whitelist patterns.</li>
+        <li>Change an i18n key name so it works in chrome, too (chrome does not allow periods in key names).</li>
+        <li>Remove unneeded console log messages.</li>
+        <li>Faster deletion of patterns (faster animation)</li>
+      </ul>
       <h4>Version 7.4.1</h4>
       <ul>
         <li>Fixes so that FoxyProxy Basic can share the same codebase as FoxyProxy Standard again. Version number alignment: for the first time since FoxyProxy Basic
@@ -69,43 +82,6 @@
         <li>Import optimizations and increase on import file size from 5 MB to 10 MB</li>
         <li>Show help text if no proxy settings are defined; hide all proxy selectors too including 'turn off'.</li>
       </ul>
-      
-      <h4>Version 7.4</h4>
-      <ul>
-        <li>Uses new proxy API now and works with Firefox Nighly; discussed <a target="_blank" href="https://github.com/foxyproxy/firefox-extension/issues/39">here</a>. Minimum Firefox version is now 60.0.</li>
-        <li>Toolbar icon now changes with proxy use, just like version 6.x and earlier (patterns mode only). If there are no matches, a gray icon is displayed; discussed <a target="_blank" href="https://github.com/foxyproxy/firefox-extension/issues/38">here</a>.</li>
-        <li>Logging improvements; log now displays unmatched URLs just like version 6.x and earlier. This makes it obvious which URLs you may want to write patterns for.</li>
-        <li>UI Improvements</li>
-        <li>Performance improvements for authentication</li>
-        <li>Add browser and extension version numbers to export for debugging of exported settings submitted by users. It will be useful also in the future as the fileformat matures and changes, as it has many times over the years.</li>
-        <li>Ensure new proxies are added to the top of the list when created</li>
-        <li>Remove migration code which seems to cause errors for some people; migration from very old versions now gone.</li>
-        <li>Do not display pattern shortcuts (match all URLs, don't match localhost & intranet IPs) when editing a proxy setting, just like 6.x and earlier. Showing these created a lot of confusion for some users. Sorry!</li>
-        <li>
-        
-        <div class="tooltip"><span class="orangehover">Pattern Cheat Sheet</span> <i class="fa fa-info-circle"></i>
-          <span class="tooltiptext center">
-            <span class="monospace">bbc.co.uk</span> &mdash; exact domain only<br>
-            <span class="monospace">*.bbc.co.uk</span> &mdash; exact domain and all subdomains<br>
-            <span class="monospace">**.bbc.co.uk</span> &mdash; subdomains only, not bbc.co.uk
-          </span>
-         on pattern-related pages</div>
-      </li>
-      <li>Bug fixes when importing legacy foxyproxy.xml settings (FoxyProxy 4.x and earlier)</li>
-      <li>Show patterns buttons when adding Direct (no proxy) setting. Fixed some minor UI bugs when using Direct (no proxy).</li>
-      </ul>      
-      <h4>Version 7.3</h4>
-      <ul>
-        <li><a href="https://github.com/foxyproxy/firefox-extension/issues/33">Another</a> pattern bugfix.</li>
-        <li>Fix for inability to turn off <i>Send DNS through SOCKS5 proxy</i>; discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/35">here</a>.</li>
-      </ul>
-      
-      <h4>Version 7.2</h4>
-      <ul>
-        <li>HTTP Basic Auth bugfix introduced in 7.0; discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/30">here</a>.</li>
-        <li>Fix minor import bug when importing FoxyProxy settings for paid accounts.</li>
-      </ul>
-      
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>
     </div>

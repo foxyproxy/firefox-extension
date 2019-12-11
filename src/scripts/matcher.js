@@ -10,6 +10,8 @@ const FOR_ALL = {originalPattern: chrome.i18n.getMessage('forAll')}
 const NOMATCH_TEXT = chrome.i18n.getMessage('noMatch');
 const NONE_TEXT = chrome.i18n.getMessage('none');
 const NOMATCH_COLOR = '#D3D3D3';
+const WHITE = chrome.i18n.getMessage('white');
+const BLACK = chrome.i18n.getMessage('black');
 
 function findProxyMatch(url, activeSettings) {
   // note: we've already thrown out inactive settings and inactive patterns in background.js.
@@ -32,7 +34,10 @@ function findProxyMatch(url, activeSettings) {
         (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
           item.pattern.test(hostPort));
 
-      if (blackMatch) { continue; } // if blacklist matched, move to the next proxy
+      if (blackMatch) {
+        sendToMatchedLog(url, proxy, Utils.getProxyTitle(proxy), blackMatch, BLACK);
+        continue; // if blacklist matched, continue to the next proxy
+      }
 
       const whiteMatch = proxy.whitePatterns.find(item =>
         (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
@@ -42,13 +47,12 @@ function findProxyMatch(url, activeSettings) {
   			// found a whitelist match, end here
         const title = Utils.getProxyTitle(proxy);
         Utils.updateIcon('images/icon.svg', proxy.color, title, false, title, false);
-        // TODO: use a Promise for sendToLogAndHandleToolbarIcon()
-        sendToLog(url, proxy, title, whiteMatch);
+        sendToMatchedLog(url, proxy, title, whiteMatch, WHITE);
         return prepareSetting(proxy);
   		}
     }
     // no white matches in any settings
-    sendToLog(url, {color: NOMATCH_COLOR, address: ''}, NOMATCH_TEXT, {originalPattern: NOMATCH_TEXT});
+    sendToUnmatchedLog(url);
     Utils.updateIcon('images/gray.svg', null, NOMATCH_TEXT, false, NOMATCH_TEXT, false);
     return {type: 'direct'};
   }
@@ -63,7 +67,7 @@ function findProxyMatch(url, activeSettings) {
     const p = activeSettings.proxySettings[0];
     const title = Utils.getProxyTitle(p);
     Utils.updateIcon('images/icon.svg', p.color, title, false, title, false);
-    sendToLog(url, p, title, FOR_ALL);
+    sendToMatchedLog(url, p, title, FOR_ALL);
     return prepareSetting(p);
   }
 }
@@ -93,15 +97,20 @@ function prepareSetting(proxy) {
   return ret;
 }
 
-function sendToLog(url, proxy, title, matchedPattern) {
+function sendToMatchedLog(url, proxy, title, matchedPattern, whiteBlack) {
   // log only the data that is needed for display
-  logger && logger.active && logger.add({
+  logger && logger.active && logger.addMatched({
     url,
     title,
     color: proxy.color,
     address: proxy.address,
-    // Log should display whatever user typed, not our processed version.
+    // Log should display whatever user typed, not our processed version of the pattern
     matchedPattern: matchedPattern.originalPattern,
+    whiteBlack,
     timestamp: Date.now()
   });
+}
+
+function sendToUnmatchedLog(url) {
+  logger && logger.active && logger.addUnmatched({url, timestamp: Date.now()});
 }

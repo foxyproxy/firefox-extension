@@ -73,7 +73,7 @@
 
   "disabled": { "message": "Disabled" },
   "active": { "message": "Enabled" },
-	"activeNote.1": { "message": "FoxyProxy ignores everything on this page unless set to" },
+	"activeNote": { "message": "FoxyProxy ignores everything on this page unless set to" },
   "noMatch": { "message": "No Match" },
   "none": { "message": "None" },
 
@@ -150,5 +150,11 @@
   "proxyTitle": { "message": "Proxy Title" },
   "proxyAddress": { "message": "Proxy Address" },
   "matchPattern": { "message": "Match Pattern" },
-  "timestamp": { "message": "Timestamp" }
+  "whiteBlack": { "message": "White/Black" },
+  "white": { "message": "White" },
+  "black": { "message": "Black" },
+  "timestamp": { "message": "Timestamp" },
+  "notApplicable": {"message": "n/a"},
+  "matchedURLs": {"message": "URLs That Matched Patterns"},
+  "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"}
 } 

@@ -40,7 +40,8 @@ chrome.runtime.getBackgroundPage(bg => {
   logger = bg.getLog();
   onOff.checked = logger.active;
   logSize.value = logger.size;
-  renderLog(); // log content will be shown if there are any, regardless of onOff
+  renderMatchedLog(); // log content will be shown if there are any, regardless of onOff
+  renderUnmatchedLog();  // log content will be shown if there are any, regardless of onOff
   hideSpinner();
 });
 
@@ -66,30 +67,35 @@ function process () {
   switch (this.dataset.i18n) {
 
     case 'back': location.href = '/options.html'; break;
-    case 'refresh': renderLog(); break;
+    case 'refresh':
+      renderMatchedLog();
+      renderUnmatchedLog();
+      break;
     case 'clear':
       logger.clear();
-      renderLog();
+      renderMatchedLog();
+      renderUnmatchedLog();
       break;
   }
 }
 
-function renderLog() {
+function renderMatchedLog() {
 
   // ----- templates & containers
   const docfrag = document.createDocumentFragment();
-  const tr = document.querySelector('tr.template');
+  const tr = document.querySelector('tr.matchedtemplate');
   const tbody = tr.parentNode.nextElementSibling;
   tbody.textContent = ''; // clearing the content
 
-  const forAll = chrome.i18n.getMessage('forAll');;
-
-  logger.list.forEach(item => {
+  const forAll = chrome.i18n.getMessage('forAll');
+  const NA = chrome.i18n.getMessage('notApplicable');
+  
+  logger.matchedList.forEach(item => {
 
     const pattern = item.matchedPattern ?
       (item.matchedPattern === 'all' ? forAll : item.matchedPattern) : 'No matches';
 
-    // Build a row for this log entry by cloning the tr containing 6 td
+    // Build a row for this log entry by cloning the tr containing 7 td
     const row = tr.cloneNode(true);
     row.className = item.matchedPattern ? 'success' : 'secondary'; // this will rest class .tamplate as well
     const td = row.children;
@@ -98,11 +104,36 @@ function renderLog() {
     a.href = item.url;
     a.textContent = item.url;
 
-    td[1].textContent = item.title || 'n/a';
+    td[1].textContent = item.title || NA;
     td[2].style.backgroundColor = item.color || 'blue';
-    td[3].textContent = item.address || 'n/a';
+    td[3].textContent = item.address || NA;
     td[4].textContent = pattern;
-    td[5].textContent = formatInt(item.timestamp);
+    td[5].textContent = item.whiteBlack || NA;
+    td[6].textContent = formatInt(item.timestamp);
+
+    docfrag.appendChild(row);
+  });
+
+  tbody.appendChild(docfrag);
+}
+
+function renderUnmatchedLog() {
+
+  // ----- templates & containers
+  const docfrag = document.createDocumentFragment();
+  const tr = document.querySelector('tr.unmatchedtemplate');
+  const tbody = tr.parentNode.nextElementSibling;
+  tbody.textContent = ''; // clearing the content
+  
+  logger.unmatchedList.forEach(item => {
+    // Build a row for this log entry by cloning the tr containing 2 td
+    const row = tr.cloneNode(true);
+    const td = row.children;
+    const a = td[0].children[0];
+    
+    a.href = item.url;
+    a.textContent = item.url;
+    td[1].textContent = formatInt(item.timestamp);
 
     docfrag.appendChild(row);
   });

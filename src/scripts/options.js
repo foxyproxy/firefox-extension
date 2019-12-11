@@ -125,7 +125,7 @@ function selectMode() {
   // set color
   mode.style.color = mode.children[mode.selectedIndex].style.color;
 
-  console.log(this, "selectMode");
+  console.log(mode, "selectMode");
   // we already know the state of sync | this is set when manually changing the select
   // it is undefined when mode is switched from toolbar popup or on startup
   this && storageArea.set({mode: mode.value});
@@ -208,14 +208,8 @@ function processOptions(pref) {
   }
   
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
-  let foundPattern;
   prefKeys.forEach(id => {
     const item = pref[id];
-    
-    // check item.whitePatterns exists, otherwise this page won't render at all.
-    // some people import patterns json using the primary import button
-    // and therefore dont have items.whitePatterns.
-    if (item.whitePatterns && item.whitePatterns[0]) { foundPattern = true; }
 
     const div = temp.cloneNode(true);
     const node = [...div.children[0].children, ...div.children[1].children];
@@ -270,7 +264,7 @@ function processOptions(pref) {
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
   docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
-  if (FOXYPROXY_BASIC || !foundPattern) {  
+  if (FOXYPROXY_BASIC) {  
     mode.children[0].classList.add('hide');                 // hide by pattern option
     pref.mode === 'patterns' &&  (pref.mode = 'disabled');
   }
