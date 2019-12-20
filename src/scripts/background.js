@@ -252,6 +252,9 @@ async function sendAuth(request) {
     return {authCredentials: authData[request.challenger.host]};
   }
 
+  // Can confirm (Fx 68.2 ESR), but requested host is available in "request.url":
+  //  Use result from function "proxyRequest" via "proxy_for_requestID" if
+  //  available, otherwise repeat call to "proxyRequest":
   let proxy_matched = {};
   if (proxy_for_requestID[request.requestId]) {
     proxy_matched  = proxy_for_requestID[request.requestId];
