@@ -247,10 +247,6 @@ async function sendAuth(request) {
   //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
   // TODO: test in future Fx releases to see if that changes.
   // console.log(request.challenger.host, "challenger host");
-  if (authData[request.challenger.host]) {
-    authPending[request.requestId] = 1;                       // prevent bad authentication loop
-    return {authCredentials: authData[request.challenger.host]};
-  }
 
   // Can confirm (Fx 68.2 ESR), but requested host is available in "request.url":
   //  Use result from function "proxyRequest" via "proxy_for_requestID" if
