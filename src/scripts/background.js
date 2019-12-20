@@ -219,6 +219,7 @@ function setDisabled(isError) {
 // ----- session global
 let authData = {};
 let authPending = {};
+let proxy_for_requestID = {};
 
 async function sendAuth(request) {
   // Do nothing if this not proxy auth request:
