@@ -251,6 +251,8 @@ async function sendAuth(request) {
     authPending[request.requestId] = 1;                       // prevent bad authentication loop
     return {authCredentials: authData[request.challenger.host]};
   }
+
+  let proxy_matched = {};
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
