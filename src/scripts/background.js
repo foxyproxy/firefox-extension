@@ -261,6 +261,15 @@ async function sendAuth(request) {
   } else {
     proxy_matched = proxyRequest(request);
   };
+  if (proxy_matched) {
+    if (request.challenger.host == proxy_matched.host && request.challenger.port == proxy_matched.port) {
+      authPending[request.requestId] = 1;                       // prevent bad authentication loop
+      if (proxy_matched.username != "" || proxy_matched.password != "") {
+        const response = {authCredentials: {username: proxy_matched.username, password: proxy_matched.password}};
+        return response;
+      }
+    }
+  }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
