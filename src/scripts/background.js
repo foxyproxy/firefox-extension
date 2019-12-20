@@ -238,9 +238,6 @@ async function sendAuth(request) {
   // --- already sent once and pending
   if (authPending[request.requestId]) { return {cancel: true}; }
 
-  // --- authData credentials not yet populated from storage
-  if(!Object.keys(authData)[0]) { await getAuth(request); }
-
   // --- first authentication
   // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
   //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
