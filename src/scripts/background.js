@@ -286,6 +286,13 @@ async function getAuth(request) {
   });
 }
 
+function clearProxyrRequestID(request) {
+
+  if (proxy_for_requestID[request.requestId]) {
+    delete proxy_for_requestID[request.requestId];
+  }
+}
+
 function clearPending(request) {
 
   if(!authPending[request.requestId]) { return; }
