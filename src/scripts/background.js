@@ -220,7 +220,6 @@ function setDisabled(isError) {
 
 // ----------------- Proxy Authentication ------------------
 // ----- session global
-let authData = {};
 let authPending = {};
 let proxy_for_requestID = {};
 
