@@ -139,7 +139,7 @@ function storageOnChanged(changes, area) {
 
 function proxyRequest(requestInfo) {
   const proxy_matched = findProxyMatch(requestInfo.url, activeSettings);
-  return findProxyMatch(requestInfo.url, activeSettings);  
+  return proxy_matched;
 }
 
 function setActiveSettings(settings) {
