@@ -295,6 +295,7 @@ function clearProxyrRequestID(request) {
 
 function clearPending(request) {
 
+  clearProxyrRequestID(request);
   if(!authPending[request.requestId]) { return; }
 
   if (request.error) {
