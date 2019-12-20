@@ -266,19 +266,6 @@ async function sendAuth(request) {
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
-async function getAuth(request) {
-
-  await new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
-      const host = result.hostData[request.challenger.host];
-      if (host && host.username) {                          // cache credentials in authData
-        authData[host] = {username: host.username, password: host.password};
-      }
-      resolve();
-    });
-  });
-}
-
 function clearProxyrRequestID(request) {
 
   if (proxy_for_requestID[request.requestId]) {
