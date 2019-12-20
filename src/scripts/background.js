@@ -139,7 +139,12 @@ function storageOnChanged(changes, area) {
 
 function proxyRequest(requestInfo) {
   const proxy_matched = findProxyMatch(requestInfo.url, activeSettings);
-  proxy_for_requestID[requestInfo.requestId] = proxy_matched;
+  // better to filter out: requestInfo.type == "speculative"
+  //  They don't seem to fire in "onCompleted" or "onErrorOccurred"
+  //  and will fill "proxy_for_requestID" without deletion.
+  if (requestInfo.type != "speculative") {
+    proxy_for_requestID[requestInfo.requestId] = proxy_matched;
+  }
   return proxy_matched;
 }
 
