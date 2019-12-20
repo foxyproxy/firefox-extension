@@ -253,6 +253,11 @@ async function sendAuth(request) {
   }
 
   let proxy_matched = {};
+  if (proxy_for_requestID[request.requestId]) {
+    proxy_matched  = proxy_for_requestID[request.requestId];
+  } else {
+    proxy_matched = proxyRequest(request);
+  };
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
