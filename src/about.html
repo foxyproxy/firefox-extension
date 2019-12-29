@@ -56,6 +56,11 @@
       <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Denver, Colorado, USA</p>
 
       <h3>Release Notes for Recent Releases</h3>
+      <h4>Version 7.4.3</h4>
+      <ul>
+        <li>Fixed "log limit ignored" bug discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/58" target="_blank">here</a>.</li>
+        <li>Fixed spelling errors. Patch submitted <a href="https://github.com/foxyproxy/firefox-extension/pull/53" target="_blank">here</a> by <a href="https://github.com/cheese1" target="_blank">cheese1</a>.</li>
+      </ul>
       <h4>Version 7.4.2</h4>
       <ul>
         <li>Improved Logging &mdash; see URLs that matched blacklist patterns and URLs that didn't match anything are now in their own section.</li>
@@ -68,19 +73,6 @@
         <li>Change an i18n key name so it works in chrome, too (chrome does not allow periods in key names).</li>
         <li>Remove unneeded console log messages.</li>
         <li>Faster deletion of patterns (faster animation)</li>
-      </ul>
-      <h4>Version 7.4.1</h4>
-      <ul>
-        <li>Fixes so that FoxyProxy Basic can share the same codebase as FoxyProxy Standard again. Version number alignment: for the first time since FoxyProxy Basic
-          was introduced, it will share the same version number as FoxyProxy Standard.</li>
-        <li>Exported settings now include FoxyProxy edition &mdash; Standard or Basic. However, they are interchangeable.</li>
-        <li>Removed link to <a href="https://forums.getfoxyproxy.org/" target="_blank"><i class="fa fa-users"></i>Community Support Forums</a>.
-          We are shutting the forums down. People just don't use forums anymore; we only get spam there.
-          And have many other support chanels: email, ticket system, github, facebook, twitter, chat, etc.</li>
-        <li>Escape button works to close the current FoxyProxy window and return to the previous (if there is a previous).</li>
-        <li>Dialog box color changes for consistency</li>
-        <li>Import optimizations and increase on import file size from 5 MB to 10 MB</li>
-        <li>Show help text if no proxy settings are defined; hide all proxy selectors too including 'turn off'.</li>
       </ul>
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>

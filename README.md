@@ -28,7 +28,10 @@ FoxyProxy is internationalized! Translate [messages.json](https://github.com/fox
 
 ## Building
 
-FoxyProxy **Standard** edition is built by default. To build FoxyProxy **Basic** edition, set `FOXYPROXY_BASIC` to `true` in [utils.js](https://github.com/foxyproxy/firefox-extension/blob/master/src/scripts/utils.js) before building.
+FoxyProxy **Standard** edition is built by default. To build FoxyProxy **Basic** edition:
+
+* change `FOXYPROXY_BASIC` from `false` to `true` in [utils.js](https://github.com/foxyproxy/firefox-extension/blob/master/src/scripts/utils.js)
+* change browser_specific_settings.id in [manifest.json](https://github.com/foxyproxy/firefox-extension/blob/master/src/manifest.json) from `foxyproxy@eric.h.jung` to `foxyproxy-basic@eric.h.jung`
 
 ### Building With Grunt
 
@@ -60,3 +63,4 @@ Note some items are cached by Firefox. Please refer to other online documentatio
 
 This project is licensed under the GPL 2.0 License. Commercial re-licensing may be available on request.
 
+## Feature Requests / RoadMap

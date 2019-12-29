@@ -24,18 +24,15 @@ class Logger {
     this.matchedList = [];
     this.unmatchedList = [];
   }
-
-  add(item, list) {
-    list.push(item);                        // adds to the end
-    list = list.slice(-this.size);          // slice to the ending size entries
-  }
   
   addMatched(item) {
-    this.add(item, this.matchedList);
+    this.matchedList.push(item);
+    this.matchedList = this.matchedList.slice(-this.size); // slice to the ending size entries
   }
 
   addUnmatched(item) {
-    this.add(item, this.unmatchedList);
+    this.unmatchedList.push(item);
+    this.unmatchedList = this.unmatchedList.slice(-this.size); // slice to the ending size entries    
   }
 
   updateStorage() {
