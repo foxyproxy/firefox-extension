@@ -55,10 +55,8 @@ function process() {
       location.href = '/proxy.html';
       break;
     case 'export': Utils.exportFile(); break;
-    case 'import': 
-      
-      location.href = '/import.html'; 
-      break;
+    case 'import': location.href = '/import.html'; break;
+    case 'bulk': location.href = '/import-bulk.html'; break;
     case 'log': location.href = '/log.html'; break;
     case 'about': location.href = '/about.html'; break;
 

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title data-i18n="import">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <style>
+      i.fa, i.fa:hover { color: inherit; font-size: inherit; }
+      i.fa.fa-eye, i.fa.fa-eye:hover { 
+        font-size: 1.5em; 
+        vertical-align: middle;
+      }
+      label {
+        display: inline-block;
+        min-width: 5em;
+      }  
+      fieldset {
+        margin-bottom: 1.5em;
+      }   
+      textarea {
+          height: 10em;
+      }
+      div.tooltip hr {
+        color: white;
+      }
+      div.tooltip h3 {
+        margin: 0 0 .2em 0;
+      }
+      .tooltip .tooltiptext {
+        width: 38em;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- header -->
+    <div class="prime header" data-i18n="bulkImport"></div>
+
+    <!-- spinner -->
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
+
+    <!-- main -->
+    <div class="prime">                
+          <div class="tooltip">
+            Paste a proxy list below. Choose from <span data-i18n="simple" class="fp-orange"></span>
+            <div class="tooltiptext bottom table">
+              <div class="tooltiptable">
+                <span data-i18n="simpleFormat"></span><br>
+                <p class="monospace">ip:port<br>ip:port<br>ip:port</p>
+              </div>
+              <hr>
+              <div class="tooltiptablefooter">
+                <h3>Example</h3>
+                78.205.12.1:6001<br>12.999.51.81:3128<br>192.168.100.9:12001
+              </div>
+            </div>
+          </div>
+          or
+          <div class="tooltip">
+            <span data-i18n="complete" class="fp-orange"></span> formats.
+            <div class="tooltiptext bottom table">
+              <div class="tooltiptable">
+              <span data-i18n="completeFormat"></span><br>             
+              </div>
+              <hr>
+              <div class="tooltiptable">
+                <h3>Examples</h3><br>
+                <p class="monospace">proxy://johnconnor:hunterkiller@78.205.12.1:1080<br>
+                socks5://johnconnor:hunterkiller@12.999.51.81:331<br>
+                socks4://johnconnor:hunterkiller@192.168.100.9:5192<br>
+                ssl://johnconnor:hunterkiller@78.205.12.1:21&color=#ff00bc&name=my%20special%20proxy</p>
+              </div>
+              <div class="tooltiptablefooter">
+                Click <a target="_blank" href="/import-bulk-help.html">here</a> for help.              
+              </div>
+            </div>
+          </div>
+          <br><br>      
+        
+        <textarea id="proxyList"></textarea>
+
+        <div style="display: flex;">
+          <label data-i18n="overwriteProxies"></label>
+          <div>
+            <input id="overwrite" type="checkbox" class="switch" checked><label for="overwrite"></label>
+          </div>
+          <div class="tooltip">
+            <i class="fa fa-info-circle"></i>
+            <div class="tooltiptext bottom table">
+              <div class="tooltiptable">
+                <span data-i18n="overwritProxiesHelp1"></span>
+              </div>
+              <br>
+              <div class="tooltiptable">
+                <span data-i18n="overwritProxiesHelp2"></span>                
+              </div>
+            </div>
+          </div>          
+        </div>
+                
+        <button id="importFP" type="button" class="button" data-i18n="import"><i class="fa fa-download"></i> </button>
+        
+      <div style="text-align: right;">
+        <button type="button" class="button" data-i18n="back">&#x25c1; </button>
+      </div>
+
+    </div>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/import-bulk.js"></script>
+  </body>
+</html>

@@ -11,6 +11,7 @@
   "deleteAll": { "message": "Delete All" },
   "export": { "message": "Export" },
   "import": { "message": "Import" },
+  "bulk": { "message": "Bulk" },
   "log": { "message": "Log" },
   "myIP": { "message": "What's My IP?" },
   "deleteAllmessage": { "message": "All data deleted" },
@@ -156,5 +157,14 @@
   "timestamp": { "message": "Timestamp" },
   "notApplicable": {"message": "n/a"},
   "matchedURLs": {"message": "URLs That Matched Patterns"},
-  "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"}
+  "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"},
+  
+  "bulkImport": { "message": "Bulk Import" },
+  "simple": { "message": "simple" },
+  "complete": { "message": "complete" },
+  "simpleFormat": { "message": "Use this format to specify just ip address (or servername) and port. You will be prompted for proxy type (http, ssl, socks). The format is:"},
+  "completeFormat": { "message": "Use this format to specify all options in the import. The format is:"},
+  "overwriteProxies": { "message": "Overwrite existing proxies" },
+  "overwritProxiesHelp1": { "message": "Check to delete all existing proxies and replace them with proxies from this list." },
+  "overwritProxiesHelp2": { "message": "Uncheck to append proxies in this list to existing proxies." }
 } 
