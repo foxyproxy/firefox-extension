@@ -146,7 +146,6 @@ function proxyRequest(requestInfo) {
 
 function setActiveSettings(settings) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
-  browser.webRequest.onBeforeSendHeaders.hasListener(check_proxy) && browser.webRequest.onBeforeSendHeaders.removeListener(check_proxy);
   
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
@@ -187,7 +186,6 @@ function setActiveSettings(settings) {
       activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
     }
     browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-    browser.webRequest.onBeforeSendHeaders.addListener(check_proxy, {urls: ["<all_urls>"]}, ["blocking", "requestHeaders"]);    
     Utils.updateIcon('images/icon.svg', null, 'patterns', 'patterns');
     console.log(activeSettings, "activeSettings in patterns mode");
   }
@@ -197,7 +195,6 @@ function setActiveSettings(settings) {
     if (settings[mode]) {
       activeSettings.proxySettings = [settings[mode]];
       browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-      browser.webRequest.onBeforeSendHeaders.addListener(check_proxy,{urls: ["<all_urls>"]}, ["blocking", "requestHeaders"]);
       Utils.updateIcon('images/icon.svg', settings[mode].color, 'forAll', true, Utils.getProxyTitle(settings[mode]), false);
       console.log(activeSettings, "activeSettings in fixed mode");      
     }
@@ -215,7 +212,6 @@ function setActiveSettings(settings) {
 
 function setDisabled(isError) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
-  browser.webRequest.onBeforeSendHeaders.hasListener(check_proxy) && browser.webRequest.onBeforeSendHeaders.removeListener(check_proxy);
   chrome.runtime.sendMessage({mode: 'disabled'});           // Update the options.html UI if it's open
   Utils.updateIcon('images/icon-off.svg', null, 'disabled', true);
   console.log('******* disabled mode');
@@ -224,19 +220,8 @@ function setDisabled(isError) {
 
 // ----------------- Proxy Authentication ------------------
 // ----- session global
-// stopp using authData in its current implementation - we are using "proxy_for_requestID" now
-//let authData = {};
+let authData = {};
 let authPending = {};
-let proxy_for_requestID = {};
-
-// Might be set from GUI in future, if feature gets implemented:
-let force_global_reauth = false;
-let force_global_reauth_username = '';
-
-function reset_global_reauth() {
-  force_global_reauth = false;
-  force_global_reauth_username = '';
-}
 
 async function sendAuth(request) {
   // Do nothing if this not proxy auth request:
@@ -290,111 +275,3 @@ function clearPending(request) {
 
   delete authPending[request.requestId];                    // no error
 }
-
-// Work around bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1510510
-//  Should force reauthentication for http-proxy:
-//  - using digest authentication after changing the username
-//  - using basic authentication after changing the username and/or password.
-//  Does not work until browser establishes new connection to proxy.
-//  Established TCP connections might need to be closed first (keep-alive has to expire).
-//
-//  This works by examining the headers sent by the browser and deleting the
-//  authentication header if it doesn't seem to match what the current
-//  FoxyProxy configuration expects.
-//
-//  Browser does not always fires "onAuthRequired" and asks extensions to provide
-//  auth credentials, if he has some (working) credentials cached. Therefore
-//  an extension has no chance to make the browser aware of edited
-//  username/password. This applies for different pattern based proxy
-//  configurations as well, where address and port of proxies are the same but
-//  the user wants to (or has to) use differnt username/password based on some
-//  pattern in FoxyProxy, if he enables/disables a proxy config inside FoxyProxy
-//  or if he changes the order of proxy configs.
-//  Browser will keep using the first working proxy, at least until proxy
-//  refuses CONNECT, while FoxyProxy shows in her gui that the correct proxy was
-//  used. Actually FoxyProxy can not know which proxy config with same
-//  address/port is used, if it was not asked for auth credentials.
-//
-//  This check gives user the chance to edit/correct credentials or invalidate
-//  credentials that were sent before (and accepted by proxy) via FoxyProxy
-//  without having to restart the browser.
-//  But this might be considered expensive (header check runs for every
-//  request), especially if no authentication is used.
-//  So it might be useful to provide a switch in the gui to pref this check on/off.
-//
-//  Further tests and improvements welcome!
-
-function check_proxy(request) {
-  var asyncRewrite = new Promise((resolve, reject) => {
-    let send_original_headers = false;
-    let new_requestHeaders = [];
-    if (!proxy_for_requestID[request.requestId]) {
-      send_original_headers = true;
-    } else if (!proxy_for_requestID[request.requestId].username) {
-      send_original_headers = true;
-    } else if (!request.proxyInfo) {
-      send_original_headers = true;
-    } else if (request.proxyInfo.type == "http") {
-      for (var header of request.requestHeaders) {
-        if (header.name.toLowerCase() === "proxy-authorization") {
-          let force_rauth = false;
-          const headerValues = header.value.split(",");
-          for (var i=0; i<headerValues.length; i++) {
-            if (headerValues[i].startsWith("Digest username=")) {
-              let digestUsername_pre = headerValues[i].split("Digest username=");
-              if (digestUsername_pre.length >= 1) {
-                let digestUsername = "";
-                for (var j=0; j<digestUsername_pre[1].length; j++) {
-                  let char = digestUsername_pre[1][j];
-                  if (char != '"' && char != '\\') {
-                    digestUsername += char;
-                  }
-                }
-                if (digestUsername != proxy_for_requestID[request.requestId].username) {
-                  force_rauth = true;
-                } else if (force_global_reauth && force_global_reauth_username != "" && force_global_reauth_username == proxy_for_requestID[request.requestId].username) {
-                  force_rauth = true;
-                  reset_global_reauth();
-                }
-              }
-              break;
-            } else if (headerValues[i].startsWith("Basic ")) {
-              let basicAuth_pre = headerValues[i].split("Basic ");
-              if (basicAuth_pre.length >= 1) {
-                let basicAuthClear = proxy_for_requestID[request.requestId].username + ":" + proxy_for_requestID[request.requestId].password;
-                let credentials_planned = window.atob(basicAuth_pre[1]);
-                // not used
-                //let credentials_planned_list = credentials_planned.split(":");
-                if (basicAuthClear != credentials_planned) {
-                  force_rauth = true;
-                } else if (force_global_reauth && force_global_reauth_username != "" && force_global_reauth_username == proxy_for_requestID[request.requestId].username) {
-                  force_rauth = true;
-                  reset_global_reauth();
-                }
-              }
-              break;
-            }
-          };
-          if (!force_rauth) {
-            new_requestHeaders.push(header);
-          }
-        } else {
-          new_requestHeaders.push(header);
-        }
-      }
-    } else {
-      send_original_headers = true;
-    }
-    if (send_original_headers) {
-      new_requestHeaders = request.requestHeaders;
-    }
-    resolve({requestHeaders: new_requestHeaders});
-  });
-  return asyncRewrite;
-}
-
-function clearProxyrRequestID(request) {
-
- if (proxy_for_requestID[request.requestId]) {
-   delete proxy_for_requestID[request.requestId];
- }
