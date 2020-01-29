@@ -162,7 +162,7 @@
   "bulkImport": { "message": "Bulk Import" },
   "simple": { "message": "simple" },
   "complete": { "message": "complete" },
-  "simpleFormat": { "message": "Use this format to specify just ip address (or servername) and port. You will be prompted for proxy type (http, ssl, socks). The format is:"},
+  "simpleFormat": { "message": "Use this format to specify just ip address or server and port. You will be prompted for proxy type (http, ssl, socks). The format is:"},
   "completeFormat": { "message": "Use this format to specify all options in the import. The format is:"},
   "overwriteProxies": { "message": "Overwrite existing proxies" },
   "overwritProxiesHelp1": { "message": "Check to delete all existing proxies and replace them with proxies from this list." },

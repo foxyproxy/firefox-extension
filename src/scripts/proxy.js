@@ -176,15 +176,10 @@ function makeProxy() {
     // Get the nextIndex given to us by options.js and subtract by the number of proxies we've added
     // while this window has been open. This ensures this proxy setting is first in list of all proxy settings.
     proxy.index = (localStorage.getItem('nextIndex')) - (++proxiesAdded);
-    id = getUniqueId();
+    id = Utils.getUniqueId();
   }
   // else proxy.index is already set for edit operations
   return {[id]: proxy};
-}
-
-function getUniqueId() {
-  // We don't need cryptographically secure UUIDs, just something unique
-  return Math.random().toString(36).substring(7) + new Date().getTime();
 }
 
 function validateInput() {
