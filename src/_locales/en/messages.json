@@ -56,13 +56,13 @@
   
   "errorWas": { "message": "There was an error. Please try again." },
   "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
-  "errorEmpty": { "message": "Filed can not be empty." },
+  "errorEmpty": { "message": "Field can not be empty." },
 
 
   "importEnd": { "message": "Settings were successfully imported" },
   "patternsChanged": { "message": "Some patterns were changed because they contained slashes. Slashes in patterns are not supported anymore." },
   "importEndSlash": { "message": "Import finished. Slashes in patterns are not supported because of a Firefox bug. Please review your patterns and remove slashes, if any." },
-  "errorUserPass": { "message": "Please fill both Username & Password." },
+  "errorUserPass": { "message": "Please enter both Username & Password." },
   "errorFetch": { "message": "There was an error with the operation" },
 
 
