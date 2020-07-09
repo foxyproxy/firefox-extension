@@ -138,7 +138,14 @@ function storageOnChanged(changes, area) {
 }
 
 function proxyRequest(requestInfo) {
-  return findProxyMatch(requestInfo.url, activeSettings);  
+  const proxy_matched = findProxyMatch(requestInfo.url, activeSettings);
+  // better to filter out: requestInfo.type == "speculative"
+  //  They don't seem to fire in "onCompleted" or "onErrorOccurred"
+  //  and will fill "proxy_for_requestID" without deletion.
+  if (requestInfo.type != "speculative") {
+    proxy_for_requestID[requestInfo.requestId] = proxy_matched;
+  }
+  return proxy_matched;
 }
 
 function setActiveSettings(settings) {
@@ -146,10 +153,6 @@ function setActiveSettings(settings) {
   
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
-
-  // --- cache credentials in authData (only those with user/pass)
-  prefKeys.forEach(id => pref[id].username && pref[id].password &&
-    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
 
   const mode = settings.mode;
   activeSettings = {  // global
@@ -217,8 +220,8 @@ function setDisabled(isError) {
 
 // ----------------- Proxy Authentication ------------------
 // ----- session global
-let authData = {};
 let authPending = {};
+let proxy_for_requestID = {};
 
 async function sendAuth(request) {
   // Do nothing if this not proxy auth request:
@@ -230,37 +233,44 @@ async function sendAuth(request) {
   // --- already sent once and pending
   if (authPending[request.requestId]) { return {cancel: true}; }
 
-  // --- authData credentials not yet populated from storage
-  if(!Object.keys(authData)[0]) { await getAuth(request); }
-
   // --- first authentication
   // According to https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onAuthRequired :
   //  "request.challenger.host is the requested host instead of the proxy requesting the authentication"
   //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
   // TODO: test in future Fx releases to see if that changes.
   // console.log(request.challenger.host, "challenger host");
-  if (authData[request.challenger.host]) {
-    authPending[request.requestId] = 1;                       // prevent bad authentication loop
-    return {authCredentials: authData[request.challenger.host]};
+
+  // Can confirm (Fx 68.2 ESR), but requested host is available in "request.url":
+  //  Use result from function "proxyRequest" via "proxy_for_requestID" if
+  //  available, otherwise repeat call to "proxyRequest":
+  let proxy_matched = {};
+  if (proxy_for_requestID[request.requestId]) {
+    proxy_matched  = proxy_for_requestID[request.requestId];
+  } else {
+    proxy_matched = proxyRequest(request);
+  };
+  if (proxy_matched) {
+    if (request.challenger.host == proxy_matched.host && request.challenger.port == proxy_matched.port) {
+      authPending[request.requestId] = 1;                       // prevent bad authentication loop
+      if (proxy_matched.username != "" || proxy_matched.password != "") {
+        const response = {authCredentials: {username: proxy_matched.username, password: proxy_matched.password}};
+        return response;
+      }
+    }
   }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
 
-async function getAuth(request) {
+function clearProxyrRequestID(request) {
 
-  await new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
-      const host = result.hostData[request.challenger.host];
-      if (host && host.username) {                          // cache credentials in authData
-        authData[host] = {username: host.username, password: host.password};
-      }
-      resolve();
-    });
-  });
+  if (proxy_for_requestID[request.requestId]) {
+    delete proxy_for_requestID[request.requestId];
+  }
 }
 
 function clearPending(request) {
 
+  clearProxyrRequestID(request);
   if(!authPending[request.requestId]) { return; }
 
   if (request.error) {
