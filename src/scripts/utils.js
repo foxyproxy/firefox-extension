@@ -36,6 +36,8 @@ const PATTERN_ALL_WHITE = {
   protocols: 1                // PROTOCOL_ALL
 };
 
+const DEFAULT_COLOR = '#66cc66'; // default proxy color
+
 // patterns | proxy
 // the local-internal blacklist, always used as a set
 const blacklistSet = [
@@ -331,6 +333,10 @@ class Utils {
   static getUniqueId() {
     // We don't need cryptographically secure UUIDs, just something unique
     return Math.random().toString(36).substring(7) + new Date().getTime();
+  }
+  
+  static stripBadChars(str) {
+    return str.replace(/[&<>"']+/g, '');
   }
 
 }

@@ -47,85 +47,117 @@ function process(e) {
 
 function importList() {
   const rawList = document.getElementById('proxyList').value;
-  const parsedList = [];
-  if (rawList) {
-    try {
-      rawList.split('\n').forEach((item) => {
-        if (!item) {
-          return; // continue to next
+  if (!rawList) {
+    return;
+  }
+  const parsedList = [], skippedList = [], colors = [DEFAULT_COLOR, '#00ff00', '#0000ff'];
+  try {
+    rawList.split('\n').forEach((item) => {
+      if (!item) {
+        return; // continue to next
+      }
+      // Is this line simple or complete format?
+      if (item.includes('://')) {
+        // complete format
+        try {
+          const url = new URL(item);
+          console.log("url is", url);
+          const type = url.protocol === 'proxy:' || url.protocol === 'http:' ? PROXY_TYPE_HTTP :
+            url.protocol === 'ssl:' || url.protocol === 'https:' ? PROXY_TYPE_HTTPS :
+            url.protocol === 'socks:' || url.protocol === 'socks5:' ? PROXY_TYPE_SOCKS5 :
+            url.protocol === 'socks4:' ? PROXY_TYPE_SOCKS4 : -1;
+            if (type === -1) {
+              throw item;
+            }
+
+            // If color not specified in the URL, then rotate among the ones in the colors array.
+            const color = url.searchParams.get('color') ?
+              ('#' + url.searchParams.get('color')) : colors[parsedList.length % colors.length];
+
+            const title = url.searchParams.get('title');            
+            
+            function parseBooleanParam(paramName) {
+              let paramValue = url.searchParams.get(paramName);
+              debugger;
+              // If paramName url param is not specified or it's specified and not 'false', then paramValue should equal true
+              // (we assume true in case the param is absent, which may be counterintuitive, but this fcn is used for params that
+              // we want to assume true in 99% of cases).
+              // |paramValue === null| accounts for the case where paramValue is 0.
+              return paramValue === null || !paramValue.toLowerCase() === 'false';
+            }
+            const proxyDNS = parseBooleanParam('proxydns');
+            const active = parseBooleanParam('active');
+
+            storeProxy({
+              type, username: url.username, password: url.password,
+              hostname: url.hostname, port: url.port, color, title, proxyDNS, active: true},
+              true, true, parsedList, skippedList);
         }
-        // Is this line simple or complete format?
-        if (item.includes('://')) {
-          // complete
-          try {
-            const url = new URL(item);
-            console.log("url is");
-            console.log(url);
-            const type = url.protocol === 'proxy:' || url.protocol === 'http:' ? PROXY_TYPE_HTTP :
-              url.protocol === 'ssl:' || url.protocol === 'https:' ? PROXY_TYPE_HTTPS :
-              url.protocol === 'socks:' || url.protocol === 'socks5:' ? PROXY_TYPE_SOCKS5 :
-              url.protocol === 'socks4:' ? PROXY_TYPE_SOCKS4 : -1;
-              if (type === -1) {
-                throw item;
-              }
-              const color = '#' + (url.searchParams.get('color') || '0000ff');
-              const title = url.searchParams.get('title');
-              let proxyDNS = url.searchParams.get('proxyDns');
-              
-              // If proxyDNS url param is not specified or it's specified and true, then proxyDns === true
-              if (proxyDNS === null || proxyDNS.toLowerCase() === 'true') {
-                proxyDNS = true;
-              }
-              let parsedItem = makeProxy(type, url.username, url.password, url.hostname, url.port, color, title, proxyDNS,
-                true, true);
-              storageArea.set({[Utils.getUniqueId()]: parsedItem}, () => {
-                alert('imported one');
-              });                
-          }
-          catch (e) {
-            console.log(e);
-            // URL couldn't be parsed.
-            // Throw just the item that we barfed on
-            throw item;
-          }
+        catch (e) {
+          console.log(e);
+          // URL couldn't be parsed.
+          // Throw just the item that we barfed on
+          skippedList.push(item);
+        }
+      }
+      else {
+        // simple
+        const hostPort = item.split(':');
+        // Split always returns an array no matter what
+        // escape all inputs
+        [hostPort[0], hostPort[1]].forEach(item => item = Utils.stripBadChars(item));
+        if (hostPort[0] && hostPort[1]) {
+          storeProxy({
+            type: PROXY_TYPE_HTTP, hostname: hostPort[0], port: hostPort[1],
+            color: colors[parsedList.length % colors.length], // rotate color
+            title: hostPort[0], active: true},
+            true, true, parsedList, skippedList);
         }
         else {
-          // simple
-          const hostPort = item.split(':');
-          // Split always returns an array no matter what
-          if (hostPort[0] && hostPort[1]) {
-            const proxy = makeProxy(PROXY_TYPE_HTTP, )
-            parsedList.push()
-          }          
+          skippedList.push(hostPort);
         }
-      });
-    }
-    catch (e) {
-      console.log(e);
-      alert(`Error parsing this line: ${e}`);
-    }
+      }
+    }); //forEach
+  }
+  catch (e) {
+    console.log(e);
+    alert(`Error ${e}`);
   }
 }
 
-function makeProxy(type, username, password, address, port, color, title, proxyDNS, patternAllWhite, patternsIntranetBlack) {
-  const proxy = {type, username, password, address, port, color, title, active: true};
-  if (proxy.type === PROXY_TYPE_SOCKS5) {
+function storeProxy({type, username, password, hostname, port, color, title, proxyDNS, active = true}, patternsAllWhite, patternsIntranetBlack, parsedList, skippedList) {
+  console.log("storeProxy1", proxy);
+
+  if (!port.value *1) { // is port a digit and not 0?
+    skippedList.push(proxy);
+    return false;
+  }
+
+  // strip bad chars from all input except username and password.
+  // If we do that, auth could fail so dont change username/password.
+  proxy = Object.fromEntries(Object.entries(proxy).map(([k, v]) => [k,
+    k === 'username' || k === 'password' || k === 'type' || k === 'proxyDNS' ? v : Utils.stripBadChars(v)]));      
+    
+  console.log("storeProxy2", proxy);
+
+  if (proxy.type !== PROXY_TYPE_SOCKS5) {
     // Only set if socks5
-    proxy.proxyDNS = proxyDNS;
+    proxy.proxyDNS = undefined;
   }
   
   if (FOXYPROXY_BASIC) {
     proxy.whitePatterns = proxy.blackPatterns = [];
   }
   else {
-    proxy.whitePatterns = patternAllWhite ? [PATTERN_ALL_WHITE] : [];
-    proxy.blackPatterns = patternsIntranetBlack ? blacklistSet : [];
+    proxy.whitePatterns = patternsAllWhite ? [PATTERN_ALL_WHITE] : [];
+    proxy.blackPatterns = patternsIntranetBlack ? blacklistSet : []; // TODO: blacklistSet is not defined
   }
 
   // Get the nextIndex given to us by options.js and add by the number of proxies we've added.
   // This ensures this proxy setting is last in list of all proxy settings.
   proxy.index = (localStorage.getItem('nextIndex')) + (++proxiesAdded);
-  console.log("parsed proxy: ");
-  console.log(proxy);
-  return proxy;
+  storageArea.set({[Utils.getUniqueId()]: proxy}, () => {
+    console.log(`imported ${proxy}`);
+    parsedList.push(proxySetting);
+  });
 }

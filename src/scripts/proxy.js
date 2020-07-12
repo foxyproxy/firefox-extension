@@ -17,8 +17,7 @@ document.addEventListener('keyup', evt => {
 // ----- global
 let proxy = {}, proxiesAdded = 0;
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
-const defaultColor = '#66cc66'
-color.fromString(defaultColor);                             // starting from default color
+color.fromString(DEFAULT_COLOR);                             // starting from default color
 
 const header = document.querySelector('.header');           // dynamic header
 setHeader();
@@ -135,7 +134,7 @@ function processOptions() {
     proxyDNS.checked = proxy.proxyDNS || false;
 
     // color
-    color.fromString(proxy.color || defaultColor);
+    color.fromString(proxy.color || DEFAULT_COLOR);
 
     // input
     proxyTitle.value = proxy.title || '';
@@ -184,14 +183,13 @@ function makeProxy() {
 
 function validateInput() {
 
-  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
+  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());  
+  
+  if (proxyType.value *1 === PROXY_TYPE_NONE) { return true; }
 
   // let's handle here, #proxyPort will be checked later separately
-  // Utils.escapeAllInputs('#proxyTitle,#proxyAddress,#proxyPort');
   // escape all inputs
-  [proxyTitle, proxyAddress].forEach(item => item.value = item.value.replace(/[&<>"']+/g, ''));
-
-  if (proxyType.value *1 === PROXY_TYPE_NONE) { return true; }
+  [proxyTitle, proxyAddress].forEach(item => item.value = Utils.stripBadChars(item.value));  
 
   // checking proxyAddress
   proxyAddress.classList.remove('invalid'); // reset
@@ -218,7 +216,7 @@ function resetOptions() {
 
   // to help entering sets quickly, some fields are kept
   [proxyTitle, proxyAddress].forEach(item => item.value = '');
-  color.fromString(defaultColor);
+  color.fromString(DEFAULT_COLOR);
 
   setHeader();  
   proxyTitle.focus();
