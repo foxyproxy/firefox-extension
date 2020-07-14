@@ -60,24 +60,6 @@ const blacklistSet = [
   return item;
 });
 
-
-/*
-const LASTRESORT = 'k20d21508277536715';
-const DEFAULT_PROXY_SETTING = {
-  //id: Number.MAX_SAFE_INTEGER, // Not here so we dont save it to disk as an object property but instead as a key
-  index: Number.MAX_SAFE_INTEGER,
-  id: LASTRESORT,
-  active: true,
-  title: 'Default',
-  notes: 'These are the settings that are used when no patterns match a URL.',
-  color: '#0055E5',
-  type: PROXY_TYPE_NONE,
-  whitePatterns: [PATTERN_ALL_WHITE],
-  blackPatterns: []
-}
-*/
-
-
 // ----------------- Utils ---------------------------------
 class Utils {
 
