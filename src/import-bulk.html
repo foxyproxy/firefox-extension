@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="styles/app.css">
     <style>
       i.fa, i.fa:hover { color: inherit; font-size: inherit; }
-      i.fa.fa-eye, i.fa.fa-eye:hover { 
-        font-size: 1.5em; 
+      i.fa.fa-eye, i.fa.fa-eye:hover {
+        font-size: 1.5em;
         vertical-align: middle;
       }
       label {
         display: inline-block;
-      }  
+      }
       textarea {
           height: 10em;
       }
@@ -23,7 +23,7 @@
       }
       div.tooltip h3 {
         margin: 0 0 .2em 0;
-      } 
+      }
     </style>
   </head>
   <body>
@@ -35,7 +35,7 @@
     <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
 
     <!-- main -->
-    <div class="prime">                
+    <div class="prime">
       <div class="tooltip">
         Paste a proxy list below. Choose from <span data-i18n="simple" class="fp-orange"></span>
         <div class="tooltiptext bottom table">
@@ -56,10 +56,10 @@
         <div class="tooltiptext bottom table" style="width: 38em">
           <div class="tooltiptable">
           <span data-i18n="completeFormat"></span><br>
-          <p class="monospace">protocol://username:password@host:port?color=hexcode&title=proxytitle</p>  
+          <p class="monospace">protocol://username:password@host:port?color=hexcode&title=proxytitle</p>
           <p>All fields are optional except protocol and host.<br>protocol can be
             <span class="monospace">proxy</span>, <span class="monospace">ssl</span>,
-            <span class="monospace">sock5</span>, or <span class="monospace">socks4</span>.</p>        
+            <span class="monospace">sock5</span>, or <span class="monospace">socks4</span>.</p>
           </div>
           <hr>
           <div class="tooltiptable">
@@ -70,12 +70,12 @@
             ssl://johnconnor:hunterkiller@78.205.12.1:21?color=ff00bc&title=my%20special%20proxy</p>
           </div>
           <div class="tooltiptablefooter">
-            Click <a target="_blank" href="/import-bulk-help.html">here</a> for help.              
+            Click <a target="_blank" href="/import-bulk-help.html">here</a> for help.
           </div>
         </div>
       </div>
-      <br><br>      
-        
+      <br><br>
+
       <textarea id="proxyList"></textarea>
 
       <label data-i18n="overwriteProxies"></label>
@@ -88,13 +88,13 @@
           </div>
           <br>
           <div class="tooltiptable">
-            <span data-i18n="overwritProxiesHelp2"></span>                
+            <span data-i18n="overwritProxiesHelp2"></span>
           </div>
         </div>
-      </div>          
+      </div>
       <br><br>
       <button id="import" type="button" class="button" data-i18n="import"><i class="fa fa-download"></i> </button>
-      
+
       <div style="text-align: right;">
         <button type="button" class="button" data-i18n="back">&#x25c1; </button>
       </div>
