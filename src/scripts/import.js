@@ -50,10 +50,12 @@ function process(e) {
     case 'importJson':
       showSpinner();
       Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*10, 'json', importJson); // 10mb
+      hideSpinner(); // hide spinner in case importJson() was not called due to error
       break;
     case 'importXml':
       showSpinner();
       Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*10, 'xml', importXml);  // 10mb
+      hideSpinner(); // hide spinner in case importXml() was not called due to error
       break;
   }
 }
