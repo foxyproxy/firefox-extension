@@ -1,6 +1,6 @@
 # FoxyProxy for Firefox
 
-The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, erosman is a primary developer.
+The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, ericjung and erosman are primary developers.
 
 Originally for Firefox, a Chrome edition was released years ago as well. It does not share the same codebase (yet), so this project is strictly for the Firefox edition. We hope they will share the same codebase sometime in 2020.
 
