@@ -7,7 +7,11 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
   attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
 });
 // ----------------- /Internationalization -----------------
-
+document.addEventListener('keyup', evt => {
+  if (evt.keyCode === 27) {
+    close();
+  }
+});
 
 // ----------------- Spinner -------------------------------
 const spinner = document.querySelector('.spinner');
@@ -33,7 +37,7 @@ function process(e) {
 
   switch (this.id || this.dataset.i18n) {
     // click
-    case 'back': location.href = '/options.html'; break;
+    case 'back': close(); break;
     case 'export': Utils.exportFile(); break;
 
     case 'togglePW|title':
@@ -429,3 +433,8 @@ function foxyProxyImport() {
 
 }
 // ----------------- /FoxyProxy Import ---------------------
+
+function close() {
+  document.querySelector('#password').value = ''; /* prevent Firefox's save password prompt */
+  location.href = '/options.html';
+}

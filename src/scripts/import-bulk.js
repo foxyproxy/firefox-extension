@@ -10,7 +10,7 @@ document.querySelectorAll('[data-i18n]').forEach(node => {
 
 document.addEventListener('keyup', evt => {
   if (evt.keyCode === 27) {
-    close();
+    location.href = '/options.html';
   }
 });
 
@@ -48,12 +48,15 @@ function imp0rt() {
   const {parsedList, skippedList} = parseList(document.getElementById('proxyList').value);
   if (parsedList.length > 0) {
     if (document.querySelector('#overwrite').checked) {
-      if (confirm(chrome.i18n.getMessage('confirmDelete'))) {
+      if (confirm(chrome.i18n.getMessage('confirmOverwrite'))) {
         showSpinner();
         chrome.storage.local.clear(() => chrome.storage.sync.clear(() => {
           hideSpinner();
           storeProxies(parsedList);
         }));
+      }
+      else {
+        return;
       }
     }
     else {
@@ -61,15 +64,16 @@ function imp0rt() {
     }
   }
   if (skippedList.length > 0) {
-    alert(`Skipped ${skippedList.length} lines because they could not be parsed:\n\n${skippedList}`);
+    alert(`${chrome.i18n.getMessage('importsSkipped', [skippedList.length + "", skippedList.toString()])}`);
   }
   if (parsedList.length > 0) {
-    alert(`Read and stored ${parsedList.length} proxies.`);
+    alert(`${chrome.i18n.getMessage('importSucceeded', [parsedList.length])}`);
   }
+  location.href = '/options.html';
 }
 
 function parseList(rawList) {
-  const parsedList = [], skippedList = [], colors = [DEFAULT_COLOR, '#00ff00', '#0000ff'];
+  const parsedList = [], skippedList = [], colors = ['#663300', '#284B63', '#C99656', '#7B758C', '#171E1D'];
   if (!rawList) {
     return {parsedList, skippedList};
   }
@@ -79,23 +83,37 @@ function parseList(rawList) {
     }
     let p;
     // Is this line simple or complete format?
-    if (item.includes('://')) {
-      // complete format
+    let protocol = item.match(/.+:\/\//); // null for strings like 127.0.0.1:3128 (simple format)
+    if (protocol) {
+      // This line is uses 'complete' format
       let url;
       try {
-        url = new URL(item);
+        // In Firefox 78.0.2, the built-in javascript URL class will not parse URLs with custom schemes/protocols
+        // like socks://127.0.0.1. However, Chrome 84.0.4147.89 and Node 14.5.0 both do. In order to be compatible
+        // with Firefox, let's replace the scheme/protocol with 'http'. We could also instead write our own parsing
+        // logic with a regular expression, but that does not seems necessary.
+        if (protocol[0] !== 'http://' && protocol[0] !== 'https://') {
+          item = 'http://' + item.substring(protocol[0].length);
+          url = new URL(item);
+          protocol = protocol[0].substring(0, protocol[0].length-2); //strip ending //
+        }
+        else {
+          url = new URL(item);
+          protocol = url.protocol;
+        }
       }
       catch (e) {
         console.log(e);
-        // URL couldn't be parseds
+        // URL couldn't be parsed
         skippedList.push(item);
         return; // continue to next
       }
-      const type = url.protocol === 'proxy:' || url.protocol === 'http:' ? PROXY_TYPE_HTTP :
-        url.protocol === 'ssl:' || url.protocol === 'https:' ? PROXY_TYPE_HTTPS :
-        url.protocol === 'socks:' || url.protocol === 'socks5:' ? PROXY_TYPE_SOCKS5 :
-        url.protocol === 'socks4:' ? PROXY_TYPE_SOCKS4 : -1;
+      const type = protocol === 'proxy:' || protocol === 'http:' ? PROXY_TYPE_HTTP :
+        protocol === 'ssl:' || protocol === 'https:' ? PROXY_TYPE_HTTPS :
+        protocol === 'socks:' || protocol === 'socks5:' ? PROXY_TYPE_SOCKS5 :
+        protocol === 'socks4:' ? PROXY_TYPE_SOCKS4 : -1;
         if (type === -1) {
+          console.log("unknown protocol");
           skippedList.push(item);
           return; // continue to next
         }
@@ -105,6 +123,8 @@ function parseList(rawList) {
           ('#' + url.searchParams.get('color')) : colors[parsedList.length % colors.length];
 
         const title = url.searchParams.get('title');
+        const countryCode = url.searchParams.get('countryCode') || url.searchParams.get('cc');
+        const country = url.searchParams.get('country') || countryCode;
 
         function parseBooleanParam(paramName) {
           let paramValue = url.searchParams.get(paramName);
@@ -124,8 +144,9 @@ function parseList(rawList) {
           port = type === PROXY_TYPE_HTTP ? 3128 : type === PROXY_TYPE_HTTPS ? 443 : 1080;
         }
 
+        console.log(url);
         // the URL class sets username and password === '' if not specified on the URL
-        p = {type, username: url.username, password: url.password, address: url.hostname, port, color, title, proxyDNS, active};
+        p = {type, username: url.username, password: url.password, address: url.hostname, port, color, title, proxyDNS, active, countryCode, country};
     }
     else {
       // simple
@@ -147,9 +168,12 @@ function parseList(rawList) {
   return {parsedList, skippedList};
 }
 
-function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, color, title, proxyDNS, active = true}, patternsAllWhite, patternsIntranetBlack) {
+function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, color, title, proxyDNS, active = true, countryCode, country},
+  patternsAllWhite, patternsIntranetBlack) {
+
   port = port*1; // convert to digit
   if (!port || port < 1) { // is port NaN or less than 1
+    console.log("port is NaN or less than 1");
     return null;
   }
 
@@ -159,23 +183,27 @@ function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, c
   address = Utils.stripBadChars(address);
   color = Utils.stripBadChars(color);
   title = Utils.stripBadChars(title);
+  countryCode = Utils.stripBadChars(countryCode);
+  country = Utils.stripBadChars(country);
 
   if (!address) {
+    console.log("no address");
     return null;
   }
 
   const proxy = {type, address, port, color, active};
 
   // Only set the properties needed. null and undefined props seem to be saved if set, so don't set them.
-  if (username) {
-    p.username = username;
+  function setPropertyIfHasValue(prop, value, proxy) {
+    if (value || value === 0) {
+      proxy[prop] = value;
+    }
   }
-  if (password) {
-    p.password = password;
-  }
-  if (title) {
-    p.title = title;
-  }
+  setPropertyIfHasValue('username', username, proxy);
+  setPropertyIfHasValue('password', password, proxy);
+  setPropertyIfHasValue('title', title, proxy);
+  setPropertyIfHasValue('cc', countryCode, proxy);
+  setPropertyIfHasValue('country', country, proxy);
 
   if (type === PROXY_TYPE_SOCKS5) {
     // Only set if socks5
@@ -189,7 +217,6 @@ function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, c
     proxy.whitePatterns = patternsAllWhite ? [PATTERN_ALL_WHITE] : [];
     proxy.blackPatterns = patternsIntranetBlack ? [...blacklistSet] : [];
   }
-
   return proxy;
 }
 
