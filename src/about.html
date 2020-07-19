@@ -66,19 +66,10 @@
         <li>Minor security improvements -- do not accept embedded HTML/JS in other form fields</li>
         <li><strong>Turn Off (Use Firefox Settings)</strong> should be first in list. Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/78">here</a>.</li>
         <li>Fixed: Firefox overflow menu displays wrong info for FoxyProxy. Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/84">here</a>.</li>
-      </ul>
-      <h4>Version 7.4.2</h4>
+      <h4>Version 7.4.3</h4>
       <ul>
-        <li>Improved Logging &mdash; see URLs that matched blacklist patterns and URLs that didn't match anything are now in their own section.</li>
-        <li>Patterns mode now exists even if there are no white patterns defined. This was the behavior of FoxyProxy before 7.x. Its absence when no white patterns
-          are defined makes sense (no proxy will ever be used), but has been a source of tremendous confusion. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>
-        but also many other places.</li>
-        <li>When adding a new proxy, <strong>Add whitelist pattern to match all URLs</strong> is now on by default. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>.</li>
-        <li>On the patterns window, added new button for <strong>Add whitelist pattern to match all URLs</strong> similar to the existing button <strong>Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses</strong>.</li>
-        <li>Patterns Cheat Sheet improvements &mdash; more examples and text explaining that blacklist patterns take precedence over whitelist patterns.</li>
-        <li>Change an i18n key name so it works in chrome, too (chrome does not allow periods in key names).</li>
-        <li>Remove unneeded console log messages.</li>
-        <li>Faster deletion of patterns (faster animation)</li>
+        <li>Fixed "log limit ignored" bug discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/58" target="_blank">here</a>.</li>
+        <li>Fixed spelling errors. Patch submitted <a href="https://github.com/foxyproxy/firefox-extension/pull/53" target="_blank">here</a> by <a href="https://github.com/cheese1" target="_blank">cheese1</a>.</li>
       </ul>
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>
