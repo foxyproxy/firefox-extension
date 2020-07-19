@@ -9,9 +9,9 @@
   "erroNoSettings": { "message": "No settings could be found. Please re-install FoxyProxy." },
 
   "deleteAll": { "message": "Delete All" },
-  "export": { "message": "Export" },
-  "import": { "message": "Import" },
-  "bulk": { "message": "Bulk" },
+  "export": { "message": "Export Settings" },
+  "import": { "message": "Import Settings" },
+  "importProxyList": { "message": "Import Proxy List" },
   "log": { "message": "Log" },
   "myIP": { "message": "What's My IP?" },
   "deleteAllmessage": { "message": "All data deleted" },
@@ -159,27 +159,21 @@
   "matchedURLs": {"message": "URLs That Matched Patterns"},
   "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"},
 
-  "bulkImport": { "message": "Bulk Import" },
+
+  "pasteList": { "message": "Paste a proxy list below."},
+  "formats": {"message": "Formats"},
   "simple": { "message": "simple" },
   "complete": { "message": "complete" },
-  "simpleFormat": { "message": "Use this format to specify just ip address or server and port. You will be prompted for proxy type (http, ssl, socks). The format is:"},
-  "completeFormat": { "message": "Use this format to specify all options in the import. The format is:"},
+  "simpleFormat": { "message": "ip address/server and port are required. username:password are optional."},
+  "ipPort": {"message": "ip:port"},
+  "ipPortUsernamePassword": {"message": "ip:port:username:password"},
+  "examples": {"message": "Examples"},
+  "completeFormat": { "message": "With this format, you can specify all proxy settings. But only protocol and server are required."},
   "overwriteProxies": { "message": "Overwrite existing proxies" },
   "overwritProxiesHelp1": { "message": "Check to delete all existing proxies and replace them with proxies from this list." },
   "overwritProxiesHelp2": { "message": "Uncheck to append proxies in this list to existing proxies." },
   "confirmOverwrite": { "message": "Are you sure you want to ovewrite existing proxies?" },
-  "importsSkipped": {
-    "message": "Skipped $SKIPPED_LIST_LENGTH$ lines because they could not be parsed:\n\n$SKIPPED_LIST$",
-    "placeholders": {
-      "skipped_list_length": {
-        "content": "$1"
-      },
-      "skipped_list": {
-        "content": "$2",
-        "example": "127.0.0.1,127.0,127.0.0.1:-999"
-      }
-    }
-  },
+  "importsSkipped": { "message": "Skipped $1 lines because they could not be parsed:\n\n$2" },
   "importSucceeded": {
     "message": "Read and stored $1 proxies."
   }

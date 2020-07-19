@@ -24,12 +24,18 @@
       div.tooltip h3 {
         margin: 0 0 .2em 0;
       }
+      .align-right {
+        text-align: right;
+      }
+      .no-margin {
+        margin: 0;
+      }
     </style>
   </head>
   <body>
 
     <!-- header -->
-    <div class="prime header" data-i18n="bulkImport"></div>
+    <div class="prime header" data-i18n="importProxyList"></div>
 
     <!-- spinner -->
     <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
@@ -37,40 +43,39 @@
     <!-- main -->
     <div class="prime">
       <div class="tooltip">
-        Paste a proxy list below. Choose from <span data-i18n="simple" class="fp-orange"></span>
+        <span data-i18n="pasteList"></span> <span data-i18n="formats"></span> <span data-i18n="simple"></span>
+        <i class="fa fa-info-circle"></i>
         <div class="tooltiptext bottom table">
           <div class="tooltiptable">
-            <p style="margin: 0;" data-i18n="simpleFormat"></p>
-            <p class="monospace">ip:port<br>ip:port<br>ip:port</p>
+            <p class="no-margin" data-i18n="simpleFormat"></p>
+            <p class="monospace"><span data-i18n="ipPort"></span><br><span data-i18n="ipPort"></span><br><span data-i18n="ipPortUsernamePassword"></span></p>
           </div>
           <hr>
           <div class="tooltiptablefooter">
-            <h3>Example</h3>
-            78.205.12.1:6001<br>12.999.51.81:3128<br>foobar.com:12001
+            <h3 data-i18n="examples"></h3>
+            78.205.12.1:6001<br>12.999.51.81:3128<br>foobar.com:12001<br>foobar.com:3128:kyleReese:hunterKiller
+            <p><a data-i18n="help" target="_blank" href="https://github.com/foxyproxy/firefox-extension/wiki/Import-Proxy-List"></a></p>
           </div>
         </div>
       </div>
-      or
+      /
       <div class="tooltip">
-        <span data-i18n="complete" class="fp-orange"></span> formats.
-        <div class="tooltiptext bottom table" style="width: 38em">
+        <span data-i18n="complete"></span>
+        <i class="fa fa-info-circle"></i>
+        <div class="tooltiptext bottom table" style="width: 40rem">
           <div class="tooltiptable">
-          <span data-i18n="completeFormat"></span><br>
-          <p class="monospace">protocol://username:password@host:port?color=hexcode&title=proxytitle</p>
-          <p>All fields are optional except protocol and host.<br>protocol can be
-            <span class="monospace">proxy</span>, <span class="monospace">ssl</span>,
-            <span class="monospace">sock5</span>, or <span class="monospace">socks4</span>.</p>
+            <p data-i18n="completeFormat"></p>
+            <h3 data-i18n="examples"></h3>
+            <p class="monospace">* proxy://78.205.12.1:666<br>
+            * proxy://johnConnor:hunterKiller@192.168.100.9:5192?color=663300<br>
+            * socks://12.999.51.81?title=China&cc=CN&country=中国&proxyDns=false<br>
+            * socks://12.999.51.81:331?patternExcludesIntranet=false<br>
+            * https://192.168.100.9:5192?patternIncludesAll=false<br>
+            * ssl://kyleReese:passw0rd@78.205.12.1:21?color=ff00bc&title=work%20proxy</p>
           </div>
           <hr>
-          <div class="tooltiptable">
-            <h3>Examples</h3><br>
-            <p class="monospace">proxy://78.205.12.1:1080<br>
-            socks5://johnconnor:hunterkiller@12.999.51.81:331&proxydns=false<br>
-            socks4://johnconnor:hunterkiller@192.168.100.9:5192<br>
-            ssl://johnconnor:hunterkiller@78.205.12.1:21?color=ff00bc&title=my%20special%20proxy</p>
-          </div>
           <div class="tooltiptablefooter">
-            Click <a target="_blank" href="https://github.com/foxyproxy/firefox-extension/wiki/Proxy---Bulk-Import-Format">here</a> for help.
+            <a data-i18n="help" target="_blank" href="https://github.com/foxyproxy/firefox-extension/wiki/Import-Proxy-List"></a>
           </div>
         </div>
       </div>
@@ -95,12 +100,12 @@
       <br><br>
       <button id="import" type="button" class="button" data-i18n="import"><i class="fa fa-download"></i> </button>
 
-      <div style="text-align: right;">
+      <div class="align-right">
         <button type="button" class="button" data-i18n="back">&#x25c1; </button>
       </div>
     </div>
 
   <script src="scripts/utils.js"></script>
-  <script src="scripts/import-bulk.js"></script>
+  <script src="scripts/import-proxy-list.js"></script>
   </body>
 </html>

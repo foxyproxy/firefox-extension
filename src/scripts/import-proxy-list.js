@@ -81,7 +81,7 @@ function parseList(rawList) {
     if (!item) {
       return; // continue to next
     }
-    let p;
+    let p, patternIncludesAll = true, patternExcludesIntranet = true;
     // Is this line simple or complete format?
     let protocol = item.match(/.+:\/\//); // null for strings like 127.0.0.1:3128 (simple format)
     if (protocol) {
@@ -126,16 +126,18 @@ function parseList(rawList) {
         const countryCode = url.searchParams.get('countryCode') || url.searchParams.get('cc');
         const country = url.searchParams.get('country') || countryCode;
 
-        function parseBooleanParam(paramName) {
-          let paramValue = url.searchParams.get(paramName);
-          // If paramName url param is not specified or it's specified and not 'false', then paramValue should equal true
-          // (we assume true in case the param is absent, which may be counterintuitive, but this fcn is used for params that
-          // we want to assume true in 99% of cases).
-          // |paramValue === null| accounts for the case where paramValue is 0.
-          return paramValue === null || !(paramValue.toLowerCase() === 'false');
+        // If paramName url param is not specified or it's specified and not 'false', then paramValue should equal true.
+        // We assume true in case the param is absent, which may be counterintuitive, but this fcn is used for params that
+        // we want to assume true when absent.
+        function parseBooleanParam(url, paramName, aliasParamName) {
+          const paramValue = url.searchParams.get(paramName) || (aliasParamName && url.searchParams.get(aliasParamName));
+          return paramValue ? !(paramValue.toLowerCase() === 'false') : true;
         }
-        const proxyDNS = parseBooleanParam('proxydns');
-        const active = parseBooleanParam('active');
+        const proxyDNS = parseBooleanParam(url, 'proxyDns');
+        const active = parseBooleanParam(url, 'enabled', 'active');
+
+        patternIncludesAll = parseBooleanParam(url, 'patternIncludesAll');
+        patternExcludesIntranet = parseBooleanParam(url, 'patternExcludesIntranet');
 
         // the URL class sets port === '' if not specified on the URL or it's an invalid port e.g. contains alpha chars
         let port = url.port;
@@ -150,12 +152,12 @@ function parseList(rawList) {
     }
     else {
       // simple
-      const hostPort = item.split(':');
+      const splitItem = item.split(':');
       // Split always returns an array no matter what
-      p = {address: hostPort[0], port: hostPort[1], color: colors[parsedList.length % colors.length]};
+      p = {address: splitItem[0], port: splitItem[1], username: splitItem[2], password: splitItem[3], color: colors[parsedList.length % colors.length]};
     }
 
-    const proxy = makeProxy(p, true, true);
+    const proxy = makeProxy(p, patternIncludesAll, patternExcludesIntranet);
     if (proxy) {
       parsedList.push(proxy);
     }
@@ -169,7 +171,7 @@ function parseList(rawList) {
 }
 
 function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, color, title, proxyDNS, active = true, countryCode, country},
-  patternsAllWhite, patternsIntranetBlack) {
+  patternIncludesAll, patternExcludesIntranet) {
 
   port = port*1; // convert to digit
   if (!port || port < 1) { // is port NaN or less than 1
@@ -214,8 +216,8 @@ function makeProxy({type = PROXY_TYPE_HTTP, username, password, address, port, c
     proxy.whitePatterns = proxy.blackPatterns = [];
   }
   else {
-    proxy.whitePatterns = patternsAllWhite ? [PATTERN_ALL_WHITE] : [];
-    proxy.blackPatterns = patternsIntranetBlack ? [...blacklistSet] : [];
+    proxy.whitePatterns = patternIncludesAll ? [PATTERN_ALL_WHITE] : [];
+    proxy.blackPatterns = patternExcludesIntranet ? [...blacklistSet] : [];
   }
   return proxy;
 }
