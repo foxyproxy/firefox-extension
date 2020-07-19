@@ -260,7 +260,7 @@ function processOptions(pref) {
   });
 
   docfrag.hasChildNodes() && accounts.appendChild(docfrag);
-  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
+  docfrag2.hasChildNodes() && mode.appendChild(docfrag2, mode.lastElementChild);
 
   if (FOXYPROXY_BASIC) {
     mode.children[0].classList.add('hide');                 // hide by pattern option
