@@ -3,7 +3,7 @@
 
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "7.4.3",
+  "version": "7.5",
   "default_locale": "en",
   "homepage_url": "https://getfoxyproxy.org/",
   "author": "Eric Jung",
@@ -25,7 +25,7 @@
     "open_in_tab": true,
     "browser_style": true
   },
-  
+
   "browser_action": {
     "default_icon": "images/icon.svg",
     "default_title": "__MSG_extensionName__",

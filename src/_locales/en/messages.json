@@ -1,30 +1,31 @@
 {
   "extensionName": { "message": "FoxyProxy Standard" },
   "extensionDescription": { "message": "Easy to use advanced Proxy Management tool for everyone" },
-  
+
   "extensionNameBasic": { "message": "FoxyProxy Basic" },
-  
-  
+
+
   "error": { "message": "Error" },
   "erroNoSettings": { "message": "No settings could be found. Please re-install FoxyProxy." },
 
   "deleteAll": { "message": "Delete All" },
-  "export": { "message": "Export" },
-  "import": { "message": "Import" },
+  "export": { "message": "Export Settings" },
+  "import": { "message": "Import Settings" },
+  "importProxyList": { "message": "Import Proxy List" },
   "log": { "message": "Log" },
   "myIP": { "message": "What's My IP?" },
   "deleteAllmessage": { "message": "All data deleted" },
-  
+
   "authError": { "message": "$1 is refusing connections\nCheck proxy username/password" },
-  
-  
+
+
   "delete": { "message": "Delete" },
   "deleteNot": { "message": "Do Not Delete" },
   "deleteBrowserData": { "message": "Delete Browser Data" },
   "deleteBrowserDataDescription": { "message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data." },
   "deleteBrowserDataNotDescription": { "message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates." },
   "done": { "message": "Done!" },
-  
+
   "about": { "message": "About" },
   "syncSettings": { "message": "Synchronize Settings" },
   "syncSettingsHelp": { "message": "Turn on to use Firefox Sync (settings are synchronized across all your Firefox browsers). Turn off to store settings locally. Notice you can have two different instances of settings, one sync and one local." },
@@ -33,26 +34,26 @@
   "off": { "message": "Off" },
   "confirmTransferToLocal": { "message": "Would you like to transfer the synced settings to your local profile?\nExisting Data will be merged." },
   "confirmTransferToSync": { "message": "Would you like to transfer the local settings to your synced profile?\nExisting Data will be merged." },
-  
+
   "modePatterns": { "message": "Use Enabled Proxies By Patterns and Order" },
   "modeDisabled": { "message": "Turn Off (Use Firefox Settings)" },
   "forAll": { "message": "for all URLs" },
   "noProxies": { "message": "You do not have any proxy settings."},
 
-  
-  
+
+
   "edit": { "message": "Edit" },
   "patterns": { "message": "Patterns" },
   "confirmDelete": { "message": "Are you sure you want to delete?" },
-  
+
   "addProxy": { "message": "Add Proxy" },
   "editProxy": { "message": "Edit Proxy $1" },
-  
-  
+
+
   "editPatterns": { "message": "Edit Patterns" },
   "editPatternsFor": { "message": "Edit Patterns of $1" },
-  
-  
+
+
   "errorWas": { "message": "There was an error. Please try again." },
   "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
   "errorEmpty": { "message": "Field can not be empty." },
@@ -94,18 +95,18 @@
 
   "proxyType": { "message": "Proxy Type" },
   "color": { "message": "Color" },
-  "patternShortcuts": { "message": "Pattern Shortcuts"}, 
+  "patternShortcuts": { "message": "Pattern Shortcuts"},
   "title": { "message": "Title or Description (optional)" },
   "ip": { "message": "Proxy IP address or DNS name" },
   "port": { "message": "Port" },
   "username": { "message": "Username (optional)" },
   "password": { "message": "Password (optional)" },
   "togglePW": { "message": "Toggle Password" },
-  
+
   "addWhitelist": { "message": "Add whitelist pattern to match all URLs" },
   "noLocal": { "message": "Do not use for localhost and intranet/private IP addresses" },
-  
-  
+
+
 
   "patternTester": { "message": "Pattern Tester" },
   "patternHelp": { "message": "Pattern Help" },
@@ -117,12 +118,12 @@
   "patternDetail": { "message": "Enter pattern details." },
   "patternNote": { "message": "(no paths, no query parameters)" },
   "clickTest": { "message": "Click 'Test' when ready" },
-  
 
-  
-  
-  
-  
+
+
+
+
+
 
   "ok": { "message": "OK" },
   "clear": { "message": "Clear" },
@@ -144,7 +145,7 @@
   "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
   "addWhitelistTip": { "message": "Add whitelist pattern *" },
   "patternCheatSheet":  { "message": "Pattern Cheat Sheet" },
-  
+
   "logSize": { "message": "Log Size" },
   "url": { "message": "URL" },
   "proxyTitle": { "message": "Proxy Title" },
@@ -156,5 +157,24 @@
   "timestamp": { "message": "Timestamp" },
   "notApplicable": {"message": "n/a"},
   "matchedURLs": {"message": "URLs That Matched Patterns"},
-  "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"}
-} 
+  "unmatchedURLs": {"message": "URLs That Did Not Match Patterns"},
+
+
+  "pasteList": { "message": "Paste a proxy list below."},
+  "formats": {"message": "Formats"},
+  "simple": { "message": "simple" },
+  "complete": { "message": "complete" },
+  "simpleFormat": { "message": "ip address/server and port are required. username:password are optional."},
+  "ipPort": {"message": "ip:port"},
+  "ipPortUsernamePassword": {"message": "ip:port:username:password"},
+  "examples": {"message": "Examples"},
+  "completeFormat": { "message": "With this format, you can specify all proxy settings. But only protocol and server are required."},
+  "overwriteProxies": { "message": "Overwrite existing proxies" },
+  "overwritProxiesHelp1": { "message": "Check to delete all existing proxies and replace them with proxies from this list." },
+  "overwritProxiesHelp2": { "message": "Uncheck to append proxies in this list to existing proxies." },
+  "confirmOverwrite": { "message": "Are you sure you want to ovewrite existing proxies?" },
+  "importsSkipped": { "message": "Skipped $1 lines because they could not be parsed:\n\n$2" },
+  "importSucceeded": {
+    "message": "Read and stored $1 proxies."
+  }
+}

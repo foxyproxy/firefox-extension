@@ -55,10 +55,8 @@ function process() {
       location.href = '/proxy.html';
       break;
     case 'export': Utils.exportFile(); break;
-    case 'import': 
-      
-      location.href = '/import.html'; 
-      break;
+    case 'import': location.href = '/import.html'; break;
+    case 'importProxyList': location.href = '/import-proxy-list.html'; break;
     case 'log': location.href = '/log.html'; break;
     case 'about': location.href = '/about.html'; break;
 
@@ -186,7 +184,7 @@ chrome.runtime.onMessage.addListener((message, sender) => { // from popup or bg
 function processOptions(pref) {
   // --- reset
   accounts.textContent = '';
-  
+
   // remove all <option> elements except patterns and disabled
   [...mode.children].forEach(item => !['patterns', 'disabled'].includes(item.value) && item.remove());
 
@@ -206,7 +204,7 @@ function processOptions(pref) {
   if (prefKeys[0]) {
     minIndex = pref[prefKeys[0]].index; // the first index after sort (if any)
   }
-  
+
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
   prefKeys.forEach(id => {
     const item = pref[id];
@@ -260,11 +258,11 @@ function processOptions(pref) {
     opt.style.color = item.color;
     docfrag2.appendChild(opt);
   });
-  
-  docfrag.hasChildNodes() && accounts.appendChild(docfrag);
-  docfrag2.hasChildNodes() && mode.insertBefore(docfrag2, mode.lastElementChild);
 
-  if (FOXYPROXY_BASIC) {  
+  docfrag.hasChildNodes() && accounts.appendChild(docfrag);
+  docfrag2.hasChildNodes() && mode.appendChild(docfrag2, mode.lastElementChild);
+
+  if (FOXYPROXY_BASIC) {
     mode.children[0].classList.add('hide');                 // hide by pattern option
     pref.mode === 'patterns' &&  (pref.mode = 'disabled');
   }
@@ -294,12 +292,12 @@ function doWeHaveProxiesDefined() {
   if (!accounts.hasChildNodes()) {
     document.querySelector('#help').style.display = 'block';
     document.querySelector('#rightColumn').classList.add('secondary');
-    document.querySelector('#selectAndSync').style.display = 'none';
+    document.querySelector('#mode').style.display = 'none';
   }
   else {
     document.querySelector('#help').style.display = 'none';
     document.querySelector('#rightColumn').classList.remove('warning');
-    document.querySelector('#selectAndSync').style.display = 'flex';
+    document.querySelector('#mode').style.display = 'flex';
   }
 }
 
@@ -371,12 +369,12 @@ function showPopup() {
 function closePopup() {
 
   popup.classList.remove('on');
-  setTimeout(() => { 
-    popup.style.display = 'none'; 
+  setTimeout(() => {
+    popup.style.display = 'none';
     // reset
     popupMain.children[0].textContent = '';
     popupMain.children[1].textContent = '';
     popupMain.children[2].children[0].style.visibility = 'visible';
-    popupMain.replaceChild(popupMain.children[2].cloneNode(true), popupMain.children[2]); // cloning to remove listeners  
+    popupMain.replaceChild(popupMain.children[2].cloneNode(true), popupMain.children[2]); // cloning to remove listeners
   }, 600);
 }
