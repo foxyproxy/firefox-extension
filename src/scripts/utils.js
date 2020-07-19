@@ -224,7 +224,7 @@ class Utils {
       chrome.browserAction.setBadgeBackgroundColor({color: null});
     }
     if (title) {
-      chrome.browserAction.setTitle({title: titleIsKey ? chrome.i18n.getMessage(title) : title});
+      chrome.browserAction.setTitle({title: 'FoxyProxy: ' + (titleIsKey ? chrome.i18n.getMessage(title) : title)});
     }
     else {
       chrome.browserAction.setTitle({title: ''});

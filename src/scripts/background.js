@@ -29,7 +29,7 @@ class Logger {
     list.push(item);                        // adds to the end
     list = list.slice(-this.size);          // slice to the ending size entries
   }
-  
+
   addMatched(item) {
     this.add(item, this.matchedList);
   }
@@ -105,7 +105,7 @@ function process(settings) {
     };
     update = true;
   }
-  
+
   // update storage then add Change Listener
   if (update) {
     storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged));
@@ -141,12 +141,12 @@ function storageOnChanged(changes, area) {
 }
 
 function proxyRequest(requestInfo) {
-  return findProxyMatch(requestInfo.url, activeSettings);  
+  return findProxyMatch(requestInfo.url, activeSettings);
 }
 
 function setActiveSettings(settings) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
-  
+
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
@@ -159,7 +159,7 @@ function setActiveSettings(settings) {
     mode,
     proxySettings: []
   };
-  
+
   if (mode === 'disabled' || (FOXYPROXY_BASIC && mode === 'patterns')){
     setDisabled();
     return;
@@ -178,7 +178,7 @@ function setActiveSettings(settings) {
         return accumulator;
       }, []);
     }
-    
+
     // Filter out the inactive patterns. that way, each comparison
     // is a little faster (doesn't even know about inactive patterns). Also convert all patterns to reg exps.
     for (const idx in activeSettings.proxySettings) {
@@ -186,7 +186,7 @@ function setActiveSettings(settings) {
       activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
     }
     browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-    Utils.updateIcon('images/icon.svg', null, 'patterns', 'patterns');
+    Utils.updateIcon('images/icon.svg', null, 'patterns', true);
     console.log(activeSettings, "activeSettings in patterns mode");
   }
   else {
@@ -195,8 +195,9 @@ function setActiveSettings(settings) {
     if (settings[mode]) {
       activeSettings.proxySettings = [settings[mode]];
       browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-      Utils.updateIcon('images/icon.svg', settings[mode].color, 'forAll', true, Utils.getProxyTitle(settings[mode]), false);
-      console.log(activeSettings, "activeSettings in fixed mode");      
+      const tmp = Utils.getProxyTitle(settings[mode]);
+      Utils.updateIcon('images/icon.svg', settings[mode].color, tmp, false, tmp, false);
+      console.log(activeSettings, "activeSettings in fixed mode");
     }
     else {
       // This happens if user deletes the current proxy and mode is "use this proxy for all URLs"
@@ -229,7 +230,7 @@ async function sendAuth(request) {
   //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
   //   have no effect on the handling of the request, and the browser will probably just ask the user to log in."
   if (!request.isProxy) return;
-  
+
   // --- already sent once and pending
   if (authPending[request.requestId]) { return {cancel: true}; }
 
