@@ -175,6 +175,6 @@
   "confirmOverwrite": { "message": "Etes-vous sûr de vouloir ecraser les proxys existants ?" },
   "importsSkipped": { "message": "$1 lignes ignorées car elles ne pouvaient pas être interprétées:\n\n$2" },
   "importSucceeded": {
-    "message": "$1 proxys interprétés et stocker."
+    "message": "$1 proxys interprétés et stockés."
   }
 }
