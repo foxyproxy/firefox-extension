@@ -172,7 +172,7 @@
   "overwriteProxies": { "message": "Overwrite existing proxies" },
   "overwritProxiesHelp1": { "message": "Check to delete all existing proxies and replace them with proxies from this list." },
   "overwritProxiesHelp2": { "message": "Uncheck to append proxies in this list to existing proxies." },
-  "confirmOverwrite": { "message": "Are you sure you want to ovewrite existing proxies?" },
+  "confirmOverwrite": { "message": "Are you sure you want to overwrite existing proxies?" },
   "importsSkipped": { "message": "Skipped $1 lines because they could not be parsed:\n\n$2" },
   "importSucceeded": {
     "message": "Read and stored $1 proxies."
