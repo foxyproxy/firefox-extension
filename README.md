@@ -55,8 +55,9 @@ Note some items are cached by Firefox. Please refer to other online documentatio
 ## Authors
 
 * **Eric H. Jung** - [FoxyProxy](https://getfoxyproxy.org/team/)
-* **erosman** - https://github.com/erosman
-* **FeralMeow** - Simplified Chinese translation - https://github.com/wsxy162
+* **[erosman](https://github.com/erosman)**
+* **[FeralMeow](https://github.com/wsxy162)** - Chinese (Simplified) translation
+* **[samuikaze](https://github.com/samuikaze)** - Chinese (traditional) translation
 * **Vadim** - Russian translation
 * **Your Name Here** if you contribute a language translation or other work
 
