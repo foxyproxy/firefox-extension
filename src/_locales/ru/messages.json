@@ -23,7 +23,7 @@
   "deleteNot": { "message": "Не удалять" },
   "deleteBrowserData": { "message": "Удалить данные браузера" },
   "deleteBrowserDataDescription": { "message": "Кэш, куки, база индексов, хранилище DOM, данные расширения, служебные данные." },
-  "deleteBrowserDataNotDescription": { "message": "Сохранённые пароли, история браузера и форм, исторя загрузок, webSQL, серверные сертификаты" },
+  "deleteBrowserDataNotDescription": { "message": "Сохранённые пароли, история браузера и форм, история загрузок, webSQL, серверные сертификаты" },
   "done": { "message": "Готово!" },
 
   "about": { "message": "О расширении" },
@@ -36,7 +36,7 @@
   "confirmTransferToSync": { "message": "Хотите переместить локальные настройки синхронизированный профиль?\nОни будут объединены с существующими данными." },
 
   "modePatterns": { "message": "Использовать проки по шаблону и порядку" },
-  "modeDisabled": { "message": "Откоючить (Использовать настройки Firefox)" },
+  "modeDisabled": { "message": "Отключить (Использовать настройки Firefox)" },
   "forAll": { "message": "Для всех URL" },
   "noProxies": { "message": "У вас нет каких-либо прокси настроек."},
 
@@ -140,8 +140,8 @@
   "add": { "message": "Добавить" },
   "saveAdd": { "message": "Сохранить & добавить еще" },
   "saveEditPattern": { "message": "Сохранить & и редактировать шаблоны" },
-  "imported": { "message": "Импортитовано" },
-  "addBlacklistTip": { "message": "Добавть blacklist шаблоны для локального адреса, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "imported": { "message": "Импортировано" },
+  "addBlacklistTip": { "message": "Добавить blacklist шаблоны для локального адреса, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
   "addBlacklist": { "message": "Добавить black шаблоны чтобы предотвратить использование этого прокси для локального адреса и внутренних/частных IP адресов" },
   "addWhitelistTip": { "message": "Добавить whitelist шаблон *" },
   "patternCheatSheet":  { "message": "Шпаргалка по шаблонам" },
