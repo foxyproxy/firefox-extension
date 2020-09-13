@@ -2,8 +2,10 @@
 
 // ----------------- Pattern Check ------------------
 
+const anyProtocol = '(.+\://)';
+
 function checkPattern(pattern, type) {
-  
+
   const pat = pattern.value;
 
   if (!pat) {
@@ -11,7 +13,15 @@ function checkPattern(pattern, type) {
     pattern.focus();
     showResult(chrome.i18n.getMessage('errorEmpty'), true);
     return;
-  }  
+  }
+
+  // In most cases, patterns should not start with the protocol
+  const protocolMatches = pat.match(anyProtocol);
+  if (protocolMatches && protocolMatches.length > 1) {
+    if (!confirm(chrome.i18n.getMessage('patternHasProtocol', [pat, protocolMatches[0]]))) {
+      return;
+    }
+  }
 
   const patternTypeSet = {
     '1': 'wildcard',
@@ -46,8 +56,8 @@ function checkPattern(pattern, type) {
         showResult(e.message, true);
         return false;
       }
-  }  
-  
+  }
+
   // --- pattern is valid
   return regex;
 }

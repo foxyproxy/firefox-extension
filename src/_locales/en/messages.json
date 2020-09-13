@@ -176,5 +176,7 @@
   "importsSkipped": { "message": "Skipped $1 lines because they could not be parsed:\n\n$2" },
   "importSucceeded": {
     "message": "Read and stored $1 proxies."
-  }
+  },
+  "patternHasProtocol": {"message": "The pattern $1 contains $2. Most patterns should not include a protocol. Continue anyway?"}
+
 }
