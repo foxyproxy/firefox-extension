@@ -44,18 +44,6 @@
     "notifications",
     "<all_urls>"
   ],
-
-  "commands": {
-    "modePatterns": {
-      "description": "__MSG_modePatterns__"
-    },
-    "modeDisabled": {
-      "description": "__MSG_modeDisabled__"
-    },
-    "forAll": {
-      "description": "__MSG_forAll__"
-    }    
-  },
   
   "browser_specific_settings": {
     "gecko": {
