@@ -8,11 +8,11 @@
   "error": { "message": "Ошибка" },
   "erroNoSettings": { "message": "Настройки не найдены. Пожалуйста, переустановите FoxyProxy." },
 
-  "deleteAll": { "message": " Удалить всё" },
+  "deleteAll": { "message": "Удалить всё" },
   "export": { "message": "Экспортировать настройки" },
   "import": { "message": "Импортировать настройки" },
   "importProxyList": { "message": "Импортировать список прокси" },
-  "log": { "message": "Лог" },
+  "log": { "message": "Журнал" },
   "myIP": { "message": "Какой у меня IP адрес?" },
   "deleteAllmessage": { "message": "Все данные удалены" },
 
@@ -23,7 +23,7 @@
   "deleteNot": { "message": "Не удалять" },
   "deleteBrowserData": { "message": "Удалить данные браузера" },
   "deleteBrowserDataDescription": { "message": "Кэш, куки, база индексов, хранилище DOM, данные расширения, служебные данные." },
-  "deleteBrowserDataNotDescription": { "message": "Сохранённые пароли, история браузера и форм, история загрузок, webSQL, серверные сертификаты" },
+  "deleteBrowserDataNotDescription": { "message": "Сохранённые пароли, история браузера и форм, история загрузок, webSQL, серверные сертификаты." },
   "done": { "message": "Готово!" },
 
   "about": { "message": "О расширении" },
@@ -33,7 +33,7 @@
   "on": { "message": "Вкл." },
   "off": { "message": "Выкл." },
   "confirmTransferToLocal": { "message": "Хотите переместить синхронизированные настройки в локальный профиль?\nОни будут объединены с существующими данными." },
-  "confirmTransferToSync": { "message": "Хотите переместить локальные настройки синхронизированный профиль?\nОни будут объединены с существующими данными." },
+  "confirmTransferToSync": { "message": "Хотите переместить локальные настройки в синхронизированный профиль?\nОни будут объединены с существующими данными." },
 
   "modePatterns": { "message": "Использовать прокси по шаблону и порядку" },
   "modeDisabled": { "message": "Отключить (Использовать настройки Firefox)" },
@@ -59,22 +59,22 @@
   "errorEmpty": { "message": "Поле не может быть пустым." },
 
 
-  "importEnd": { "message": "Настройки успешно импортированы." },
+  "importEnd": { "message": "Настройки успешно импортированы" },
   "patternsChanged": { "message": "Некоторые шаблоны были изменены из-за того, что они содержали символ слэш. Символы слэш в шаблонах более не поддерживаются." },
   "importEndSlash": { "message": "Импорт закончен. Символ слэш не поддерживается из-за проблемы в Firefox. Пожалуйста, проанализируйте ваши шаблоны и удалите символы слэш если вы их используете." },
   "errorUserPass": { "message": "Пожалуйста, введите имя пользователя и пароль." },
-  "errorFetch": { "message": "Проблема с данным действием." },
+  "errorFetch": { "message": "Проблема с данным действием" },
 
 
   "errorPattern": { "message": "Пожалуйста, введите шаблон" },
-  "importBW": { "message": "Импортировано $1 белых и $2 черных шаблонов." },
+  "importBW": { "message": "Импортировано $1 шаблонов белого и $2 черного списков." },
 
   "up": { "message": "передвинуть выше" },
   "down": { "message": "передвинуть ниже" },
 
   "disabled": { "message": "Отключено" },
   "active": { "message": "Включено" },
-	"activeNote": { "message": "FoxyProxy игнорирует все настройки на этой странице если не включено обратное" },
+	"activeNote": { "message": "FoxyProxy игнорирует все настройки на этой странице, если не включено" },
   "noMatch": { "message": "Нет совпадения" },
   "none": { "message": "Ничего" },
 
@@ -82,8 +82,8 @@
   "pattern": { "message": "Шаблон" },
   "type": { "message": "Тип" },
   "protocol": { "message": "Протокол" },
-  "whitePatterns": { "message": "Белые шаблоны" },
-  "blackPatterns": { "message": "Черные шаблоны" },
+  "whitePatterns": { "message": "Шаблоны белого списка" },
+  "blackPatterns": { "message": "Шаблоны черного списка" },
   "importedPattern": { "message": "Этот шаблон был импортирован из предыдущей версии FoxyProxy и был изменен в процессе импорта. Оригинальный, не измененный шаблон тут:" },
 
 
@@ -95,16 +95,16 @@
 
   "proxyType": { "message": "Тип прокси" },
   "color": { "message": "Цвет" },
-  "patternShortcuts": { "message": "Клавиатурная комбинация для шаблона"},
+  "patternShortcuts": { "message": "Сочетание клавиш для шаблона"},
   "title": { "message": "Название или описание (опционально)" },
-  "ip": { "message": " Прокси IP адрес или имя DNS" },
+  "ip": { "message": "IP адрес или имя DNS прокси" },
   "port": { "message": "Порт" },
   "username": { "message": "Имя пользователя (опционально)" },
   "password": { "message": "Пароль (опционально)" },
   "togglePW": { "message": "Показывать пароль" },
 
-  "addWhitelist": { "message": "Добавить whitelist шаблон совпадающий со всеми URL" },
-  "noLocal": { "message": "Не использовать локальный и внутренний/частный IP адрес" },
+  "addWhitelist": { "message": "Добавить шаблон белого списка, совпадающий со всеми URL" },
+  "noLocal": { "message": "Не использовать для локальных и внутренних/частных IP адресов" },
 
 
 
@@ -113,11 +113,11 @@
   "welcome": { "message": "Добро пожаловать" },
   "options": { "message": "Настройки" },
   "optionsPage": { "message": "Настройки FoxyProxy" },
-  "enterUrl": { "message": "Введите URL на тест" },
-  "enterUrlNote": { "message": "(параметры путей и запросов будут проигнорированы)" },
+  "enterUrl": { "message": "Введите URL для проверки" },
+  "enterUrlNote": { "message": "(путь и параметры будут проигнорированы)" },
   "patternDetail": { "message": "Введите детали шаблона." },
-  "patternNote": { "message": "(без путей и параметров запросов)" },
-  "clickTest": { "message": "Нажмите 'Начать тест' как будете готовы" },
+  "patternNote": { "message": "(без пути и параметров)" },
+  "clickTest": { "message": "Нажмите 'Тест' когда будете готовы" },
 
 
 
@@ -132,21 +132,21 @@
   "back": { "message": "Назад" },
   "test": { "message": "Тест" },
   "help": { "message": "Помощь" },
-  "importPatterns": { "message": "Импортировать шаблон" },
-  "exportPatterns": { "message": "Экспортировать шаблон" },
-  "newWhite": { "message": "Новый белый" },
-  "newBlack": { "message": "Новый черный" },
+  "importPatterns": { "message": "Импортировать шаблоны" },
+  "exportPatterns": { "message": "Экспортировать шаблоны" },
+  "newWhite": { "message": "Добавить в белый список" },
+  "newBlack": { "message": "Добавить в черный список" },
   "save": { "message": "Сохранить" },
   "add": { "message": "Добавить" },
-  "saveAdd": { "message": "Сохранить & добавить еще" },
-  "saveEditPattern": { "message": "Сохранить & и редактировать шаблоны" },
+  "saveAdd": { "message": "Сохранить и добавить еще" },
+  "saveEditPattern": { "message": "Сохранить и редактировать шаблоны" },
   "imported": { "message": "Импортировано" },
-  "addBlacklistTip": { "message": "Добавить blacklist шаблоны для локального адреса, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
-  "addBlacklist": { "message": "Добавить black шаблоны чтобы предотвратить использование этого прокси для локального адреса и внутренних/частных IP адресов" },
-  "addWhitelistTip": { "message": "Добавить whitelist шаблон *" },
+  "addBlacklistTip": { "message": "Добавить шаблон черного списка для локального адреса, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "addBlacklist": { "message": "Добавить шаблон черного списка, чтобы предотвратить использование этого прокси для локального адреса и внутренних/частных IP адресов" },
+  "addWhitelistTip": { "message": "Добавить шаблон белого списка *" },
   "patternCheatSheet":  { "message": "Шпаргалка по шаблонам" },
 
-  "logSize": { "message": "Размер лога" },
+  "logSize": { "message": "Размер журнала" },
   "url": { "message": "URL" },
   "proxyTitle": { "message": "Название прокси" },
   "proxyAddress": { "message": "Адрес прокси" },
@@ -156,24 +156,24 @@
   "black": { "message": "Черный" },
   "timestamp": { "message": "Время" },
   "notApplicable": {"message": "n/a"},
-  "matchedURLs": {"message": "URL удовлетворяющие шаблону"},
-  "unmatchedURLs": {"message": "URLs не удовлетворяющие шаблону"},
+  "matchedURLs": {"message": "URL, удовлетворяющие шаблону"},
+  "unmatchedURLs": {"message": "URL, не удовлетворяющие шаблону"},
 
 
   "pasteList": { "message": "Вставьте список прокси ниже."},
   "formats": {"message": "Форматы"},
   "simple": { "message": "простой" },
   "complete": { "message": "полный" },
-  "simpleFormat": { "message": "Необходимы ip адрес/сервер и порт. Имя пользователя и пароль — опционально."},
-  "ipPort": {"message": "ip адрес:порт"},
-  "ipPortUsernamePassword": {"message": "ip адрес:порт:имя пользователя:пароль"},
+  "simpleFormat": { "message": "Необходимы IP адрес/сервер и порт. Имя пользователя и пароль — опционально."},
+  "ipPort": {"message": "IP адрес:порт"},
+  "ipPortUsernamePassword": {"message": "IP адрес:порт:имя пользователя:пароль"},
   "examples": {"message": "Примеры"},
-  "completeFormat": { "message": "Используя этот формат вы можете указать все прокси настройки, но только протокол и адрес прокси являются необходимыми."},
+  "completeFormat": { "message": "Используя этот формат, вы можете указать все настройки прокси. Только протокол и адрес прокси являются обязательными."},
   "overwriteProxies": { "message": "Перезаписать имеющиеся прокси" },
-  "overwritProxiesHelp1": { "message": "Активируйте чтобы заменить все существующие прокси новыми из этого списка." },
-  "overwritProxiesHelp2": { "message": "Дезактивируйте чтобы добавить прокси из списка к уже имеющимся." },
-  "confirmOverwrite": { "message": "Вы уверены, что хотите удалить все ранее добавленные прокси?" },
-  "importsSkipped": { "message": "Пропущено $1 линий потому что они не смогли быть обработаны:\n\n$2" },
+  "overwritProxiesHelp1": { "message": "Активируйте, чтобы заменить все существующие прокси новыми из этого списка." },
+  "overwritProxiesHelp2": { "message": "Деактивируйте, чтобы добавить прокси из списка к уже имеющимся." },
+  "confirmOverwrite": { "message": "Вы уверены, что хотите перезаписать уже имеющиеся прокси?" },
+  "importsSkipped": { "message": "Пропущено $1 линий, потому что они не смогли быть обработаны:\n\n$2" },
   "importSucceeded": {
     "message": "Считано и сохранено $1 прокси."
   }
