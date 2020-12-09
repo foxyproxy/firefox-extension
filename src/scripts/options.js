@@ -218,7 +218,6 @@ function processOptions(pref) {
       node[3].textContent = getFlag(item.cc);
       node[3].title = item.country;
     }
-    item.username && item.password && node[4].classList.add('on');
     node[5].id = id + '-onoff';
     node[5].checked = item.active;
     node[6].setAttribute('for', node[5].id);
