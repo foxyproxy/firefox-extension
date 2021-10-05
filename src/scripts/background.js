@@ -60,6 +60,15 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
   }
 });
 
+// ----------------- keyboard shortcuts --------------------
+chrome.commands.onCommand.addListener(command => {
+  storageArea.set({mode: command});
+  // popup & options are the only place that can set mode
+  // sending message to option && bg, if it is open
+  chrome.runtime.sendMessage({mode: command});
+});
+// ----------------- /keyboard shortcuts -------------------
+
 // ----------------- User Preference -----------------------
 chrome.storage.local.get(null, result => {
   // browserVersion is not used & runtime.getBrowserInfo() is not supported on Chrome
