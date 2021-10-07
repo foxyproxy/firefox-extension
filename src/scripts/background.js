@@ -157,8 +157,9 @@ function setActiveSettings(settings) {
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
   // --- cache credentials in authData (only those with user/pass)
+  // part-aware user/pass i.e. hostname:port
   prefKeys.forEach(id => pref[id].username && pref[id].password &&
-    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
+    (authData[pref[id].address + ':' + pref[id].port] = {username: pref[id].username, password: pref[id].password}) );
 
   const mode = settings.mode;
   activeSettings = {  // global
@@ -249,9 +250,11 @@ async function sendAuth(request) {
   //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
   // TODO: test in future Fx releases to see if that changes.
   // console.log(request.challenger.host, "challenger host");
-  if (authData[request.challenger.host]) {
+  // part-aware user/pass: hostname:port
+  const id = request.challenger.host + ':' + request.challenger.port;
+  if (authData[id]) {
     authPending[request.requestId] = 1;                       // prevent bad authentication loop
-    return {authCredentials: authData[request.challenger.host]};
+    return {authCredentials: authData[id]};
   }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
@@ -261,8 +264,8 @@ async function getAuth(request) {
   await new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       const host = result.hostData[request.challenger.host];
-      if (host && host.username) {                          // cache credentials in authData
-        authData[host] = {username: host.username, password: host.password};
+      if (host && host.port === request.challenger.port && host.username) { // cache credentials in authData (port-aware)
+        authData[host + ':' + request.challenger.port] = {username: host.username, password: host.password};
       }
       resolve();
     });
