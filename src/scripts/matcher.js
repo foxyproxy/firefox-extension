@@ -25,23 +25,22 @@ function findProxyMatch(url, activeSettings) {
     // before using other parts of URL. For now, we ignore the other parts.
     const parsedUrl = new URL(url);
     const scheme = parsedUrl.protocol.substring(0, parsedUrl.protocol.length-1); // strip the colon
-    const hostPort = parsedUrl.host; // This includes port if one is specified
 
     for (const proxy of activeSettings.proxySettings) {
       
       // Check black patterns first
       const blackMatch = proxy.blackPatterns.find(item => 
         (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-          item.pattern.test(hostPort));
+          item.pattern.test(Utils.getUrlStrByPatternType(item.type, parsedUrl)));
 
       if (blackMatch) {
         sendToMatchedLog(url, proxy, Utils.getProxyTitle(proxy), blackMatch, BLACK);
         continue; // if blacklist matched, continue to the next proxy
       }
 
-      const whiteMatch = proxy.whitePatterns.find(item =>
+      const whiteMatch = proxy.whitePatterns.find(item => 
         (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-          item.pattern.test(hostPort));
+          item.pattern.test(Utils.getUrlStrByPatternType(item.type, parsedUrl)));;
       
       if (whiteMatch) {
   			// found a whitelist match, end here

@@ -60,13 +60,15 @@ function testPattern() {
     return;
   }
 
-
+  
   // --- pattern check  
   const regex = checkPattern(pattern, type);
   if (!regex) { return; }
   
+  parsedURL = Utils.getUrlStrByPatternType(type.value, parsedURL);
+
   // --- pattern on URL check (pattern is valid)
-  regex.test(parsedURL.host) ? showResult(chrome.i18n.getMessage('patternMatch')) : 
+  regex.test(parsedURL) ? showResult(chrome.i18n.getMessage('patternMatch')) : 
                                 showResult(chrome.i18n.getMessage('patternNotMatch'), true);
 
 }
