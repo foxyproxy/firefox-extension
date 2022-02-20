@@ -52,9 +52,6 @@ function checkPattern(pattern, type) {
   return regex;
 }
 
-
-
-
 function showResult(text, fail) {
 
   fail && result.classList.add('alert');
