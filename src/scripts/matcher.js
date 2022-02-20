@@ -38,9 +38,9 @@ function findProxyMatch(url, activeSettings) {
         continue; // if blacklist matched, continue to the next proxy
       }
 
-      const whiteMatch = proxy.whitePatterns.find(item => 
+      const whiteMatch = proxy.whitePatterns.find(item =>
         (item.protocols === schemeSet.all || item.protocols === schemeSet[scheme]) &&
-          item.pattern.test(Utils.getUrlStrByPatternType(item.type, parsedUrl)));;
+          item.pattern.test(Utils.getUrlStrByPatternType(item.type, parsedUrl)));
       
       if (whiteMatch) {
   			// found a whitelist match, end here
