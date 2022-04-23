@@ -1,0 +1,180 @@
+{
+  "extensionName": { "message": "فاکسی پروکسی استاندارد" },
+  "extensionDescription": { "message": "ابزار آسان و پیشرفته ی مدیریت کننده پروکسی برای همه" },
+
+  "extensionNameBasic": { "message": "فاکسی پروکسی پایه" },
+
+
+  "error": { "message": "خطا" },
+  "erroNoSettings": { "message": "تنظیمات پیدا نشد! لطفا فاکسی پروکسی را دوباره نصب کنید." },
+
+  "deleteAll": { "message": "حذف همه" },
+  "export": { "message": "ذخیره تنظیمات" },
+  "import": { "message": "وارد کردن تنظیمات" },
+  "importProxyList": { "message": "وارد کردن لیست پروکسی ها" },
+  "log": { "message": "گزارشات (log)" },
+  "myIP": { "message": "What's My IP?" },
+  "deleteAllmessage": { "message": "همه داده ها پاک شدند" },
+
+  "authError": { "message": "$1 از ارتباط جلوگیری می کند\nنام کاربری/رمز عبور پروکسی را چک کنید" },
+
+
+  "delete": { "message": "حذف" },
+  "deleteNot": { "message": "حذف نکن" },
+  "deleteBrowserData": { "message": "حذف اطلاعات مرورگر" },
+  "deleteBrowserDataDescription": { "message": "Cache, cookies, indexedDB storage, DOM local storage, plugin data, service worker data." },
+  "deleteBrowserDataNotDescription": { "message": "Stored passwords, browsing and form history, download history, webSQL, and server-bound certificates." },
+  "done": { "message": "انجام شد!" },
+
+  "about": { "message": "درباره ما" },
+  "syncSettings": { "message": "همگام سازی تنظیمات" },
+  "syncSettingsHelp": { "message": "روشن کنید تا با استفاده از Firefox Sync تنظیمات روی همه دستگاه ها هماهنگ باشند. خاموش کنید تا تنظیمات به صورت محلی ذخیره شوند. توجه داشته باشید که می توانید دو نمونه تنظیمات داشته باشید. یکی محلی و دیگری هماهنگ بین دستگاه ها." },
+//  "onOff": { "message": "روشن/خاموش" },
+  "on": { "message": "روشن" },
+  "off": { "message": "خاموش" },
+  "confirmTransferToLocal": { "message": "می خواهید تنظیمات هماهنگ را به تنظیمات محلی منتقل کنید؟\nداده های فعلی ادغام می شوند." },
+  "confirmTransferToSync": { "message": "می خواهید تنظیمات تنظیمات محلی را به تنظیمات هماهنگ منتقل کنید؟\nExisting Data will be merged." },
+
+  "modePatterns": { "message": "استفاده از پروکسی های فعال با توجه به الگو و ترتیب" },
+  "modeDisabled": { "message": "خاموش (استفاده از تنظیمات فایرفاکس)" },
+  "forAll": { "message": "برای همه ی URL ها" },
+  "noProxies": { "message": "شما هیچ تنظیمات پروکسی ندارید."},
+
+
+
+  "edit": { "message": "ویرایش" },
+  "patterns": { "message": "الگو ها" },
+  "confirmDelete": { "message": "آیا نسبت به حذف مطمئن هستید؟" },
+
+  "addProxy": { "message": "افزودن پروکسی" },
+  "editProxy": { "message": "ویرایش پروکسی $1" },
+
+
+  "editPatterns": { "message": "ویرایش الگو ها" },
+  "editPatternsFor": { "message": "ویرایش الگوی $1" },
+
+
+  "errorWas": { "message": "مشکلی پیش آمد. دوباره امتحان کنید" },
+  "errorSlash": { "message": "No slash in wildcard patterns. You cannot match URL paths because of Firefox restrictions." },
+  "errorEmpty": { "message": "فیلد نمی تواند خالی باشد." },
+
+
+  "importEnd": { "message": "تنظیمات با موفقیت وارد شدند." },
+  "patternsChanged": { "message": "بعظی از تنطیمات بخاطر وجود اسلش در آنها تغییر کردند. استفاده از اسلش در الگو ها دیگر مجاز نیست" },
+  "importEndSlash": { "message": "وارد کردن انجام شد. اسلش در الگو ها بخاطر باگی در فایرفاکس مجاز نیست. لطفا الگو هایتان رو بررسی کنید و اگر از اسلش استفاده کردید آن را اصلاح کنید." },
+  "errorUserPass": { "message": "لطفا هر دوی نام کاربری و رمز عبور را وارد کنید." },
+  "errorFetch": { "message": "مشکلی در عملیات پیش آمد" },
+
+
+  "errorPattern": { "message": "لطفا یک الگو را انتخاب کنید." },
+  "importBW": { "message": "Imported $1 white and $2 black patterns." },
+
+  "up": { "message": "انتقال به بالا" },
+  "down": { "message": "انتقال به پایین" },
+
+  "disabled": { "message": "غیرفعال است" },
+  "active": { "message": "فعال است" },
+	"activeNote": { "message": "فاکسی پروکسی همه چیز را نادیده می گیرد، مگر این که چیزی ست شود" },
+  "noMatch": { "message": "چیزی پیدا نشد" },
+  "none": { "message": "هیج" },
+
+  "name": { "message": "نام" },
+  "pattern": { "message": "الگو" },
+  "type": { "message": "نوع" },
+  "protocol": { "message": "پروتکل" },
+  "whitePatterns": { "message": "الگو های سفید" },
+  "blackPatterns": { "message": "الگو های سیاه" },
+  "importedPattern": { "message": "این الگو از نسخه قدیمی فاکسی پروکسی وارد شده است. این نسخه اصلی الگو است:" },
+
+
+  "patternMatch": { "message": "الگو با آدرس منطبق است!" },
+  "patternNotMatch": { "message": "الگو با آدرس منطبق نیست." },
+  "errorProtocol": { "message": "پروتکل منطبق نیست." },
+
+
+
+  "proxyType": { "message": "نوع پروکسی" },
+  "color": { "message": "رنگ" },
+  "patternShortcuts": { "message": "میانبر های الگو"},
+  "title": { "message": "عنوان یا توضیحات (اختیاری)" },
+  "ip": { "message": "آدرس پروکسی یا DNS Name" },
+  "port": { "message": "پورت" },
+  "username": { "message": "نام کاربری (اختساری)" },
+  "password": { "message": "رمز عبور (اختیاری)" },
+  "togglePW": { "message": "تغییر وضعیت رمز عبور" },
+
+  "addWhitelist": { "message": "اضافه کردن الگوی سفید تا همه URL ها منطبق شوند" },
+  "noLocal": { "message": "برای localhost و اینترانت/آی پی های خصوصی استفاده نشود" },
+
+
+
+  "patternTester": { "message": "تست کننده ی الگو" },
+  "patternHelp": { "message": "راهنمای الگو" },
+  "welcome": { "message": "خوش آمدید" },
+  "options": { "message": "گزینه ها" },
+  "optionsPage": { "message": "گزینه های فاکسی پروکسی" },
+  "enterUrl": { "message": "یک URL را برای تست وارد کنید" },
+  "enterUrlNote": { "message": "(paths and query parameters are ignored)" },
+  "patternDetail": { "message": "توضیحات الگو را وارد کنید." },
+  "patternNote": { "message": "(no paths, no query parameters)" },
+  "clickTest": { "message": "وقتی آماده شدید بر روی `تست` کلیک کنید" },
+
+
+
+
+
+
+
+  "ok": { "message": "باشه" },
+  "clear": { "message": "پاک کردن" },
+  "refresh": { "message": "تازه سازی" },
+  "cancel": { "message": "لغو" },
+  "back": { "message": "برگشت" },
+  "test": { "message": "تست" },
+  "help": { "message": "راهنما" },
+  "importPatterns": { "message": "وارد کردن الگو ها" },
+  "exportPatterns": { "message": "ذخیره کردن الگو ها" },
+  "newWhite": { "message": "سفید جدید" },
+  "newBlack": { "message": "سیاه جدید" },
+  "save": { "message": "ذخیره" },
+  "add": { "message": "افزودن" },
+  "saveAdd": { "message": "دخیره و افزودن یکی دیگر" },
+  "saveEditPattern": { "message": "ذخیره و ویرایش الگو ها" },
+  "imported": { "message": "وارد شد" },
+  "addBlacklistTip": { "message": "Add blacklist patterns for localhost, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "addBlacklist": { "message": "Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses" },
+  "addWhitelistTip": { "message": "Add whitelist pattern *" },
+  "patternCheatSheet":  { "message": "Pattern Cheat Sheet" },
+
+  "logSize": { "message": "سایز گزارش" },
+  "url": { "message": "URL" },
+  "proxyTitle": { "message": "عنوان پروکسی" },
+  "proxyAddress": { "message": "آدرس پروکسی" },
+  "matchPattern": { "message": "الگوی منطبق" },
+  "whiteBlack": { "message": "سفید/سیاه" },
+  "white": { "message": "سفید" },
+  "black": { "message": "سیاه" },
+  "timestamp": { "message": "Timestamp" },
+  "notApplicable": {"message": "n/a"},
+  "matchedURLs": {"message": "URL هایی که با الگو ها منطبق هستند"},
+  "unmatchedURLs": {"message": "URL های که با هیچ الگویی منطبق نیستند"},
+
+
+  "pasteList": { "message": "لیست پروکسی را past کنید پایین."},
+  "formats": {"message": "فرمت ها"},
+  "simple": { "message": "ساده" },
+  "complete": { "message": "کامل" },
+  "simpleFormat": { "message": "ip address/server and port are required. username:password are optional."},
+  "ipPort": {"message": "ip:port"},
+  "ipPortUsernamePassword": {"message": "ip:port:username:password"},
+  "examples": {"message": "مثال ها"},
+  "completeFormat": { "message": "با این فرمت ، می توانید تمام تنظیمات پروکسی را مشخص کنید. اما فقط پروتکل و سرور مورد نیاز است."},
+  "overwriteProxies": { "message": "پروکسی های موجود را overwrite کنید" },
+  "overwritProxiesHelp1": { "message": "علامت بزنید تا همه پروکسی های موجود حذف شوند و پروکسی هایی از این لیست جایگزین آنها شود." },
+  "overwritProxiesHelp2": { "message": "علامت نزنید تا پروکسی ها به لیست پروکسی های فعلی اضافه شوند." },
+  "confirmOverwrite": { "message": "آیا مطمئن هستید که می خواهید پروکسی های موجود را بازنویسی کنید؟" },
+  "importsSkipped": { "message": "از $1 خط صرف نظر شد زیرا آنها نمی توانستند parse شوند\n\n$2" },
+  "importSucceeded": {
+    "message": "$1 پروکسی خوانده و ذخیره شد."
+  }
+}
