@@ -28,9 +28,9 @@
 
   "about": { "message": "Acerca de" },
   "syncSettings": { "message": "Sincronizar Ajustes" },
-  "syncSettingsHelp": { "message": "Activa para usar Firefox Sync (los ajustes serán sincronizados en todos tus navegadores Firefox). Apaga para almacenar los ajustes localmente. Ten en cuenta que puedes tener dos diferentes instancias de ajustes, una sincronizada y una local." },
+  "syncSettingsHelp": { "message": "Activa para usar Firefox Sync (Los ajustes serán sincronizados en todos tus navegadores Firefox). Apaga para almacenar los ajustes localmente. Ten en cuenta que puedes tener dos diferentes instancias de ajustes, una sincronizada y una local." },
 //  "onOff": { "message": "Encendido/Apagado" },
-  "on": { "message": "Endendido" },
+  "on": { "message": "Encendido" },
   "off": { "message": "Apagado" },
   "confirmTransferToLocal": { "message": "¿Te gustaría transferir los ajustes sincronizados a tu perfil local?\nLos Datos Existentes serán fusionados." },
   "confirmTransferToSync": { "message": "¿Te gustaría transferir los ajustes locales a tu perfil sincronizado?\nLos Datos Existentes serán fusionados." },
@@ -59,7 +59,7 @@
   "errorEmpty": { "message": "El campo no puede estar vacío." },
 
 
-  "importEnd": { "message": "Los ajustes fueron importados exitosamente" },
+  "importEnd": { "message": "Ajustes importados correctamente" },
   "patternsChanged": { "message": "Algunos patrones fueron cambiados porque contenían diagonales. Las diagonales en patrones ya no están soportadas." },
   "importEndSlash": { "message": "Importación terminada. Las diagonales en patrones no están soportadas debido a un error de Firefox. Por favor revisa tus patrones y elimina las diagonales si contiene." },
   "errorUserPass": { "message": "Por favor ingresa Nombre de usuario y Contraseña." },
