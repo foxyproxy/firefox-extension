@@ -7,6 +7,8 @@ const FOXYPROXY_BASIC = false;
 const PROTOCOL_ALL = 1; // in case other protocols besides http and https are supported later
 const PROTOCOL_HTTP = 2;
 const PROTOCOL_HTTPS = 4;
+const PROTOCOL_WS = 8;
+const PROTOCOL_WSS = 16;
 
 
 // import | pac

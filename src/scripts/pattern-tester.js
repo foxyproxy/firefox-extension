@@ -50,9 +50,11 @@ function testPattern() {
 
   // --- protocol check
   const protocolSet = {                                     // converting to meaningful terms
-    '1': ['http:', 'https:'],
+    '1': ['http:', 'https:', 'ws:', 'wss:'],
     '2': ['http:'],
-    '4': ['https:']
+    '4': ['https:'],
+    '8': ['ws:'],
+    '16': ['wss:']
   };
 
   if (!protocolSet[protocols.value].includes(parsedURL.protocol)) {

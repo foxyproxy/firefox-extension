@@ -253,6 +253,16 @@ function importXml(doc) {
             newPattern.pattern = newPattern.pattern.substring(8);
             break;
 
+          case newPattern.pattern.startsWith('ws://'):
+            newPattern.protocols = PROTOCOL_WS;
+            newPattern.pattern = newPattern.pattern.substring(5);
+            break;
+
+          case newPattern.pattern.startsWith('wss://'):
+            newPattern.protocols = PROTOCOL_WSS;
+            newPattern.pattern = newPattern.pattern.substring(6);
+            break;
+
           case newPattern.pattern.startsWith('*://'):
             newPattern.protocols = PROTOCOL_ALL;
             newPattern.pattern = newPattern.pattern.substring(4);
@@ -281,6 +291,16 @@ function importXml(doc) {
           case newPattern.pattern.indexOf('^https://') === 1:
             newPattern.protocols = PROTOCOL_HTTPS;
             newPattern.pattern = '^' + newPattern.pattern.substring(9);
+            break;
+
+          case newPattern.pattern.indexOf('^ws://') === 1:
+            newPattern.protocols = PROTOCOL_WS;
+            newPattern.pattern = '^' + newPattern.pattern.substring(6);
+            break;
+
+          case newPattern.pattern.indexOf('^wss://') === 1:
+            newPattern.protocols = PROTOCOL_WSS;
+            newPattern.pattern = '^' + newPattern.pattern.substring(7);
             break;
 
           case newPattern.pattern.indexOf('^https?://') === 1:

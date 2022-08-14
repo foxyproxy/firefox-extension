@@ -3,7 +3,9 @@
 const schemeSet = {
   all : 1,
   http: 2,
-  https: 4
+  https: 4,
+  ws: 8,
+  wss: 16
 };
 // Shortcuts so we dont perform i18n lookups for every non-match
 const FOR_ALL = {originalPattern: chrome.i18n.getMessage('forAll')}
