@@ -1,8 +1,6 @@
 # These are supported funding model platforms
 
-custom: https://www.paypal.com/paypalme/ericjung2
-
-custom: https://venmo.com/ericjung
+custom: ['https://www.paypal.com/paypalme/ericjung2', 'https://venmo.com/ericjung']
 
 #github: ericjung
 # patreon
