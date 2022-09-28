@@ -1,0 +1,180 @@
+{
+  "extensionName": { "message": "FoxyProxy Стандартний" },
+  "extensionDescription": { "message": "Простий у використанні просунутий засіб керування проксі для кожного" },
+
+  "extensionNameBasic": { "message": "FoxyProxy Базовий" },
+
+
+  "error": { "message": "Помилка" },
+  "erroNoSettings": { "message": "не вдалося знайти налаштуваня. Будь ласка, перевстановіть FoxyProxy." },
+
+  "deleteAll": { "message": "Видалити все" },
+  "export": { "message": "Експортувати налаштування" },
+  "import": { "message": "Імпортувати налаштування" },
+  "importProxyList": { "message": "Імпортувати перелік проксі-серверів" },
+  "log": { "message": "Журнал" },
+  "myIP": { "message": "Яка у мене IP-адреса?" },
+  "deleteAllmessage": { "message": "Усі дані видалено" },
+
+  "authError": { "message": "$1 відмовляє в підключенні\nПеревірте ім’я користувача й пароль для цього проксі-сервера" },
+
+
+  "delete": { "message": "Видалити" },
+  "deleteNot": { "message": "Не видаляти" },
+  "deleteBrowserData": { "message": "Видалити дані з браузера" },
+  "deleteBrowserDataDescription": { "message": "Кеш, файли-куки, сховище індексованої БД, локальне сховище DOM, дані плагіна, дані сервіс-воркера." },
+  "deleteBrowserDataNotDescription": { "message": "Збережені паролі, історія навігації та форм, історія завантажень, webSQL та сертифікати, прив’язані до серверів." },
+  "done": { "message": "Готово!" },
+
+  "about": { "message": "Про" },
+  "syncSettings": { "message": "Синхронізувати налаштування" },
+  "syncSettingsHelp": { "message": "Увімкніть, аби скористатися Firefox Sync (налаштування синхронізуються між усіма вашими браузерами Firefox). Вимкніть, щоб зберігати налаштування локально. Майте на увазі, що у вас можуть бути два окремі екземпляри налаштувань, один синхронізований, а інший — локальний." },
+//  "onOff": { "message": "Увімкнено/Вимкнено" },
+  "on": { "message": "Увімкнено" },
+  "off": { "message": "Вимкнено" },
+  "confirmTransferToLocal": { "message": "Чи бажаєте перенести синхронізовані налаштування до свого локального профілю?\nІснуючі дані будуть об’єднані." },
+  "confirmTransferToSync": { "message": "Чи бажаєте перенести локальні налаштування до свого синхронізованого профілю?\nІснуючі дані будуть об’єднані." },
+
+  "modePatterns": { "message": "Використовувати увімкнені проксі-сервери за шаблоном і порядком" },
+  "modeDisabled": { "message": "Вимкнути (використовувати налаштування Firefox)" },
+  "forAll": { "message": "для усіх URL-адрес" },
+  "noProxies": { "message": "Ви не маєте жодних налаштувань проксі-серверів."},
+
+
+
+  "edit": { "message": "Редагувати" },
+  "patterns": { "message": "Шаблони" },
+  "confirmDelete": { "message": "Ви точно хочете видалити?" },
+
+  "addProxy": { "message": "Додати проксі-сервер" },
+  "editProxy": { "message": "Редагувати проксі-сервер $1" },
+
+
+  "editPatterns": { "message": "Редагувати шаблони" },
+  "editPatternsFor": { "message": "Редагувати шаблони для $1" },
+
+
+  "errorWas": { "message": "Сталася помилка. Будь ласка, повторіть спробу." },
+  "errorSlash": { "message": "Жодних слешів в узагальнюючих шаблонах. Ви не можете співставляти шляхи в URL через обмеження Firefox." },
+  "errorEmpty": { "message": "Поле не може бути порожнім." },
+
+
+  "importEnd": { "message": "Налаштування імпортовані вдало" },
+  "patternsChanged": { "message": "Деякі шаблони були змінені, бо вони містили слеші. Слеші в шаблонах більше не підтримуються." },
+  "importEndSlash": { "message": "Імпортування завершилося. Слеші в шаблонах не підтримуються через ваду в Firefox. Будь ласка, перевірте свої шаблони і видаліть слеші, якщо вони там є." },
+  "errorUserPass": { "message": "Будь ласка, введіть і ім’я користувача, і пароль." },
+  "errorFetch": { "message": "Трапилася помилка з цією дією" },
+
+
+  "errorPattern": { "message": "Будь ласка, введіть шаблон" },
+  "importBW": { "message": "Імпортовано білих шаблонів — $1, чорних — $2." },
+
+  "up": { "message": "посунути вище" },
+  "down": { "message": "посунути нижче" },
+
+  "disabled": { "message": "Вимкнено" },
+  "active": { "message": "Увімкнено" },
+	"activeNote": { "message": "FoxyProxy нехтує усім на цій сторінці, якщо не встановлено протилежне" },
+  "noMatch": { "message": "Збігів нема" },
+  "none": { "message": "Нічогісінько" },
+
+  "name": { "message": "Назва" },
+  "pattern": { "message": "Шаблон" },
+  "type": { "message": "Тип" },
+  "protocol": { "message": "Протокол" },
+  "whitePatterns": { "message": "Білі шаблони" },
+  "blackPatterns": { "message": "Чорні шаблони" },
+  "importedPattern": { "message": "Цей шаблон імпортовано зі старішої версії FoxyProxy та змінено під час імпортування. А ось це оригінальний, незмінений шаблон:" },
+
+
+  "patternMatch": { "message": "URL відповідає шаблону!" },
+  "patternNotMatch": { "message": "URL не відповідає шаблону." },
+  "errorProtocol": { "message": "Протокол не збігається." },
+
+
+
+  "proxyType": { "message": "Тип проксі-сервера" },
+  "color": { "message": "Колір" },
+  "patternShortcuts": { "message": "Скорочення шаблонів"},
+  "title": { "message": "Заголовок чи опис (необов’язково)" },
+  "ip": { "message": "IP-адреса проксі-сервера чи ім’я DNS" },
+  "port": { "message": "Порт" },
+  "username": { "message": "Ім’я користувача (необов’язково)" },
+  "password": { "message": "Пароль (необов’язково)" },
+  "togglePW": { "message": "Показати/сховати пароль" },
+
+  "addWhitelist": { "message": "Додати шаблон білого списку, з яким збігаються усі URL-адреси" },
+  "noLocal": { "message": "Не використовувати для localhost та IP у внутрішній/приватній мережі" },
+
+
+
+  "patternTester": { "message": "Тестувальник шаблонів" },
+  "patternHelp": { "message": "Допомога з шаблонами" },
+  "welcome": { "message": "Ласкаво просимо" },
+  "options": { "message": "Опції" },
+  "optionsPage": { "message": "Опції FoxyProxy" },
+  "enterUrl": { "message": "Введіть URL для тестування" },
+  "enterUrlNote": { "message": "(шляхи та параметри запиту ігноруються)" },
+  "patternDetail": { "message": "Введіть деталі подробиці шаблона." },
+  "patternNote": { "message": "(жодних шляхів, жодних параметрів запиту)" },
+  "clickTest": { "message": "Клацніть „Тестувати“, коли готово" },
+
+
+
+
+
+
+
+  "ok": { "message": "Гаразд" },
+  "clear": { "message": "Очистити" },
+  "refresh": { "message": "Оновити" },
+  "cancel": { "message": "Скасувати" },
+  "back": { "message": "Повернутися" },
+  "test": { "message": "Тестувати" },
+  "help": { "message": "Допомога" },
+  "importPatterns": { "message": "Імпортувати шаблони" },
+  "exportPatterns": { "message": "Експортувати шаблони" },
+  "newWhite": { "message": "Новий білий" },
+  "newBlack": { "message": "Новий чорний" },
+  "save": { "message": "Зберегти" },
+  "add": { "message": "Додати" },
+  "saveAdd": { "message": "Зберегти та додати ще" },
+  "saveEditPattern": { "message": "Зберегти й редагувати шаблони" },
+  "imported": { "message": "Імпортовано" },
+  "addBlacklistTip": { "message": "Додати шаблони чорного списку для localhost, 127.0.0.1, 192.168.*.*, 172.16.*.* та 10.*.*.*" },
+  "addBlacklist": { "message": "Додати чорні шаблони, аби запобігти висористання цього проксі для localhost та IP-адрес внутрішньої/приватної мережі" },
+  "addWhitelistTip": { "message": "Додати шаблон білого списку *" },
+  "patternCheatSheet":  { "message": "Шпаргалка шаблонів" },
+
+  "logSize": { "message": "Розмір журналу" },
+  "url": { "message": "URL-адреса" },
+  "proxyTitle": { "message": "Назва проксі-сервера" },
+  "proxyAddress": { "message": "Адреса проксі-сервера" },
+  "matchPattern": { "message": "Шаблон збігу" },
+  "whiteBlack": { "message": "Білий/Чорний" },
+  "white": { "message": "Білий" },
+  "black": { "message": "Чорний" },
+  "timestamp": { "message": "Часова позначка" },
+  "notApplicable": {"message": "дані відсутні"},
+  "matchedURLs": {"message": "URL-адреси, які збігалися з шаблонами"},
+  "unmatchedURLs": {"message": "URL-адреси, які не збігалися з шаблонами"},
+
+
+  "pasteList": { "message": "Вставте перелік проксі-серверів нижче."},
+  "formats": {"message": "Форми"},
+  "simple": { "message": "проста" },
+  "complete": { "message": "повна" },
+  "simpleFormat": { "message": "IP-адреса/сервер та порт обов’язкові. ім’я-користувача:пароль необов’язкові."},
+  "ipPort": {"message": "ip-адреса:порт"},
+  "ipPortUsernamePassword": {"message": "ip-адреса:порт:ім’я-користувача:пароль"},
+  "examples": {"message": "Взірці"},
+  "completeFormat": { "message": "Ви можете вказати усі налаштування проксі-серверів у цій формі. Однак, лиш протокол та сервер — обов’язкові."},
+  "overwriteProxies": { "message": "Замінити існуючі проксі-сервери" },
+  "overwritProxiesHelp1": { "message": "Оберіть, щоб видалити усі існуючі проксі-сервери і замінити їх проксі-серверами з цього переліку." },
+  "overwritProxiesHelp2": { "message": "Не обирайте, аби доповнити проксі-серверами з цього переліку існуючі записи." },
+  "confirmOverwrite": { "message": "Ви точно бажаєте повністю замінити існуючі проксі?" },
+  "importsSkipped": { "message": "Пропущено $1 рядок(-ів) через те, що їх не вдалося розібрати:\n\n$2" },
+  "importSucceeded": {
+    "message": "Проксі-серверів прочитано і збережено: $1."
+  }
+}
