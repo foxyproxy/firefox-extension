@@ -1,3 +1,7 @@
+
+# September 2022
+This repository is not used anymore. Please refer to the new repository at https://github.com/foxyproxy/browser-extension for version 8.0 and above
+
 # FoxyProxy for Firefox
 
 The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, ericjung and erosman are primary developers.
