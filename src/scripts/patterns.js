@@ -43,7 +43,9 @@ const defaultPattern = {
 const protocolSet = {                                     // converting to meaningful terms
   1: 'All',
   2: 'HTTP',
-  4: 'HTTPS'
+  4: 'HTTPS',
+  8: 'WS',
+  16: 'WSS'
 };
 
 const patternTypeSet = {
