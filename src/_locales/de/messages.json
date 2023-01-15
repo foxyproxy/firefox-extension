@@ -1,0 +1,180 @@
+{
+  "extensionName": { "message": "FoxyProxy Standard" },
+  "extensionDescription": { "message": "Einfach zu bedienendes, fortschrittliches Proxy-Management-Tool für jedermann" },
+
+  "extensionNameBasic": { "message": "FoxyProxy Basic" },
+
+
+  "error": { "message": "Error" },
+  "erroNoSettings": { "message": "Es konnten keine Einstellungen gefunden werden. Bitte installieren Sie FoxyProxy erneut." },
+
+  "deleteAll": { "message": "Alle löschen" },
+  "export": { "message": "Einstellungen exportieren" },
+  "import": { "message": "Einstellungen importieren" },
+  "importProxyList": { "message": "Proxy-Liste importieren" },
+  "log": { "message": "Log" },
+  "myIP": { "message": "Was ist meine IP?" },
+  "deleteAllmessage": { "message": "Alle Daten gelöscht" },
+
+  "authError": { "message": "$1 verweigert Verbindungen\nProxy-Benutzername/Kennwort prüfen" },
+
+
+  "delete": { "message": "Löschen" },
+  "deleteNot": { "message": "Nicht löschen" },
+  "deleteBrowserData": { "message": "Browserdaten löschen" },
+  "deleteBrowserDataDescription": { "message": "Cache, Cookies, indexedDB-Speicher, lokaler DOM-Speicher, Plugin-Daten, Service-Worker-Daten." },
+  "deleteBrowserDataNotDescription": { "message": "Gespeicherte Kennwörter, Browser- und Formularverlauf, Download-Verlauf, webSQL und servergebundene Zertifikate." },
+  "done": { "message": "Erledigt!" },
+
+  "about": { "message": "Über" },
+  "syncSettings": { "message": "Einstellungen synchronisieren" },
+  "syncSettingsHelp": { "message": "Aktivieren Sie diese Option, um Firefox Sync zu verwenden (die Einstellungen werden mit allen Ihren Firefox-Browsern synchronisiert). Schalten Sie diese Option aus, um die Einstellungen lokal zu speichern. Beachten Sie, dass Sie zwei verschiedene Instanzen von Einstellungen haben können, eine synchronisierte und eine lokale." },
+//  "onOff": { "message": "An/Aus" },
+  "on": { "message": "An" },
+  "off": { "message": "Aus" },
+  "confirmTransferToLocal": { "message": "Möchten Sie die synchronisierten Einstellungen auf Ihr lokales Profil übertragen?\nBestehende Daten werden zusammengeführt." },
+  "confirmTransferToSync": { "message": "Möchten Sie die lokalen Einstellungen in Ihr synchronisiertes Profil übertragen?\nBestehende Daten werden zusammengeführt." },
+
+  "modePatterns": { "message": "Aktivierte Proxies nach Mustern und Reihenfolge verwenden" },
+  "modeDisabled": { "message": "Ausschalten (Firefox-Einstellungen verwenden)" },
+  "forAll": { "message": "für alle URLs" },
+  "noProxies": { "message": "Sie haben keine Proxy-Einstellungen."},
+
+
+
+  "edit": { "message": "Bearbeiten" },
+  "patterns": { "message": "Muster" },
+  "confirmDelete": { "message": "Sind Sie sicher, dass Sie löschen wollen?" },
+
+  "addProxy": { "message": "Proxy hinzufügen" },
+  "editProxy": { "message": "Proxy $1 bearbeiten" },
+
+
+  "editPatterns": { "message": "Muster bearbeiten" },
+  "editPatternsFor": { "message": "Muster von $1 bearbeiten" },
+
+
+  "errorWas": { "message": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut." },
+  "errorSlash": { "message": "Kein Slash in Wildcard-Mustern. Aufgrund von Firefox-Einschränkungen können Sie keine URL-Pfade abgleichen." },
+  "errorEmpty": { "message": "Das Feld darf nicht leer sein." },
+
+
+  "importEnd": { "message": "Einstellungen wurden erfolgreich importiert" },
+  "patternsChanged": { "message": "Einige Muster wurden geändert, weil sie Slashes enthielten. Slashes in Mustern werden nicht mehr unterstützt." },
+  "importEndSlash": { "message": "Import beendet. Slashes in Mustern werden aufgrund eines Firefox-Bugs nicht unterstützt. Bitte überprüfen Sie Ihre Muster und entfernen Sie Slashes, falls vorhanden." },
+  "errorUserPass": { "message": "Bitte geben Sie sowohl Benutzername als auch Passwort ein." },
+  "errorFetch": { "message": "Es ist ein Fehler bei der Aktion aufgetreten" },
+
+
+  "errorPattern": { "message": "Bitte geben Sie ein Muster ein" },
+  "importBW": { "message": "Importierte Muster für $1 in Weiß und $2 in Schwarz." },
+
+  "up": { "message": "nach oben" },
+  "down": { "message": "nach unten" },
+
+  "disabled": { "message": "Deaktiviert" },
+  "active": { "message": "Aktiviert" },
+	"activeNote": { "message": "FoxyProxy ignoriert alles auf dieser Seite, es sei denn, es wird auf" },
+  "noMatch": { "message": "Keine Übereinstimmung" },
+  "none": { "message": "Keine" },
+
+  "name": { "message": "Name" },
+  "pattern": { "message": "Muster" },
+  "type": { "message": "Typ" },
+  "protocol": { "message": "Protokoll" },
+  "whitePatterns": { "message": "Weiße Muster" },
+  "blackPatterns": { "message": "Schwarze Muster" },
+  "importedPattern": { "message": "Dieses Muster wurde von einer älteren Version von FoxyProxy importiert und während des Imports geändert. Hier ist das ursprüngliche, unveränderte Muster:" },
+
+
+  "patternMatch": { "message": "Muster entspricht URL!" },
+  "patternNotMatch": { "message": "Muster stimmt nicht mit URL überein." },
+  "errorProtocol": { "message": "Das Protokoll stimmt nicht überein." },
+
+
+
+  "proxyType": { "message": "Proxy Typ" },
+  "color": { "message": "Farbe" },
+  "patternShortcuts": { "message": "Musterkurzbefehle"},
+  "title": { "message": "Titel oder Beschreibung (optional)" },
+  "ip": { "message": "Proxy-IP-Adresse oder DNS-Name" },
+  "port": { "message": "Port" },
+  "username": { "message": "Benutzername (optional)" },
+  "password": { "message": "Passwort (optional)" },
+  "togglePW": { "message": "Passwort umschalten" },
+
+  "addWhitelist": { "message": "Whitelist-Muster hinzufügen, um alle URLs abzugleichen" },
+  "noLocal": { "message": "Nicht für localhost und Intranet/private IP-Adressen verwenden" },
+
+
+
+  "patternTester": { "message": "Muster-Tester" },
+  "patternHelp": { "message": "Musterhilfe" },
+  "welcome": { "message": "Willkommen" },
+  "options": { "message": "Optionen" },
+  "optionsPage": { "message": "FoxyProxy Optionen" },
+  "enterUrl": { "message": "URL zum Testen eingeben" },
+  "enterUrlNote": { "message": "(Pfade und Abfrageparameter werden ignoriert)" },
+  "patternDetail": { "message": "Geben Sie die Details des Musters ein." },
+  "patternNote": { "message": "(keine Pfade, keine Abfrageparameter)" },
+  "clickTest": { "message": "Klicken Sie auf 'Test', wenn Sie fertig sind." },
+
+
+
+
+
+
+
+  "ok": { "message": "OK" },
+  "clear": { "message": "Löschen" },
+  "refresh": { "message": "Aktualisieren" },
+  "cancel": { "message": "Abbrechen" },
+  "back": { "message": "Zurück" },
+  "test": { "message": "Test" },
+  "help": { "message": "Hilfe" },
+  "importPatterns": { "message": "Muster importieren" },
+  "exportPatterns": { "message": "Muster exportieren" },
+  "newWhite": { "message": "Neu Weiß" },
+  "newBlack": { "message": "Neu Schwarz" },
+  "save": { "message": "Speichern" },
+  "add": { "message": "Hinzufügen" },
+  "saveAdd": { "message": "Speichern & weiteres hinzufügen" },
+  "saveEditPattern": { "message": "Speichern und Bearbeiten von Mustern" },
+  "imported": { "message": "Importiert" },
+  "addBlacklistTip": { "message": "Blacklist Muster für localhost, 127.0.0.1, 192.168.*.*, 172.16.*.* und 10.*.*.* hinzufügen" },
+  "addBlacklist": { "message": "Fügen Sie schwarze Muster hinzu, um zu verhindern, dass dieser Proxy für localhost und Intranet/private IP-Adressen verwendet wird." },
+  "addWhitelistTip": { "message": "Whitelist-Muster hinzufügen *" },
+  "patternCheatSheet":  { "message": "Muster-Spickzettel" },
+
+  "logSize": { "message": "Log Größe" },
+  "url": { "message": "URL" },
+  "proxyTitle": { "message": "Proxy Titel" },
+  "proxyAddress": { "message": "Proxy Adresse" },
+  "matchPattern": { "message": "Match Pattern" },
+  "whiteBlack": { "message": "Weiß/Schwarz" },
+  "white": { "message": "Weiß" },
+  "black": { "message": "Schwarz" },
+  "timestamp": { "message": "Zeitstempel" },
+  "notApplicable": {"message": "n/a"},
+  "matchedURLs": {"message": "URLs, die mit Mustern übereinstimmen"},
+  "unmatchedURLs": {"message": "URLs, die nicht mit Mustern übereinstimmten"},
+
+
+  "pasteList": { "message": "Fügen Sie unten eine Proxy-Liste ein."},
+  "formats": {"message": "Formate"},
+  "simple": { "message": "einfach" },
+  "complete": { "message": "komplett" },
+  "simpleFormat": { "message": "ip-adresse/server und port sind erforderlich. benutzername:passwort sind optional."},
+  "ipPort": {"message": "ip:port"},
+  "ipPortUsernamePassword": {"message": "ip:port:Benutzername:Passwort"},
+  "examples": {"message": "Beispiele"},
+  "completeFormat": { "message": "Mit diesem Format können Sie alle Proxy-Einstellungen angeben. Aber nur Protokoll und Server sind erforderlich."},
+  "overwriteProxies": { "message": "Vorhandene Proxys überschreiben" },
+  "overwritProxiesHelp1": { "message": "Wählen Sie diese Option, um alle vorhandenen Proxys zu löschen und sie durch Proxys aus dieser Liste zu ersetzen." },
+  "overwritProxiesHelp2": { "message": "Entfernen Sie das Häkchen, um die Proxys in dieser Liste an die vorhandenen Proxys anzuhängen." },
+  "confirmOverwrite": { "message": "Sind Sie sicher, dass Sie die vorhandenen Proxys überschreiben wollen?" },
+  "importsSkipped": { "message": "$1 Zeilen übersprungen, weil sie nicht geparst werden konnten:\n\n$2" },
+  "importSucceeded": {
+    "message": "$1 proxies gelesen und gespeichert."
+  }
+}
