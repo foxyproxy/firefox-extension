@@ -1,7 +1,7 @@
 
 # September 2022
 This repository is not used anymore. Please refer to the new repository at https://github.com/foxyproxy/browser-extension for version 8.0 and above
-Older versions of FoxyProxy can be found in the [archives](https://github.com/foxyproxy/firefox-extension/tree/master/archive/dist) and [releases]https://github.com/foxyproxy/firefox-extension/releases. The last release of the 7.x versions is 7.5.1.
+Older versions of FoxyProxy can be found in the [archives](https://github.com/foxyproxy/firefox-extension/tree/master/archive/dist) and [releases](https://github.com/foxyproxy/firefox-extension/releases). The last release of the 7.x versions is 7.5.1.
 
 # FoxyProxy for Firefox
 
