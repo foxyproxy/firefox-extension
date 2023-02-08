@@ -1,12 +1,7 @@
 'use strict';
 
 // ----------------- Internationalization ------------------
-document.querySelectorAll('[data-i18n]').forEach(node => {
-  let [text, attr] = node.dataset.i18n.split('|');
-  text = chrome.i18n.getMessage(text);
-  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
-});
-// ----------------- /Internationalization -----------------
+Utils.i18n();
 
 // ----------------- User Preference -----------------------
 let storageArea;
@@ -14,7 +9,7 @@ chrome.storage.local.get(null, result => {
   storageArea = result.sync ? chrome.storage.sync : chrome.storage.local;
   result.sync ? chrome.storage.sync.get(null, processOptions) : processOptions(result);
 });
-// ----------------- /User Preference ---------------------- 
+// ----------------- /User Preference ----------------------
 
 function processOptions(pref) {
 
@@ -28,13 +23,13 @@ function processOptions(pref) {
   const prefKeys = Object.keys(pref).filter(item => !NON_PROXY_KEYS.includes(item)); // not for these
 
   prefKeys.sort((a, b) => pref[a].index - pref[b].index);   // sort by index
-  
+
   pref.mode = pref.mode || 'disabled';                      // defaults to disabled
   let hasProxySettings = false;
   prefKeys.forEach(id => {
 
     const item = pref[id];
-    
+
     if (!Utils.isUnsupportedType(item.type)) {              // if supported
 
       const li = temp.cloneNode(true);
@@ -49,19 +44,19 @@ function processOptions(pref) {
     }
   });
 
-  docfrag.hasChildNodes() && temp.parentNode.insertBefore(docfrag, temp.nextElementSibling);
-  
+  docfrag.hasChildNodes() && temp.parentNode.appendChild(docfrag, temp.nextElementSibling);
+
   if (FOXYPROXY_BASIC) {
     temp.parentNode.children[0].classList.add('hide');      // hide by pattern option
     pref.mode === 'patterns' && (pref.mode = 'disabled');
-  } 
-  
+  }
+
   // hide the selections if there are no proxy settings defined
   document.getElementById('scroll').style.display = hasProxySettings ? 'block' : 'none';
-    
+
   const node = document.getElementById(pref.mode);          // querySelector error with selectors starting with number
   node.classList.add('on');
-  
+
   // add Listeners
   document.querySelectorAll('li, button').forEach(item => item.addEventListener('click', process));
 }
@@ -83,10 +78,10 @@ function process() {
         window.close();
       });
       break;
-      
+
     case 'options':
       chrome.tabs.query({url: chrome.runtime.getURL('') + '*'}, tabs => {
-        if (!tabs[0]) { 
+        if (!tabs[0]) {
           chrome.runtime.openOptionsPage();
           window.close();
           return;
@@ -99,10 +94,10 @@ function process() {
 
     default:
       // reset the old one
-      const old = document.querySelector('.on');      
+      const old = document.querySelector('.on');
       old &&  old.classList.remove('on');
       this.classList.add('on');
-      
+
 
       storageArea.set({mode: this.id});                     // keep it open for more action
       // popup & options are the only place that can set mode

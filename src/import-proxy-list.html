@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title data-i18n="import">FoxyProxy </title>
+    <link rel="icon" type="image/png" href="/images/icon.svg">
+    <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <style>
+      i.fa, i.fa:hover { color: inherit; font-size: inherit; }
+      i.fa.fa-eye, i.fa.fa-eye:hover {
+        font-size: 1.5em;
+        vertical-align: middle;
+      }
+      label {
+        display: inline-block;
+      }
+      textarea {
+          height: 10em;
+      }
+      div.tooltip hr {
+        color: white;
+      }
+      div.tooltip h3 {
+        margin: 0 0 .2em 0;
+      }
+      .align-right {
+        text-align: right;
+      }
+      .no-margin {
+        margin: 0;
+      }
+      #completeFormatTooltip {
+        width: 40rem;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- header -->
+    <div class="prime header" data-i18n="importProxyList"></div>
+
+    <!-- spinner -->
+    <div class="spinner on"><i class="fa fa-refresh fa-spin"></i></div>
+
+    <!-- main -->
+    <div class="prime">
+      <div class="tooltip">
+        <span data-i18n="pasteList"></span> <span data-i18n="formats"></span> <span data-i18n="simple"></span>
+        <i class="fa fa-info-circle"></i>
+        <div class="tooltiptext bottom table">
+          <div class="tooltiptable">
+            <p class="no-margin" data-i18n="simpleFormat"></p>
+            <p class="monospace"><span data-i18n="ipPort"></span><br><span data-i18n="ipPort"></span><br><span data-i18n="ipPortUsernamePassword"></span></p>
+          </div>
+          <hr>
+          <div class="tooltiptablefooter">
+            <h3 data-i18n="examples"></h3>
+            78.205.12.1:6001<br>12.999.51.81:3128<br>foobar.com:12001<br>foobar.com:3128:kyleReese:hunterKiller
+            <p><a data-i18n="help" target="_blank" href="https://github.com/foxyproxy/firefox-extension/wiki/Import-Proxy-List"></a></p>
+          </div>
+        </div>
+      </div>
+      /
+      <div class="tooltip">
+        <span data-i18n="complete"></span>
+        <i class="fa fa-info-circle"></i>
+        <div id="completeFormatTooltip" class="tooltiptext bottom table">
+          <div class="tooltiptable">
+            <p data-i18n="completeFormat"></p>
+            <h3 data-i18n="examples"></h3>
+            <p class="monospace">* proxy://78.205.12.1:666<br>
+            * proxy://johnConnor:hunterKiller@192.168.100.9:5192?color=663300<br>
+            * socks://12.999.51.81?title=China&cc=CN&country=中国&proxyDns=false<br>
+            * socks://12.999.51.81:331?patternExcludesIntranet=false<br>
+            * https://192.168.100.9:5192?patternIncludesAll=false<br>
+            * ssl://kyleReese:passw0rd@78.205.12.1:21?color=ff00bc&title=work%20proxy</p>
+          </div>
+          <hr>
+          <div class="tooltiptablefooter">
+            <a data-i18n="help" target="_blank" href="https://github.com/foxyproxy/firefox-extension/wiki/Import-Proxy-List"></a>
+          </div>
+        </div>
+      </div>
+      <br><br>
+
+      <textarea id="proxyList"></textarea>
+
+      <label data-i18n="overwriteProxies"></label>
+      <input id="overwrite" type="checkbox" class="switch"><label for="overwrite"></label>
+      <div class="tooltip">
+        <i class="fa fa-info-circle"></i>
+        <div class="tooltiptext center bottom">
+          <div class="tooltiptable">
+            <span data-i18n="overwritProxiesHelp1"></span>
+          </div>
+          <br>
+          <div class="tooltiptable">
+            <span data-i18n="overwritProxiesHelp2"></span>
+          </div>
+        </div>
+      </div>
+      <br><br>
+      <button id="import" type="button" class="button" data-i18n="import"><i class="fa fa-download"></i> </button>
+
+      <div class="align-right">
+        <button type="button" class="button" data-i18n="back">&#x25c1; </button>
+      </div>
+    </div>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/import-proxy-list.js"></script>
+  </body>
+</html>

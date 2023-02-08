@@ -3,7 +3,7 @@
 
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "7.4.2",
+  "version": "7.5.1",
   "default_locale": "en",
   "homepage_url": "https://getfoxyproxy.org/",
   "author": "Eric Jung",
@@ -25,7 +25,7 @@
     "open_in_tab": true,
     "browser_style": true
   },
-  
+
   "browser_action": {
     "default_icon": "images/icon.svg",
     "default_title": "__MSG_extensionName__",
@@ -44,7 +44,19 @@
     "notifications",
     "<all_urls>"
   ],
-
+  
+  "commands": {
+    "modePatterns": {
+      "description": "__MSG_modePatterns__"
+    },
+    "modeDisabled": {
+      "description": "__MSG_modeDisabled__"
+    },
+    "forAll": {
+      "description": "__MSG_forAll__"
+    }    
+  },
+  
   "browser_specific_settings": {
     "gecko": {
       "id": "foxyproxy-basic@eric.h.jung",

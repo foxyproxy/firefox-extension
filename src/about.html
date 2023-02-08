@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title data-i18n="about">FoxyProxy </title>
     <link rel="icon" type="image/png" href="/images/icon.svg">
     <link rel="stylesheet" href="styles/fontawesome-4.6.3.css">
@@ -44,7 +45,7 @@
       <h3>Help</h3>
       <p>
         <a href="https://support.getfoxyproxy.org/" target="_blank"><i class="fa fa-question"></i>Open a Support Ticket </a><i>(no registration required)</i><br>
-        <a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o"></i>Email Support</a><br>           
+        <a href="mailto:support@getfoxyproxy.org"><i class="fa fa-envelope-o"></i>Email Support</a><br>
         <span class="notForBasic"><a href="/pattern-tester.html"><i class="fa fa-flask"></i>Pattern Test</a> &amp; <a href="/pattern-help.html"><i class="fa fa-question-circle"></i>Pattern Help</a> <i>(no internet connection required)</i><br></span>
         <a href="https://getfoxyproxy.org/geoip/" target="_blank"><i class="fa fa-globe"></i>What's my IP Address?</a>
       </p>
@@ -56,31 +57,22 @@
       <p>&mdash; <a href="mailto:eric.jung@getfoxyproxy.org">Eric H. Jung</a><br>Denver, Colorado, USA</p>
 
       <h3>Release Notes for Recent Releases</h3>
-      <h4>Version 7.4.2</h4>
+      <h4>Version 7.5.1</h4>
       <ul>
-        <li>Improved Logging &mdash; see URLs that matched blacklist patterns and URLs that didn't match anything are now in their own section.</li>
-        <li>Patterns mode now exists even if there are no white patterns defined. This was the behavior of FoxyProxy before 7.x. Its absence when no white patterns
-          are defined makes sense (no proxy will ever be used), but has been a source of tremendous confusion. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>
-        but also many other places.</li>
-        <li>When adding a new proxy, <strong>Add whitelist pattern to match all URLs</strong> is now on by default. Discussed <a href="https://github.com/foxyproxy/firefox-extension/issues/49" target="_blank">here</a>.</li>
-        <li>On the patterns window, added new button for <strong>Add whitelist pattern to match all URLs</strong> similar to the existing button <strong>Add black patterns to prevent this proxy being used for localhost & intranet/private IP addresses</strong>.</li>
-        <li>Patterns Cheat Sheet improvements &mdash; more examples and text explaining that blacklist patterns take precedence over whitelist patterns.</li>
-        <li>Change an i18n key name so it works in chrome, too (chrome does not allow periods in key names).</li>
-        <li>Remove unneeded console log messages.</li>
-        <li>Faster deletion of patterns (faster animation)</li>
+        <li>French translation -- Thanks <a target="_blank" href="https://github.com/samuikaze">samuikaze</a>.</li>
+        <li>Traditional Chinese translation -- Thanks <a target="_blank" href="https://github.com/Hugo-C">Hugo-C</a>.</li>
+        <li>Russian translation -- Thanks Vadim.</li>
       </ul>
-      <h4>Version 7.4.1</h4>
+      <h4>Version 7.5</h4>
       <ul>
-        <li>Fixes so that FoxyProxy Basic can share the same codebase as FoxyProxy Standard again. Version number alignment: for the first time since FoxyProxy Basic
-          was introduced, it will share the same version number as FoxyProxy Standard.</li>
-        <li>Exported settings now include FoxyProxy edition &mdash; Standard or Basic. However, they are interchangeable.</li>
-        <li>Removed link to <a href="https://forums.getfoxyproxy.org/" target="_blank"><i class="fa fa-users"></i>Community Support Forums</a>.
-          We are shutting the forums down. People just don't use forums anymore; we only get spam there.
-          And have many other support chanels: email, ticket system, github, facebook, twitter, chat, etc.</li>
-        <li>Escape button works to close the current FoxyProxy window and return to the previous (if there is a previous).</li>
-        <li>Dialog box color changes for consistency</li>
-        <li>Import optimizations and increase on import file size from 5 MB to 10 MB</li>
-        <li>Show help text if no proxy settings are defined; hide all proxy selectors too including 'turn off'.</li>
+        <li>Import Proxy Lists! Long requested feature. See <a href="https://github.com/foxyproxy/firefox-extension/wiki/Import-Proxy-List">help</a>.</li>
+        <li>Simplified Chinese translation -- Thanks <a target="_blank" href="https://github.com/wsxy162">FeralMeow</a>.</li>
+        <li>Display <strong>Synchronize Settings</strong> for new installations when there are no proxies defined. Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/83">here</a>.</li>
+        <li>Fixed: <strong>Import Settings</strong> bug especially painful for people using the <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node-proxy.html">example at AWS</a>.
+          Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/76">here</a>. Also fixed bug whereby spinner did not hide after import settings errors.</li>
+        <li>Minor security improvements -- do not accept embedded HTML/JS in other form fields</li>
+        <li><strong>Turn Off (Use Firefox Settings)</strong> should be first in list. Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/78">here</a>.</li>
+        <li>Fixed: Firefox overflow menu displays wrong info for FoxyProxy. Reported <a href="https://github.com/foxyproxy/firefox-extension/issues/84">here</a>.</li>
       </ul>
     <div style="text-align: right;">
       <button type="button" class="button" data-i18n="back">&#x25c1; </button>

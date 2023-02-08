@@ -36,6 +36,8 @@ const PATTERN_ALL_WHITE = {
   protocols: 1                // PROTOCOL_ALL
 };
 
+const DEFAULT_COLOR = '#66cc66'; // default proxy color
+
 // patterns | proxy
 // the local-internal blacklist, always used as a set
 const blacklistSet = [
@@ -54,27 +56,9 @@ const blacklistSet = [
 ].map (item => {
   item.active = true;
   item.type = 2;              // PATTERN_TYPE_REGEXP,
-  item.protocols = 1;         // PROTOCOL_ALL  
+  item.protocols = 1;         // PROTOCOL_ALL
   return item;
 });
-
-
-/*
-const LASTRESORT = 'k20d21508277536715';
-const DEFAULT_PROXY_SETTING = {
-  //id: Number.MAX_SAFE_INTEGER, // Not here so we dont save it to disk as an object property but instead as a key
-  index: Number.MAX_SAFE_INTEGER,
-  id: LASTRESORT,
-  active: true,
-  title: 'Default',
-  notes: 'These are the settings that are used when no patterns match a URL.',
-  color: '#0055E5',
-  type: PROXY_TYPE_NONE,
-  whitePatterns: [PATTERN_ALL_WHITE],
-  blackPatterns: []
-}
-*/
-
 
 // ----------------- Utils ---------------------------------
 class Utils {
@@ -128,7 +112,7 @@ class Utils {
     if (end === pat.length) { regExpStr += '$'; }
     return regExpStr;
   }
-	
+
   // Prep the patternObject for matching: convert wildcards to regexp,
   // store the originalPattern which the user entered so we can display if needed, etc.
   // Return null if patternObject is inactive or there is an error.
@@ -136,7 +120,7 @@ class Utils {
     if (patternObject.active) {
       // Store the original pattern so if this pattern matches something,
       // we can display whatever the user entered ("original") in the log.
-      patternObject.originalPattern = patternObject.pattern;    
+      patternObject.originalPattern = patternObject.pattern;
       if (patternObject.type === PATTERN_TYPE_WILDCARD) {
         patternObject.pattern = Utils.wildcardToRegExp(patternObject.pattern);
       }
@@ -148,11 +132,11 @@ class Utils {
       catch(e) {
   			console.error(`Error creating regexp for pattern: ${patternObject.pattern}`, e);
   			Utils.notify(`Error creating regular expression for pattern ${regExpStr}`);
-  		}      
+  		}
     }
     return null;
 	}
-	
+
   // import | pattern
   static importFile(file, mimeTypeArr, maxSizeBytes, jsonOrXml, callback) {
 
@@ -205,7 +189,7 @@ class Utils {
 
     chrome.storage.local.get(null, result => {
       browser.runtime.getBrowserInfo().then((bi) => {
-        !result.sync ? Utils.saveAs(result, bi.version) : chrome.storage.sync.get(null, result => { 
+        !result.sync ? Utils.saveAs(result, bi.version) : chrome.storage.sync.get(null, result => {
           Utils.saveAs(result, bi.version, true);
         });
       });
@@ -240,7 +224,7 @@ class Utils {
       chrome.browserAction.setBadgeBackgroundColor({color: null});
     }
     if (title) {
-      chrome.browserAction.setTitle({title: titleIsKey ? chrome.i18n.getMessage(title) : title});
+      chrome.browserAction.setTitle({title: 'FoxyProxy: ' + (titleIsKey ? chrome.i18n.getMessage(title) : title)});
     }
     else {
       chrome.browserAction.setTitle({title: ''});
@@ -252,7 +236,7 @@ class Utils {
       chrome.browserAction.setBadgeText({text: ''});
     }
   }
-  
+
   static getProxyTitle(proxySetting) {
     if (proxySetting.title) {
       return proxySetting.title;
@@ -326,6 +310,22 @@ class Utils {
 
     return ret;
   }
-*/  
+*/
 
+  static getUniqueId() {
+    // We don't need cryptographically secure UUIDs, just something unique
+    return Math.random().toString(36).substring(7) + new Date().getTime();
+  }
+
+  static stripBadChars(str) {
+    return str ? str.replace(/[&<>"']+/g, '') : null;
+  }
+
+  static i18n() {
+    document.querySelectorAll('[data-i18n]').forEach(node => {
+      let [text, attr] = node.dataset.i18n.split('|');
+      text = chrome.i18n.getMessage(text);
+      attr ? node.setAttribute(attr, text) : node.append(text);
+    });
+  }  
 }

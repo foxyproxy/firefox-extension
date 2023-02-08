@@ -1,12 +1,7 @@
 'use strict';
 
 // ----------------- Internationalization ------------------
-document.querySelectorAll('[data-i18n]').forEach(node => {
-  let [text, attr] = node.dataset.i18n.split('|');
-  text = chrome.i18n.getMessage(text);
-  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
-});
-// ----------------- /Internationalization -----------------
+Utils.i18n();
 
 document.addEventListener('keyup', evt => {
   if (evt.keyCode === 27) {
@@ -17,8 +12,7 @@ document.addEventListener('keyup', evt => {
 // ----- global
 let proxy = {}, proxiesAdded = 0;
 const color = new jscolor('colorChooser', {uppercase: false, hash: true});
-const defaultColor = '#66cc66'
-color.fromString(defaultColor);                             // starting from default color
+color.fromString(DEFAULT_COLOR);                             // starting from default color
 
 const header = document.querySelector('.header');           // dynamic header
 setHeader();
@@ -135,7 +129,7 @@ function processOptions() {
     proxyDNS.checked = proxy.proxyDNS || false;
 
     // color
-    color.fromString(proxy.color || defaultColor);
+    color.fromString(proxy.color || DEFAULT_COLOR);
 
     // input
     proxyTitle.value = proxy.title || '';
@@ -176,27 +170,21 @@ function makeProxy() {
     // Get the nextIndex given to us by options.js and subtract by the number of proxies we've added
     // while this window has been open. This ensures this proxy setting is first in list of all proxy settings.
     proxy.index = (localStorage.getItem('nextIndex')) - (++proxiesAdded);
-    id = getUniqueId();
+    id = Utils.getUniqueId();
   }
   // else proxy.index is already set for edit operations
   return {[id]: proxy};
 }
 
-function getUniqueId() {
-  // We don't need cryptographically secure UUIDs, just something unique
-  return Math.random().toString(36).substring(7) + new Date().getTime();
-}
-
 function validateInput() {
 
-  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());
+  document.querySelectorAll('input[type="text"]').forEach(item => item.value = item.value.trim());  
+  
+  if (proxyType.value *1 === PROXY_TYPE_NONE) { return true; }
 
   // let's handle here, #proxyPort will be checked later separately
-  // Utils.escapeAllInputs('#proxyTitle,#proxyAddress,#proxyPort');
   // escape all inputs
-  [proxyTitle, proxyAddress].forEach(item => item.value = item.value.replace(/[&<>"']+/g, ''));
-
-  if (proxyType.value *1 === PROXY_TYPE_NONE) { return true; }
+  [proxyTitle, proxyAddress].forEach(item => item.value = Utils.stripBadChars(item.value));  
 
   // checking proxyAddress
   proxyAddress.classList.remove('invalid'); // reset
@@ -223,7 +211,7 @@ function resetOptions() {
 
   // to help entering sets quickly, some fields are kept
   [proxyTitle, proxyAddress].forEach(item => item.value = '');
-  color.fromString(defaultColor);
+  color.fromString(DEFAULT_COLOR);
 
   setHeader();  
   proxyTitle.focus();

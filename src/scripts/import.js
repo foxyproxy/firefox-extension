@@ -1,13 +1,13 @@
 'use strict';
 
 // ----------------- Internationalization ------------------
-document.querySelectorAll('[data-i18n]').forEach(node => {
-  let [text, attr] = node.dataset.i18n.split('|');
-  text = chrome.i18n.getMessage(text);
-  attr ? node[attr] = text : node.appendChild(document.createTextNode(text));
-});
-// ----------------- /Internationalization -----------------
+Utils.i18n();
 
+document.addEventListener('keyup', evt => {
+  if (evt.keyCode === 27) {
+    close();
+  }
+});
 
 // ----------------- Spinner -------------------------------
 const spinner = document.querySelector('.spinner');
@@ -33,7 +33,7 @@ function process(e) {
 
   switch (this.id || this.dataset.i18n) {
     // click
-    case 'back': location.href = '/options.html'; break;
+    case 'back': close(); break;
     case 'export': Utils.exportFile(); break;
 
     case 'togglePW|title':
@@ -50,10 +50,12 @@ function process(e) {
     case 'importJson':
       showSpinner();
       Utils.importFile(e.target.files[0], ['application/json'], 1024*1024*10, 'json', importJson); // 10mb
+      hideSpinner(); // hide spinner in case importJson() was not called due to error
       break;
     case 'importXml':
       showSpinner();
       Utils.importFile(e.target.files[0], ['text/xml'], 1024*1024*10, 'xml', importXml);  // 10mb
+      hideSpinner(); // hide spinner in case importXml() was not called due to error
       break;
   }
 }
@@ -64,7 +66,7 @@ function importJson(result) {
     hideSpinner();
     return;
   }
-  
+
   // --- convert pre v7.0 export to db format
   if (result.hasOwnProperty('proxySettings')) {
     result = prepareForStorage(result);
@@ -118,7 +120,7 @@ function importXml(doc) {
   const FP = doc.querySelector('foxyproxy');
   if (!FP) {
     // Don't use Utils.notify() because at least on macOS,
-    // the message is too long and cut off    
+    // the message is too long and cut off
     alert('There is an error with the XML file (missing <foxyproxy ....>)');
     hideSpinner();
     return;
@@ -132,6 +134,18 @@ function importXml(doc) {
   const proxies = doc.getElementsByTagName('proxy');
   let patternsEdited = false;
 
+  const LASTRESORT = 'k20d21508277536715';
+  const DEFAULT_PROXY_SETTING = {
+    index: Number.MAX_SAFE_INTEGER,
+    id: LASTRESORT,
+    active: true,
+    title: 'Default',
+    notes: 'These are the settings that are used when no patterns match a URL.',
+    color: '#0055E5',
+    type: PROXY_TYPE_NONE,
+    whitePatterns: [PATTERN_ALL_WHITE],
+    blackPatterns: []
+  };
 
   doc.querySelectorAll('proxy').forEach((item, index) => {
 
@@ -188,7 +202,6 @@ function importXml(doc) {
     const oldId = item.getAttribute('id');
     if (item.getAttribute('lastresort') === 'true') {
       lastResortFound = true;
-      const LASTRESORT = "k20d21508277536715"; // from legacy version
       newId = LASTRESORT;                                   // this is a string
       proxy.index = Number.MAX_SAFE_INTEGER;
       if (!allowedType) { proxy.type = PROXY_TYPE_NONE; }
@@ -361,7 +374,7 @@ function foxyProxyImport() {
   const encodedValue = encodeURIComponent(usernamePassword[property]);
   formBody.push(encodedKey + "=" + encodedValue);
   }
-  
+
   // --- fetch data
   fetch('https://getfoxyproxy.org/webservices/get-accounts.php',
   {	method: 'POST',
@@ -384,9 +397,9 @@ function foxyProxyImport() {
 
       response.forEach(item => {
       const hostname = item.hostname.substring(0, item.hostname.indexOf('.getfoxyproxy.org'));
-  
+
        if (hostname && item.ipaddress && item.port && item.port[0] && item.country_code && item.country) {
-  
+
           // --- creating proxy
           result[Math.random().toString(36).substring(7) + new Date().getTime()] = {
             index: -1,
@@ -416,3 +429,8 @@ function foxyProxyImport() {
 
 }
 // ----------------- /FoxyProxy Import ---------------------
+
+function close() {
+  document.querySelector('#password').value = ''; /* prevent Firefox's save password prompt */
+  location.href = '/options.html';
+}

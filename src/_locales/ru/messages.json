@@ -1,0 +1,180 @@
+{
+  "extensionName": { "message": "FoxyProxy Standard" },
+  "extensionDescription": { "message": "Продвинутый, но простой в использовании инструмент для управления прокси для каждого" },
+
+  "extensionNameBasic": { "message": "FoxyProxy Basic" },
+
+
+  "error": { "message": "Ошибка" },
+  "erroNoSettings": { "message": "Настройки не найдены. Пожалуйста, переустановите FoxyProxy." },
+
+  "deleteAll": { "message": " Удалить всё" },
+  "export": { "message": "Экспортировать настройки" },
+  "import": { "message": "Импортировать настройки" },
+  "importProxyList": { "message": "Импортировать список прокси" },
+  "log": { "message": "Лог" },
+  "myIP": { "message": "Какой у меня IP адрес?" },
+  "deleteAllmessage": { "message": "Все данные удалены" },
+
+  "authError": { "message": "Отказ подключения к $1\nПроверьте имя пользователя и пароль" },
+
+
+  "delete": { "message": "Удалить" },
+  "deleteNot": { "message": "Не удалять" },
+  "deleteBrowserData": { "message": "Удалить данные браузера" },
+  "deleteBrowserDataDescription": { "message": "Кэш, куки, база индексов, хранилище DOM, данные расширения, служебные данные." },
+  "deleteBrowserDataNotDescription": { "message": "Сохранённые пароли, история браузера и форм, история загрузок, webSQL, серверные сертификаты" },
+  "done": { "message": "Готово!" },
+
+  "about": { "message": "О расширении" },
+  "syncSettings": { "message": "Синхронизировать настройки" },
+  "syncSettingsHelp": { "message": "Включите, чтобы использовать синхронизацию Firefox (настройки синхронизируются между всеми вашими браузерами Firefox). Отключите, чтобы хранить настройки локально. Обратите внимание, что вы можете иметь два набора настроек — синхронизированный и локальный." },
+//  "onOff": { "message": "Вкл./Выкл." },
+  "on": { "message": "Вкл." },
+  "off": { "message": "Выкл." },
+  "confirmTransferToLocal": { "message": "Хотите переместить синхронизированные настройки в локальный профиль?\nОни будут объединены с существующими данными." },
+  "confirmTransferToSync": { "message": "Хотите переместить локальные настройки синхронизированный профиль?\nОни будут объединены с существующими данными." },
+
+  "modePatterns": { "message": "Использовать прокси по шаблону и порядку" },
+  "modeDisabled": { "message": "Отключить (Использовать настройки Firefox)" },
+  "forAll": { "message": "Для всех URL" },
+  "noProxies": { "message": "У вас нет каких-либо прокси настроек."},
+
+
+
+  "edit": { "message": "Редактировать" },
+  "patterns": { "message": "Шаблоны" },
+  "confirmDelete": { "message": "Вы уверены, что хотите удалить?" },
+
+  "addProxy": { "message": "Добавить прокси" },
+  "editProxy": { "message": "Редактировать прокси $1" },
+
+
+  "editPatterns": { "message": "Редактировать шаблон" },
+  "editPatternsFor": { "message": "Редактировать шаблон для $1" },
+
+
+  "errorWas": { "message": "Ошибка. Пожалуйста, попробуйте снова." },
+  "errorSlash": { "message": "Не разрешено использовать символ слэш в шаблонах. Вы не можете сопоставить URL пути вследствие ограничения Firefox." },
+  "errorEmpty": { "message": "Поле не может быть пустым." },
+
+
+  "importEnd": { "message": "Настройки успешно импортированы." },
+  "patternsChanged": { "message": "Некоторые шаблоны были изменены из-за того, что они содержали символ слэш. Символы слэш в шаблонах более не поддерживаются." },
+  "importEndSlash": { "message": "Импорт закончен. Символ слэш не поддерживается из-за проблемы в Firefox. Пожалуйста, проанализируйте ваши шаблоны и удалите символы слэш если вы их используете." },
+  "errorUserPass": { "message": "Пожалуйста, введите имя пользователя и пароль." },
+  "errorFetch": { "message": "Проблема с данным действием." },
+
+
+  "errorPattern": { "message": "Пожалуйста, введите шаблон" },
+  "importBW": { "message": "Импортировано $1 белых и $2 черных шаблонов." },
+
+  "up": { "message": "передвинуть выше" },
+  "down": { "message": "передвинуть ниже" },
+
+  "disabled": { "message": "Отключено" },
+  "active": { "message": "Включено" },
+	"activeNote": { "message": "FoxyProxy игнорирует все настройки на этой странице если не включено обратное" },
+  "noMatch": { "message": "Нет совпадения" },
+  "none": { "message": "Ничего" },
+
+  "name": { "message": "Название" },
+  "pattern": { "message": "Шаблон" },
+  "type": { "message": "Тип" },
+  "protocol": { "message": "Протокол" },
+  "whitePatterns": { "message": "Белые шаблоны" },
+  "blackPatterns": { "message": "Черные шаблоны" },
+  "importedPattern": { "message": "Этот шаблон был импортирован из предыдущей версии FoxyProxy и был изменен в процессе импорта. Оригинальный, не измененный шаблон тут:" },
+
+
+  "patternMatch": { "message": "Шаблон сопоставлен URL!" },
+  "patternNotMatch": { "message": "Шаблон не сопоставлен URL." },
+  "errorProtocol": { "message": "Протокол не совпадает." },
+
+
+
+  "proxyType": { "message": "Тип прокси" },
+  "color": { "message": "Цвет" },
+  "patternShortcuts": { "message": "Клавиатурная комбинация для шаблона"},
+  "title": { "message": "Название или описание (опционально)" },
+  "ip": { "message": " Прокси IP адрес или имя DNS" },
+  "port": { "message": "Порт" },
+  "username": { "message": "Имя пользователя (опционально)" },
+  "password": { "message": "Пароль (опционально)" },
+  "togglePW": { "message": "Показывать пароль" },
+
+  "addWhitelist": { "message": "Добавить whitelist шаблон совпадающий со всеми URL" },
+  "noLocal": { "message": "Не использовать локальный и внутренний/частный IP адрес" },
+
+
+
+  "patternTester": { "message": "Тестер шаблонов" },
+  "patternHelp": { "message": "Помощь с шаблонами" },
+  "welcome": { "message": "Добро пожаловать" },
+  "options": { "message": "Настройки" },
+  "optionsPage": { "message": "Настройки FoxyProxy" },
+  "enterUrl": { "message": "Введите URL на тест" },
+  "enterUrlNote": { "message": "(параметры путей и запросов будут проигнорированы)" },
+  "patternDetail": { "message": "Введите детали шаблона." },
+  "patternNote": { "message": "(без путей и параметров запросов)" },
+  "clickTest": { "message": "Нажмите 'Начать тест' как будете готовы" },
+
+
+
+
+
+
+
+  "ok": { "message": "OK" },
+  "clear": { "message": "Очистить" },
+  "refresh": { "message": "Обновить" },
+  "cancel": { "message": "Отменить" },
+  "back": { "message": "Назад" },
+  "test": { "message": "Тест" },
+  "help": { "message": "Помощь" },
+  "importPatterns": { "message": "Импортировать шаблон" },
+  "exportPatterns": { "message": "Экспортировать шаблон" },
+  "newWhite": { "message": "Новый белый" },
+  "newBlack": { "message": "Новый черный" },
+  "save": { "message": "Сохранить" },
+  "add": { "message": "Добавить" },
+  "saveAdd": { "message": "Сохранить & добавить еще" },
+  "saveEditPattern": { "message": "Сохранить & и редактировать шаблоны" },
+  "imported": { "message": "Импортировано" },
+  "addBlacklistTip": { "message": "Добавить blacklist шаблоны для локального адреса, 127.0.0.1, 192.168.*.*, 172.16.*.*, & 10.*.*.*" },
+  "addBlacklist": { "message": "Добавить black шаблоны чтобы предотвратить использование этого прокси для локального адреса и внутренних/частных IP адресов" },
+  "addWhitelistTip": { "message": "Добавить whitelist шаблон *" },
+  "patternCheatSheet":  { "message": "Шпаргалка по шаблонам" },
+
+  "logSize": { "message": "Размер лога" },
+  "url": { "message": "URL" },
+  "proxyTitle": { "message": "Название прокси" },
+  "proxyAddress": { "message": "Адрес прокси" },
+  "matchPattern": { "message": "Шаблон для совпадения" },
+  "whiteBlack": { "message": "Белый/Черный" },
+  "white": { "message": "Белый" },
+  "black": { "message": "Черный" },
+  "timestamp": { "message": "Время" },
+  "notApplicable": {"message": "n/a"},
+  "matchedURLs": {"message": "URL удовлетворяющие шаблону"},
+  "unmatchedURLs": {"message": "URLs не удовлетворяющие шаблону"},
+
+
+  "pasteList": { "message": "Вставьте список прокси ниже."},
+  "formats": {"message": "Форматы"},
+  "simple": { "message": "простой" },
+  "complete": { "message": "полный" },
+  "simpleFormat": { "message": "Необходимы ip адрес/сервер и порт. Имя пользователя и пароль — опционально."},
+  "ipPort": {"message": "ip адрес:порт"},
+  "ipPortUsernamePassword": {"message": "ip адрес:порт:имя пользователя:пароль"},
+  "examples": {"message": "Примеры"},
+  "completeFormat": { "message": "Используя этот формат вы можете указать все прокси настройки, но только протокол и адрес прокси являются необходимыми."},
+  "overwriteProxies": { "message": "Перезаписать имеющиеся прокси" },
+  "overwritProxiesHelp1": { "message": "Активируйте чтобы заменить все существующие прокси новыми из этого списка." },
+  "overwritProxiesHelp2": { "message": "Дезактивируйте чтобы добавить прокси из списка к уже имеющимся." },
+  "confirmOverwrite": { "message": "Вы уверены, что хотите удалить все ранее добавленные прокси?" },
+  "importsSkipped": { "message": "Пропущено $1 линий потому что они не смогли быть обработаны:\n\n$2" },
+  "importSucceeded": {
+    "message": "Считано и сохранено $1 прокси."
+  }
+}

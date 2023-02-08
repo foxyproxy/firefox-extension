@@ -25,17 +25,14 @@ class Logger {
     this.unmatchedList = [];
   }
 
-  add(item, list) {
-    list.push(item);                        // adds to the end
-    list = list.slice(-this.size);          // slice to the ending size entries
-  }
-  
   addMatched(item) {
-    this.add(item, this.matchedList);
+    this.matchedList.push(item);
+    this.matchedList = this.matchedList.slice(-this.size); // slice to the ending size entries
   }
 
   addUnmatched(item) {
-    this.add(item, this.unmatchedList);
+    this.unmatchedList.push(item);
+    this.unmatchedList = this.unmatchedList.slice(-this.size); // slice to the ending size entries
   }
 
   updateStorage() {
@@ -62,6 +59,15 @@ chrome.runtime.onInstalled.addListener((details) => {       // Installs Update L
       break;
   }
 });
+
+// ----------------- keyboard shortcuts --------------------
+chrome.commands.onCommand.addListener(command => {
+  storageArea.set({mode: command});
+  // popup & options are the only place that can set mode
+  // sending message to option && bg, if it is open
+  chrome.runtime.sendMessage({mode: command});
+});
+// ----------------- /keyboard shortcuts -------------------
 
 // ----------------- User Preference -----------------------
 chrome.storage.local.get(null, result => {
@@ -105,7 +111,7 @@ function process(settings) {
     };
     update = true;
   }
-  
+
   // update storage then add Change Listener
   if (update) {
     storageArea.set(settings, () => chrome.storage.onChanged.addListener(storageOnChanged));
@@ -141,25 +147,26 @@ function storageOnChanged(changes, area) {
 }
 
 function proxyRequest(requestInfo) {
-  return findProxyMatch(requestInfo.url, activeSettings);  
+  return findProxyMatch(requestInfo.url, activeSettings);
 }
 
 function setActiveSettings(settings) {
   browser.proxy.onRequest.hasListener(proxyRequest) && browser.proxy.onRequest.removeListener(proxyRequest);
-  
+
   const pref = settings;
   const prefKeys = Object.keys(pref).filter(item => !['mode', 'logging', 'sync'].includes(item)); // not for these
 
   // --- cache credentials in authData (only those with user/pass)
+  // part-aware user/pass i.e. hostname:port
   prefKeys.forEach(id => pref[id].username && pref[id].password &&
-    (authData[pref[id].address] = {username: pref[id].username, password: pref[id].password}) );
+    (authData[pref[id].address + ':' + pref[id].port] = {username: pref[id].username, password: pref[id].password}) );
 
   const mode = settings.mode;
   activeSettings = {  // global
     mode,
     proxySettings: []
   };
-  
+
   if (mode === 'disabled' || (FOXYPROXY_BASIC && mode === 'patterns')){
     setDisabled();
     return;
@@ -178,7 +185,7 @@ function setActiveSettings(settings) {
         return accumulator;
       }, []);
     }
-    
+
     // Filter out the inactive patterns. that way, each comparison
     // is a little faster (doesn't even know about inactive patterns). Also convert all patterns to reg exps.
     for (const idx in activeSettings.proxySettings) {
@@ -186,7 +193,7 @@ function setActiveSettings(settings) {
       activeSettings.proxySettings[idx].whitePatterns = processPatternObjects(activeSettings.proxySettings[idx].whitePatterns);
     }
     browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-    Utils.updateIcon('images/icon.svg', null, 'patterns', 'patterns');
+    Utils.updateIcon('images/icon.svg', null, 'patterns', true);
     console.log(activeSettings, "activeSettings in patterns mode");
   }
   else {
@@ -195,8 +202,9 @@ function setActiveSettings(settings) {
     if (settings[mode]) {
       activeSettings.proxySettings = [settings[mode]];
       browser.proxy.onRequest.addListener(proxyRequest, {urls: ["<all_urls>"]});
-      Utils.updateIcon('images/icon.svg', settings[mode].color, 'forAll', true, Utils.getProxyTitle(settings[mode]), false);
-      console.log(activeSettings, "activeSettings in fixed mode");      
+      const tmp = Utils.getProxyTitle(settings[mode]);
+      Utils.updateIcon('images/icon.svg', settings[mode].color, tmp, false, tmp, false);
+      console.log(activeSettings, "activeSettings in fixed mode");
     }
     else {
       // This happens if user deletes the current proxy and mode is "use this proxy for all URLs"
@@ -229,7 +237,7 @@ async function sendAuth(request) {
   //   "Take no action: the listener can do nothing, just observing the request. If this happens, it will
   //   have no effect on the handling of the request, and the browser will probably just ask the user to log in."
   if (!request.isProxy) return;
-  
+
   // --- already sent once and pending
   if (authPending[request.requestId]) { return {cancel: true}; }
 
@@ -242,9 +250,11 @@ async function sendAuth(request) {
   //  But in my tests (Fx 69.0.1 MacOS), it is indeed the proxy requesting the authentication
   // TODO: test in future Fx releases to see if that changes.
   // console.log(request.challenger.host, "challenger host");
-  if (authData[request.challenger.host]) {
+  // part-aware user/pass: hostname:port
+  const id = request.challenger.host + ':' + request.challenger.port;
+  if (authData[id]) {
     authPending[request.requestId] = 1;                       // prevent bad authentication loop
-    return {authCredentials: authData[request.challenger.host]};
+    return {authCredentials: authData[id]};
   }
   // --- no user/pass set for the challenger.host, leave the authentication to the browser
 }
@@ -254,8 +264,8 @@ async function getAuth(request) {
   await new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       const host = result.hostData[request.challenger.host];
-      if (host && host.username) {                          // cache credentials in authData
-        authData[host] = {username: host.username, password: host.password};
+      if (host && host.port === request.challenger.port && host.username) { // cache credentials in authData (port-aware)
+        authData[host + ':' + request.challenger.port] = {username: host.username, password: host.password};
       }
       resolve();
     });

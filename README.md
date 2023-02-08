@@ -1,6 +1,11 @@
+
+# September 2022
+This repository is not used anymore. Please refer to the new repository at https://github.com/foxyproxy/browser-extension for version 8.0 and above
+Older versions of FoxyProxy can be found in the [archives](https://github.com/foxyproxy/firefox-extension/tree/master/archive/dist) and [releases](https://github.com/foxyproxy/firefox-extension/releases). The last release of the 7.x versions is 7.5.1.
+
 # FoxyProxy for Firefox
 
-The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, erosman is a primary developer.
+The FoxyProxy extension has been around for almost 15 years as of 2019. It has been rewritten several times and is still maintained by the original developer, Eric H. Jung, with large contributions by others (e.g. erosman, Jesper Hansen, Georg Koppen, and others). As of 2019/2020, ericjung and erosman are primary developers.
 
 Originally for Firefox, a Chrome edition was released years ago as well. It does not share the same codebase (yet), so this project is strictly for the Firefox edition. We hope they will share the same codebase sometime in 2020.
 
@@ -28,7 +33,10 @@ FoxyProxy is internationalized! Translate [messages.json](https://github.com/fox
 
 ## Building
 
-FoxyProxy **Standard** edition is built by default. To build FoxyProxy **Basic** edition, set `FOXYPROXY_BASIC` to `true` in [utils.js](https://github.com/foxyproxy/firefox-extension/blob/master/src/scripts/utils.js) before building.
+FoxyProxy **Standard** edition is built by default. To build FoxyProxy **Basic** edition:
+
+* change `FOXYPROXY_BASIC` from `false` to `true` in [utils.js](https://github.com/foxyproxy/firefox-extension/blob/master/src/scripts/utils.js)
+* change browser_specific_settings.id in [manifest.json](https://github.com/foxyproxy/firefox-extension/blob/master/src/manifest.json) from `foxyproxy@eric.h.jung` to `foxyproxy-basic@eric.h.jung`
 
 ### Building With Grunt
 
@@ -52,7 +60,11 @@ Note some items are cached by Firefox. Please refer to other online documentatio
 ## Authors
 
 * **Eric H. Jung** - [FoxyProxy](https://getfoxyproxy.org/team/)
-* **erosman** - https://github.com/erosman
+* **[erosman](https://github.com/erosman)**
+* **[FeralMeow](https://github.com/wsxy162)** - Chinese (Simplified) translation
+* **[samuikaze](https://github.com/samuikaze)** - Chinese (Traditional) translation
+* **[Hugo-C](https://github.com/Hugo-C)** - French translation
+* **Vadim** - Russian translation
 * **Your Name Here** if you contribute a language translation or other work
 
 
@@ -60,3 +72,4 @@ Note some items are cached by Firefox. Please refer to other online documentatio
 
 This project is licensed under the GPL 2.0 License. Commercial re-licensing may be available on request.
 
+## Feature Requests / RoadMap
