@@ -249,6 +249,11 @@ class Utils {
     }
   }
 
+  static getUrlStrByPatternType(type, parsedURL) {
+    return (type == PATTERN_TYPE_REGEXP)
+              ? parsedURL : parsedURL.host;
+  }
+  
 /*
   // utils only used for export, will be removed as DB format export is adapted
   static prepareForSettings(settings = {}) {
